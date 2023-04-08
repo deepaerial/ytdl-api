@@ -17,16 +17,3 @@ services:
     tty: true
     networks:
       - default
-  ytdl-api-pytest:
-    container_name: "ytdl-api-pytest"
-    build:
-      context: ./api/
-      target: test
-    ports:
-      - 5678:5678
-    volumes:
-      - "./api/ytdl_api/:/app/ytdl_api"
-      - "./htmlcov:/app/htmlcov"
-    restart: "no"
-    stdin_open: true
-    tty: true
