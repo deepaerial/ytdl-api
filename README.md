@@ -1,5 +1,5 @@
  # YTDL-API
-REST-based API for downloading video or extracting audio from YouTube videos.  Also [ffmpeg](https://ffmpeg.org/) is required in order to process video and audio files.
+REST-based API for downloading video or extracting audio from YouTube videos. This API is used by [YTDL](https://github.com/deepaerial/ytdl-web) web application.  Also [ffmpeg](https://ffmpeg.org/) is required in order to process video and audio files.
 <br><br>
 
 ![OpenAPI documentation for YTDL API](./docs/openapi.png)
@@ -13,7 +13,7 @@ Run `poetry` command below to install project dependencies (including ones neede
 $ poetry install
 ```
 ## Launch API locally
-Before starting the application server you should create `.env` file which will contain all necessary settings. Example configuraion for Docker container:
+Before starting the application server you should create `.env` file which will contain all necessary settings. Example configuration for Docker container:
 ```shell
 DEBUG=True
 ALLOW_ORIGINS="http://localhost,http://localhost:8080,http://localhost:8081,http://127.0.0.1,http://127.0.0.1:8080,http://127.0.0.1:8081"
