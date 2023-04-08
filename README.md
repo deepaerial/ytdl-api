@@ -5,7 +5,7 @@ REST-based API for downloading video or extracting audio from YouTube videos.  A
 ![OpenAPI documentation for YTDL API](./docs/openapi.png)
 
 ## Requirements
-App requires Python 3.8 and [poetry](https://python-poetry.org/) installed. Also project relies on [Deta](https://www.deta.sh/) for storing data about downloads. So you should have account there in order to run this project.
+App requires Python 3.10 and [poetry](https://python-poetry.org/) installed. Also project relies on [Deta](https://www.deta.sh/) for storing data about downloads. So you should have account there in order to run this project.
 
 ## Installation
 Run `poetry` command below to install project dependencies (including ones needed for development).
