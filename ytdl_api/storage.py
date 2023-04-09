@@ -1,9 +1,10 @@
 import abc
-from typing import Optional
-from pathlib import Path
 import shutil
+from pathlib import Path
+from typing import Optional
 
 from deta import Deta
+
 from .schemas.models import Download
 
 
@@ -11,10 +12,6 @@ class IStorage(abc.ABC):
     """
     Base interface for storage class that manages downloaded file.
     """
-
-    @abc.abstractmethod
-    def save_download(self, download: Download, data: bytes) -> str:  # pragma: no cover
-        raise NotImplementedError
 
     @abc.abstractmethod
     def save_download_from_file(
@@ -40,12 +37,6 @@ class LocalFileStorage(IStorage):
 
     def __init__(self, downloads_dir: Path) -> None:
         self.dowloads_dir = downloads_dir
-
-    def save_download(self, download: Download, data: bytes) -> str:
-        storage_file_path = self.dowloads_dir / download.storage_filename
-        with storage_file_path.open("+wb") as f:
-            f.write(data)
-        return storage_file_path.as_posix()
 
     def save_download_from_file(self, download: Download, path: Path) -> str:
         dest_path = self.dowloads_dir / download.storage_filename
@@ -73,10 +64,15 @@ class DetaDriveStorage(IStorage):
         deta = Deta(project_key=deta_project_key)
         self.drive = deta.Drive(drive_name)
 
-    def save_download(self, download: Download, data: bytes) -> str:
-        self.drive.put(download.storage_filename, data=data)
-        return download.storage_filename
-
     def save_download_from_file(self, download: Download, path: Path) -> str:
         self.drive.put(download.storage_filename, path=path)
         return download.storage_filename
+
+    def get_download(self, storage_file_name: str) -> Optional[bytes]:
+        file = self.drive.get(storage_file_name)
+        if file is None:
+            return file
+        return file.read()
+
+    def remove_download(self, storage_file_name: str):
+        self.drive.delete(storage_file_name)

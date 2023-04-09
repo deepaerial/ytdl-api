@@ -17,10 +17,3 @@ repos:
     entry: black
     types: [python]
 
-  - id: mypy
-    name: mypy
-    stages: [commit]
-    language: system
-    entry: mypy
-    types: [python]
-

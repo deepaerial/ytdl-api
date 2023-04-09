@@ -170,6 +170,7 @@ sketch
 # End of https://www.gitignore.io/api/linux,macos,python
 .venv/
 .env
+.env.test
 media/
 
 # Ignore .pem files

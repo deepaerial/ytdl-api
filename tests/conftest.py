@@ -62,7 +62,7 @@ def get_example_download_instance(
     duration: int = 10000,
     filesize: int = 10000,
     status: DownloadStatus = DownloadStatus.STARTED,
-    file_path: Optional[Path] = None,
+    file_path: Optional[str] = None,
     progress: int = 0,
     when_started_download: Optional[datetime] = None,
 ) -> Download:
@@ -117,6 +117,7 @@ def settings(
     fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str
 ) -> Iterable[Settings]:
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
+    monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
     settings = Settings()  # type: ignore
     yield settings
 

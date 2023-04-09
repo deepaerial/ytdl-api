@@ -1,21 +1,20 @@
 import logging
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 import pkg_resources
 from confz import ConfZ, ConfZEnvSource
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import validator, root_validator
+from pydantic import validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
 from .datasource import DetaDB, IDataSource
-from .storage import IStorage, LocalFileStorage, DetaDriveStorage
+from .storage import DetaDriveStorage, IStorage, LocalFileStorage
 
 REPO_PATH = (Path(__file__).parent / "..").resolve()
-MEDIA_PATH = (REPO_PATH / "media").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
 
 
@@ -43,7 +42,7 @@ class LocalStorageConfig(ConfZ):
     Local filesystem storage config.
     """
 
-    path: Path = MEDIA_PATH
+    path: Path
 
     @validator("path")
     def validate_path(cls, value):
@@ -62,18 +61,11 @@ class DetaDriveStorageConfig(ConfZ):
     Deta Drive storage config.
     """
 
-    deta_key: Optional[str]
-    drive_name: str = "downloads"
-
-    @root_validator
-    def validate_path(cls, values):
-        type_, deta_key = values["type"], values["deta_key"]
-        if type_ is not None and deta_key is None:
-            raise ValueError("Deta key for Deta Drive Storage should be provided...")
-        return values
+    deta_key: str
+    deta_drive_name: str
 
     def get_storage(self) -> IStorage:
-        return DetaDriveStorage(self.deta_key, self.drive_name)
+        return DetaDriveStorage(self.deta_key, self.deta_drive_name)
 
 
 class Settings(ConfZ):
@@ -97,7 +89,7 @@ class Settings(ConfZ):
 
     downloader: DownloaderType = DownloaderType.PYTUBE
     datasource: DetaBaseDataSourceConfig
-    storage: Union[LocalStorageConfig, DetaBaseDataSourceConfig] = LocalStorageConfig()
+    storage: Union[LocalStorageConfig, DetaDriveStorageConfig]
 
     CONFIG_SOURCES = ConfZEnvSource(
         allow_all=True,

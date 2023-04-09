@@ -1,16 +1,21 @@
-from pathlib import Path
 from datetime import datetime
-from typing import Callable, Coroutine, Any
+from pathlib import Path
+from typing import Any, Callable, Coroutine
+
 from .constants import DownloadStatus
 from .datasource import IDataSource
-from .storage import IStorage
 from .queue import NotificationQueue
 from .schemas.models import Download, DownloadProgress
+from .storage import IStorage
 
 
 async def noop_callback(*args, **kwargs):  # pragma: no cover
     """
-    Empty on downaload progess callback
+    Empty on downaload progess callback. Use as default/placeholder callback for
+    - on start downaload event
+    - on download progress event
+    - on start converting event
+    - on download finish event
     """
     pass
 
@@ -62,7 +67,9 @@ async def on_start_converting(
     """
     Callback called once ffmpeg media format converting process is initiated.
     """
+    progress = -1
     download.status = DownloadStatus.CONVERTING
+    download.progress = progress
     datasource.put_download(download)
     await queue.put(
         download.client_id,
@@ -70,7 +77,7 @@ async def on_start_converting(
             client_id=download.client_id,
             media_id=download.media_id,
             status=download.status,
-            progress=-1,
+            progress=progress,
         ),
     )
 
