@@ -14,7 +14,6 @@ from ytdl_api.storage import DetaDriveStorage
 
 @pytest.fixture()
 def settings(
-    fake_media_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Settings, None, None]:
     # ignoring datasource config
@@ -81,7 +80,7 @@ EXAMPLE_VIDEO_PREVIEW = {
 
 
 @pytest.fixture()
-def example_download(fake_media_file_path: Path) -> Download:
+def example_download() -> Download:
     download_data = {
         **EXAMPLE_VIDEO_PREVIEW,
         "client_id": "xxxxxxx",
@@ -99,7 +98,7 @@ def test_deta_storage(
     deta_storage: DetaDriveStorage,
     example_download: Download,
     fake_media_file_path: Path,
-    clear_drive,
+    clear_drive: None,
 ):
     storage_file_name = deta_storage.save_download_from_file(
         example_download, fake_media_file_path
