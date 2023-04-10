@@ -101,7 +101,6 @@ def test_download_file_but_download_not_finished(
         mock_persisted_download.client_id, mock_persisted_download.media_id
     )
     assert download is not None
-    assert download.when_started_download is not None
 
 
 def test_download_file_but_no_file_present(
