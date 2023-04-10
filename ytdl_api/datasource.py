@@ -92,14 +92,9 @@ class DetaDB(IDataSource):
     DAO interface implementation for Deta Bases: https://docs.deta.sh/docs/base/sdk
     """
 
-    __base_name = "ytdl"
-
-    def __init__(self, deta_project_key: str, base_name: typing.Optional[str] = None):
+    def __init__(self, deta_project_key: str, base_name: str = "ytdl"):
         deta = Deta(deta_project_key)
-        if base_name:
-            self.base = deta.Base(base_name)
-        else:
-            self.base = deta.Base(self.__base_name)
+        self.base = deta.Base(base_name)
 
     def fetch_downloads(self, client_id: str) -> typing.List[Download]:
         downloads = self.base.fetch(
