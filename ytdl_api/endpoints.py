@@ -1,9 +1,9 @@
 import asyncio
 from pathlib import Path
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from sse_starlette.sse import EventSourceResponse
-from fastapi.responses import StreamingResponse
 from starlette import status
 
 from . import config, datasource, dependencies, storage
@@ -11,7 +11,7 @@ from .constants import DownloadStatus
 from .converters import create_download_from_download_params
 from .downloaders import IDownloader
 from .queue import NotificationQueue
-from .schemas import requests, responses, models
+from .schemas import models, requests, responses
 from .types import VideoURL
 
 router = APIRouter(tags=["base"])
@@ -127,7 +127,7 @@ async def download_file(
     Endpoint for downloading fetched video from Youtube.
     """
     download, file_path = download_pair
-    datasource.update_status(media_id, DownloadStatus.DOWNLOADED)
+    datasource.mark_as_downloaded(download)
     return FileResponse(
         file_path,
         media_type="application/octet-stream",
@@ -199,7 +199,7 @@ async def delete_download(
             detail="Media file is not downloaded yet",
         )
     storage.remove_download(media_file.file_path)
-    datasource.update_status(media_id, DownloadStatus.DELETED)
+    datasource.delete_download(media_file)
     return responses.DeleteResponse(
         media_id=media_file.media_id,
         status=DownloadStatus.DELETED,
