@@ -129,7 +129,6 @@ def settings(
     )
     with Settings.change_config_sources(data_source):
         yield Settings()  # type: ignore
-    yield settings
 
 
 @pytest.fixture()
