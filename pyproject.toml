@@ -15,7 +15,8 @@ python_functions = [
 [tool.coverage.run]
 omit = [
     ".venv/*",
-    "tests/*"
+    "tests/*",
+    "asgi.py"
 ]
 
 [tool.mypy]
