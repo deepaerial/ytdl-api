@@ -173,7 +173,7 @@ class DetaDB(IDataSource):
         when_file_downloaded = when_file_downloaded or datetime.datetime.utcnow()
         when_file_downloaded_iso = when_file_downloaded.isoformat()
         data = {
-            "status": DownloadStatus.DELETED,
+            "status": DownloadStatus.DOWNLOADED,
             "when_file_downloaded": when_file_downloaded_iso,
         }
         self.base.update(data, download.media_id)
