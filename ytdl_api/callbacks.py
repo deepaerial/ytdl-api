@@ -97,6 +97,7 @@ async def on_finish_callback(
     download.file_path = in_storage_filename
     download.status = status
     download.progress = 100
+    download.when_download_finished = datetime.utcnow()
     datasource.update_download(download)
     await queue.put(
         download.client_id,

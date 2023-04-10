@@ -170,7 +170,7 @@ def mock_persisted_download(
         client_id=uid,
         media_format=MediaFormat.MP4,
         status=DownloadStatus.STARTED,
-        when_started_download=datetime.utcnow() - timedelta(minutes=1),
+        when_started_download=None,
     )
     datasource.put_download(download)
     yield download

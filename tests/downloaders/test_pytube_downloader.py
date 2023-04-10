@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -33,12 +34,15 @@ def test_video_download(
     mock_persisted_download.video_stream_id = "394"
     assert mock_persisted_download.status == DownloadStatus.STARTED
     assert mock_persisted_download.file_path is None
+    assert mock_persisted_download.when_started_download is None
+    assert mock_persisted_download.when_download_finished is None
     pytube_downloader = get_downloader(datasource, notification_queue, local_storage)
     pytube_downloader.download(mock_persisted_download)
     finished_download = datasource.get_download(
         mock_persisted_download.client_id, mock_persisted_download.media_id
     )
     assert finished_download.status == DownloadStatus.FINISHED
+    assert isinstance(finished_download.when_download_finished, datetime)
     assert finished_download.file_path is not None
     assert finished_download.audio_stream_id == "251"
     assert finished_download.video_stream_id == "394"
