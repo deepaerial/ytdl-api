@@ -7,13 +7,13 @@ repos:
     name: isort
     stages: [commit]
     language: system
-    entry: isort
+    entry: poetry run isort
     types: [python]
 
   - id: black
     name: black
     stages: [commit]
     language: system
-    entry: black
+    entry: poetry run black
     types: [python]
 

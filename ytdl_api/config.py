@@ -82,7 +82,7 @@ class Settings(ConfZ):
     description: str = "API for YTDL backend server."
     version: str = pkg_resources.get_distribution("ytdl-api").version
     disable_docs: bool = False
-    allow_origins: List[str]
+    allow_origins: List[str] = []
     cookie_samesite: str = "None"
     cookie_secure: bool = True
     cookie_httponly: bool = True

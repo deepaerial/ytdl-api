@@ -32,6 +32,17 @@ This will launch `uvicorn` server with app on http://localhost:8080. You will al
 $ docker-compose up -d ytdl_api
 ```
 
+## Running tests
+Before running tests for the first time create file `.env.test` inside project directory with following content. Replace placeholders with real values:
+```
+DATASOURCE__DETA_KEY=<your Deta key should inserted here>
+STORAGE__DETA_KEY=<your Deta key should inserted here>
+STORAGE__DETA_DRIVE_NAME=ytdl_test_downloads
+```
+Run `pytest` with command below. `--cov-report` flag will generate coverage report in HTML format.
+```shell
+$ pytest --cov-report html
+```
 ## Deploy on Fly.io
 1. Set up machine for app container
 ```shell

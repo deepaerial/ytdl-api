@@ -5,10 +5,11 @@ from tempfile import TemporaryDirectory
 from typing import Generator, Iterable, Optional
 
 import pytest
+from confz import ConfZEnvSource
 from fastapi.testclient import TestClient
 from pydantic import parse_obj_as
 
-from ytdl_api.config import Settings
+from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import DetaDB, IDataSource
 from ytdl_api.dependencies import get_settings
@@ -116,9 +117,18 @@ def deta_testbase() -> str:
 def settings(
     fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str
 ) -> Iterable[Settings]:
+    monkeypatch.setenv("DEBUG", True)
+    monkeypatch.setenv("DOWNLOADER", "pytube")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
     monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
-    settings = Settings()  # type: ignore
+    data_source = ConfZEnvSource(
+        allow_all=True,
+        deny=["title", "description", "version"],
+        file=(REPO_PATH / ".env.test").resolve(),
+        nested_separator="__",
+    )
+    with Settings.change_config_sources(data_source):
+        yield Settings()  # type: ignore
     yield settings
 
 

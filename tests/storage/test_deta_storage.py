@@ -16,7 +16,7 @@ from ytdl_api.storage import DetaDriveStorage
 def settings(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Settings, None, None]:
-    # ignoring datasource config
+    # ignoring datasource config as in this test it's not needed
     monkeypatch.setenv("DATASOURCE__DETA_KEY", "*****")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", "*****")
     data_source = ConfZEnvSource(
