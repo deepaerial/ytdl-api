@@ -41,4 +41,4 @@ CMD ["pytest", "--cov-report", "html"]
 ############ Prod ###################
 FROM project-base as prod
 RUN poetry install --without dev
-CMD ["poetry", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "debug"]
+CMD ["poetry", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "info"]
