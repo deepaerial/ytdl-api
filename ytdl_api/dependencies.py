@@ -1,9 +1,9 @@
-import secrets
 import asyncio
+import secrets
 import tempfile
-from pathlib import Path
 from functools import lru_cache, partial
-from typing import Optional, Generator
+from pathlib import Path
+from typing import Generator, Optional
 
 from fastapi import Cookie, Depends, HTTPException, Response
 from fastapi.exceptions import RequestValidationError
@@ -11,18 +11,17 @@ from pydantic import ValidationError
 from pydantic.error_wrappers import ErrorWrapper
 from starlette import status
 
-
 from . import datasource, downloaders, queue, storage
 from .callbacks import (
-    on_pytube_progress_callback,
     on_download_start_callback,
     on_finish_callback,
+    on_pytube_progress_callback,
     on_start_converting,
 )
 from .config import Settings
 from .constants import DownloaderType, DownloadStatus
-from .schemas.requests import DownloadParams
 from .schemas.models import Download
+from .schemas.requests import DownloadParams
 
 
 # Ignoring get_settings dependency in coverage because it will be
@@ -74,25 +73,6 @@ def get_downloader(
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
     )
-
-
-def validate_download_params(
-    download_params: DownloadParams,
-    settings: Settings = Depends(get_settings),
-):
-    try:
-        if settings.downloader == DownloaderType.PYTUBE:
-            if not any(
-                (download_params.video_stream_id, download_params.audio_stream_id)
-            ):
-                raise ValueError(
-                    "No chosen video or audio stream is choosen for download"
-                )
-    except ValueError as e:
-        validation_error = ValidationError(
-            [ErrorWrapper(e, loc="__root__")], download_params.__class__
-        )
-        raise RequestValidationError(validation_error.raw_errors)
 
 
 def get_uid_dependency_factory(raise_error_on_empty: bool = False):

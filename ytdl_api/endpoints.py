@@ -79,7 +79,6 @@ async def preview(
     "/download",
     response_model=responses.DownloadsResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(dependencies.validate_download_params)],
     responses={
         status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}
     },
