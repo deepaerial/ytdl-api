@@ -57,7 +57,7 @@ class IDataSource(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def delete(
+    def delete_download(
         self,
         download: Download,
         when_deleted: typing.Optional[datetime.datetime] = None,
