@@ -52,6 +52,7 @@ jobs:
       #----------------------------------------------
       - name: Run Pytest 
         env:
+            DATASOURCE__DETA_KEY: ${{secrets.DATASOURCE__DETA_KEY}}
             STORAGE__DETA_KEY: ${{secrets.STORAGE__DETA_KEY}}
             STORAGE__DETA_DRIVE_NAME: ${{secrets.STORAGE__DETA_DRIVE_NAME}}
         run: poetry run pytest --cov=${{ github.workspace }} --cov-report=xml
