@@ -117,7 +117,7 @@ def get_download_file(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
         )
-    if media_file.status != DownloadStatus.FINISHED:
+    if media_file.status not in (DownloadStatus.FINISHED, DownloadStatus.DOWNLOADED):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="File not downloaded yet"
         )
