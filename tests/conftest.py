@@ -6,13 +6,15 @@ from typing import Generator, Iterable, Optional
 
 import pytest
 from confz import ConfZEnvSource
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import parse_obj_as
 
 from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import DetaDB, IDataSource
-from ytdl_api.dependencies import get_settings
+from ytdl_api.dependencies import get_notification_queue, get_settings
+from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
 from ytdl_api.utils import get_unique_id
@@ -139,10 +141,21 @@ def datasource(settings: Settings):
     )
 
 
-@pytest.fixture
-def app_client(settings: Settings):
+@pytest.fixture()
+def notification_queue() -> NotificationQueue:
+    return NotificationQueue()
+
+
+@pytest.fixture()
+def app(settings: Settings, notification_queue: NotificationQueue):
     app = settings.init_app()
     app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_notification_queue] = lambda: notification_queue
+    return app
+
+
+@pytest.fixture
+def app_client(app: FastAPI):
     return TestClient(app)
 
 
