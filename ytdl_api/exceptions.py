@@ -16,6 +16,13 @@ def make_internal_error(error_code: str = "internal-server-error") -> JSONRespon
     )
 
 
+async def on_default_exception_handler(
+    logger: Logger, request: Request, exc: Exception
+):
+    logger.exception(exc)
+    return make_internal_error()
+
+
 async def on_remote_disconnected(
     logger: Logger, request: Request, exc: RemoteDisconnected
 ):
@@ -37,4 +44,5 @@ ERROR_HANDLERS = (
     (RemoteDisconnected, on_remote_disconnected),
     (socket.timeout, on_socket_timeout),
     (RuntimeError, on_runtimeerror),
+    (Exception, on_default_exception_handler),
 )
