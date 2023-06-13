@@ -1,5 +1,6 @@
 import os
-from datetime import datetime, timedelta
+import random
+from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Generator, Iterable, Optional
@@ -21,7 +22,7 @@ EXAMPLE_VIDEO_PREVIEW = {
     "url": "https://www.youtube.com/watch?v=NcBjx_eyvxc",
     "title": "Madeira | Cinematic FPV",
     "duration": 224,
-    "thumbnailUrl": "https://i.ytimg.com/vi/NcBjx_eyvxc/sddefault.jpg",
+    "thumbnailUrl": "https://i.ytimg.com/vi/NcBjx_eyvxc/hq720.jpg?sqp=-oaymwEXCNUGEOADIAQqCwjVARCqCBh4INgESFo&rs=AOn4CLBaSe3Sk63UjfwWlEhviOSxrq6TEg",
     "audioStreams": [
         {"id": "251", "mimetype": "audio/webm", "bitrate": "160kbps"},
         {"id": "250", "mimetype": "audio/webm", "bitrate": "70kbps"},
@@ -30,27 +31,19 @@ EXAMPLE_VIDEO_PREVIEW = {
         {"id": "139", "mimetype": "audio/mp4", "bitrate": "48kbps"},
     ],
     "videoStreams": [
-        {"id": "394", "mimetype": "video/mp4", "resolution": "144p"},
         {"id": "278", "mimetype": "video/webm", "resolution": "144p"},
         {"id": "160", "mimetype": "video/mp4", "resolution": "144p"},
-        {"id": "395", "mimetype": "video/mp4", "resolution": "240p"},
         {"id": "242", "mimetype": "video/webm", "resolution": "240p"},
         {"id": "133", "mimetype": "video/mp4", "resolution": "240p"},
-        {"id": "396", "mimetype": "video/mp4", "resolution": "360p"},
         {"id": "243", "mimetype": "video/webm", "resolution": "360p"},
         {"id": "134", "mimetype": "video/mp4", "resolution": "360p"},
-        {"id": "397", "mimetype": "video/mp4", "resolution": "480p"},
         {"id": "244", "mimetype": "video/webm", "resolution": "480p"},
         {"id": "135", "mimetype": "video/mp4", "resolution": "480p"},
-        {"id": "398", "mimetype": "video/mp4", "resolution": "720p"},
         {"id": "247", "mimetype": "video/webm", "resolution": "720p"},
         {"id": "136", "mimetype": "video/mp4", "resolution": "720p"},
-        {"id": "399", "mimetype": "video/mp4", "resolution": "1080p"},
         {"id": "248", "mimetype": "video/webm", "resolution": "1080p"},
         {"id": "137", "mimetype": "video/mp4", "resolution": "1080p"},
-        {"id": "400", "mimetype": "video/mp4", "resolution": "1440p"},
         {"id": "271", "mimetype": "video/webm", "resolution": "1440p"},
-        {"id": "401", "mimetype": "video/mp4", "resolution": "2160p"},
         {"id": "313", "mimetype": "video/webm", "resolution": "2160p"},
     ],
     "mediaFormats": ["mp4", "mp3", "wav"],
@@ -150,8 +143,8 @@ def app_client(settings: Settings):
 def mock_download_params() -> DownloadParams:
     return DownloadParams(
         url=EXAMPLE_VIDEO_PREVIEW["url"],  # type: ignore
-        video_stream_id=EXAMPLE_VIDEO_PREVIEW["videoStreams"][12]["id"],  # type: ignore
-        audio_stream_id=EXAMPLE_VIDEO_PREVIEW["audioStreams"][0]["id"],  # type: ignore
+        video_stream_id=random.choice(EXAMPLE_VIDEO_PREVIEW["videoStreams"])["id"],  # type: ignore
+        audio_stream_id=random.choice(EXAMPLE_VIDEO_PREVIEW["audioStreams"])["id"],  # type: ignore
         media_format=MediaFormat.MP4,
     )
 

@@ -31,7 +31,7 @@ def test_video_download(
     Test video download.
     """
     mock_persisted_download.audio_stream_id = "251"
-    mock_persisted_download.video_stream_id = "394"
+    mock_persisted_download.video_stream_id = "278"
     assert mock_persisted_download.status == DownloadStatus.STARTED
     assert mock_persisted_download.file_path is None
     assert mock_persisted_download.when_started_download is None
@@ -45,6 +45,6 @@ def test_video_download(
     assert isinstance(finished_download.when_download_finished, datetime)
     assert finished_download.file_path is not None
     assert finished_download.audio_stream_id == "251"
-    assert finished_download.video_stream_id == "394"
+    assert finished_download.video_stream_id == "278"
     downloaded_file_bytes = local_storage.get_download(finished_download.file_path)
     assert isinstance(downloaded_file_bytes, bytes)
