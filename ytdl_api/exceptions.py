@@ -3,16 +3,22 @@ from http.client import RemoteDisconnected
 from logging import Logger
 
 from fastapi.requests import Request
+from pytube.exceptions import AgeRestrictedError
 from starlette.responses import JSONResponse
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
 
 
-def make_internal_error(error_code: str = "internal-server-error") -> JSONResponse:
+def make_internal_error(
+    error_code: str = "internal-server-error",
+    detail: str = "Remote server encountered problem, please try again...",
+    status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+) -> JSONResponse:
     return JSONResponse(
         {
-            "detail": "Remote server encountered problem, please try again...",
+            "detail": detail,
             "code": error_code,
         },
-        status_code=500,
+        status_code=status_code,
     )
 
 
@@ -40,9 +46,21 @@ async def on_runtimeerror(logger: Logger, request: Request, exc: RuntimeError):
     return make_internal_error()
 
 
+async def on_pytube_agerestricted_error(
+    logger: Logger, request: Request, exc: AgeRestrictedError
+):
+    logger.exception(exc)
+    return make_internal_error(
+        "age-restricted-content",
+        "Content is age restricted. Unable to download",
+        HTTP_401_UNAUTHORIZED,
+    )
+
+
 ERROR_HANDLERS = (
     (RemoteDisconnected, on_remote_disconnected),
     (socket.timeout, on_socket_timeout),
     (RuntimeError, on_runtimeerror),
     (Exception, on_default_exception_handler),
+    (AgeRestrictedError, on_pytube_agerestricted_error),
 )

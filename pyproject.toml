@@ -37,7 +37,7 @@ profile = "black"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.1.3a0"
+version = "1.2.0"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -50,7 +50,7 @@ uvicorn = "^0.18.2"
 sse-starlette = "^0.6.1"
 aiofiles = "^0.6.0"
 deta = "^1.1.0"
-pytube = "*"
+pytube = "15.0.0"
 ffmpeg-python = "^0.2.0"
 confz = "^1.6.1"
 pyhumps = "^3.7.2"
