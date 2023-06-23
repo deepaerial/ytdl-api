@@ -3,7 +3,7 @@ from http.client import RemoteDisconnected
 from logging import Logger
 
 from fastapi.requests import Request
-from pytube.exceptions import AgeRestrictedError
+from pytube.exceptions import AgeRestrictedError, RegexMatchError
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -56,11 +56,22 @@ async def on_pytube_agerestricted_error(
         HTTP_401_UNAUTHORIZED,
     )
 
+async def on_pytube_regexmatch_error(
+    logger: Logger, request: Request, exc: RegexMatchError
+):
+    logger.exception(exc)
+    return make_internal_error(
+        "downloader-error",
+        "Downloader encountered error. Please try again later or contact administrator",
+        HTTP_500_INTERNAL_SERVER_ERROR
+    )
+
 
 ERROR_HANDLERS = (
     (RemoteDisconnected, on_remote_disconnected),
     (socket.timeout, on_socket_timeout),
     (RuntimeError, on_runtimeerror),
-    (Exception, on_default_exception_handler),
     (AgeRestrictedError, on_pytube_agerestricted_error),
+    (RegexMatchError, on_pytube_regexmatch_error),
+    (Exception, on_default_exception_handler),
 )
