@@ -3,12 +3,11 @@ import tempfile
 from abc import ABC, abstractmethod
 from functools import partial
 from pathlib import Path
-from typing import Dict, Literal, Optional, Callable, Coroutine, Any
+from typing import Dict, Literal, Optional
 
 import ffmpeg
 from pytube import StreamQuery, YouTube
 
-from .constants import DownloadStatus
 
 from .callbacks import (
     noop_callback,

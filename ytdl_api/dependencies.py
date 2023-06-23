@@ -6,9 +6,6 @@ from pathlib import Path
 from typing import Generator, Optional
 
 from fastapi import Cookie, Depends, HTTPException, Response
-from fastapi.exceptions import RequestValidationError
-from pydantic import ValidationError
-from pydantic.error_wrappers import ErrorWrapper
 from starlette import status
 
 from . import datasource, downloaders, queue, storage
@@ -19,9 +16,8 @@ from .callbacks import (
     on_start_converting,
 )
 from .config import Settings
-from .constants import DownloaderType, DownloadStatus
+from .constants import DownloadStatus
 from .schemas.models import Download
-from .schemas.requests import DownloadParams
 
 
 # Ignoring get_settings dependency in coverage because it will be

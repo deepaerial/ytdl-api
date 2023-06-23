@@ -2,7 +2,7 @@ import asyncio
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse
 from sse_starlette.sse import EventSourceResponse
 from starlette import status
 
