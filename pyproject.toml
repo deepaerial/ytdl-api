@@ -57,7 +57,7 @@ target-version = "py310"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.2.1"
+version = "1.2.2"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -70,10 +70,10 @@ uvicorn = "^0.18.2"
 sse-starlette = "^0.6.1"
 aiofiles = "^0.6.0"
 deta = "^1.1.0"
-pytube = "15.0.0"
 ffmpeg-python = "^0.2.0"
 confz = "^1.6.1"
 pyhumps = "^3.7.2"
+pytube = {git = "https://github.com/oncename/pytube.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

@@ -922,10 +922,14 @@ description = "Python 3 library for downloading YouTube Videos."
 category = "main"
 optional = false
 python-versions = ">=3.7"
-files = [
-    {file = "pytube-15.0.0-py3-none-any.whl", hash = "sha256:07b9904749e213485780d7eb606e5e5b8e4341aa4dccf699160876da00e12d78"},
-    {file = "pytube-15.0.0.tar.gz", hash = "sha256:076052efe76f390dfa24b1194ff821d4e86c17d41cb5562f3a276a8bcbfc9d1d"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/oncename/pytube.git"
+reference = "HEAD"
+resolved_reference = "6c45936b9703ce986ccb8d0d3595c7974716f94b"
 
 [[package]]
 name = "pyyaml"
@@ -1234,4 +1238,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "619586e1f53e9aaf093d71aa2bf9a8e439c5309bcbdc2b529a278493be3ab976"
+content-hash = "b0090fd365a44ac99e3993bbc179f1a0bf60b36e297b4e52997d1d2d372ba325"
