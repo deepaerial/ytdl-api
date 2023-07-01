@@ -1,4 +1,4 @@
- # YTDL-API [![codecov](https://codecov.io/gh/deepaerial/ytdl-api/branch/master/graph/badge.svg?token=78Z7RY2IXL)](https://codecov.io/gh/deepaerial/ytdl-api) [[![Tests](https://github.com/deepaerial/ytdl-api/actions/workflows/testing.yml/badge.svg)](https://github.com/deepaerial/ytdl-api/actions/workflows/testing.yml)
+ # YTDL-API [![codecov](https://codecov.io/gh/deepaerial/ytdl-api/branch/master/graph/badge.svg?token=78Z7RY2IXL)](https://codecov.io/gh/deepaerial/ytdl-api) [![Tests](https://github.com/deepaerial/ytdl-api/actions/workflows/testing.yml/badge.svg)](https://github.com/deepaerial/ytdl-api/actions/workflows/testing.yml)
 REST-based API for downloading video or extracting audio from YouTube videos. This API is used by [YTDL](https://github.com/deepaerial/ytdl-web) web application.  Also [ffmpeg](https://ffmpeg.org/) is required in order to process video and audio files.
 <br><br>
 
