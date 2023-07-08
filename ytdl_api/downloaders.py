@@ -147,7 +147,7 @@ class PytubeDownloader(IDownloader):
             converted_file_path = directory_to_download_to / download.storage_filename
             asyncio.run(self.on_converting_callback(download))
             try:
-                out, err = (
+                (
                     ffmpeg.concat(
                         ffmpeg.input(downloaded_streams_file_paths["video"].as_posix()),
                         ffmpeg.input(downloaded_streams_file_paths["audio"].as_posix()),
@@ -158,8 +158,9 @@ class PytubeDownloader(IDownloader):
                     .overwrite_output()
                     .run(capture_stdout=True, capture_stderr=True)
                 )
+                # Finshing donwload process
+                asyncio.run(self.on_finish_callback(download, converted_file_path))
             except ffmpeg.Error as e:
                 logger.exception(e)
                 logger.error(e.stderr)
-            # Finshing donwload process
-            asyncio.run(self.on_finish_callback(download, converted_file_path))
+                logger.error(e.stdout)
