@@ -1,5 +1,6 @@
 import asyncio
 import tempfile
+import logging
 from abc import ABC, abstractmethod
 from functools import partial
 from pathlib import Path
@@ -17,6 +18,8 @@ from .callbacks import (
 from .schemas.models import AudioStream, Download, VideoStream
 from .schemas.responses import VideoInfoResponse
 from .types import VideoURL
+
+logger = logging.getLogger()
 
 
 class IDownloader(ABC):
@@ -143,16 +146,20 @@ class PytubeDownloader(IDownloader):
             # Converting to chosen format
             converted_file_path = directory_to_download_to / download.storage_filename
             asyncio.run(self.on_converting_callback(download))
-            out, err = (
-                ffmpeg.concat(
-                    ffmpeg.input(downloaded_streams_file_paths["video"].as_posix()),
-                    ffmpeg.input(downloaded_streams_file_paths["audio"].as_posix()),
-                    a=1,
-                    v=1,
+            try:
+                out, err = (
+                    ffmpeg.concat(
+                        ffmpeg.input(downloaded_streams_file_paths["video"].as_posix()),
+                        ffmpeg.input(downloaded_streams_file_paths["audio"].as_posix()),
+                        a=1,
+                        v=1,
+                    )
+                    .output(converted_file_path.as_posix())
+                    .overwrite_output()
+                    .run(capture_stdout=True, capture_stderr=True)
                 )
-                .output(converted_file_path.as_posix())
-                .overwrite_output()
-                .run(capture_stdout=True, capture_stderr=True)
-            )
+            except ffmpeg.Error as e:
+                logger.exception(e)
+                logger.error(e.stderr)
             # Finshing donwload process
             asyncio.run(self.on_finish_callback(download, converted_file_path))

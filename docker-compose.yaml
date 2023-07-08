@@ -17,3 +17,22 @@ services:
     tty: true
     networks:
       - default
+  ytdl-api-testing:
+    container_name: "ytdl-api-pytest"
+    build: 
+      context: .
+      target: test
+    env_file:
+      - .env
+    volumes:
+      - "./ytdl_api/:/app/ytdl_api"
+    networks:
+      - default
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 220M
+        reservations:
+          cpus: '0.25'
+          memory: 20M

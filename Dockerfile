@@ -35,9 +35,11 @@ CMD ["poetry", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--po
 
 ############ Test ###################
 FROM dev as test
+WORKDIR /app/
 COPY --from=project-base /app/.venv /app/.venv
+COPY ./tests /app/tests
 RUN poetry install
-CMD ["pytest", "--cov-report", "html"]
+CMD ["poetry", "run", "pytest", "/app/", "--cov", "--cov-report", "html"]
 ############ Prod ###################
 FROM project-base as prod
 RUN poetry install --without dev
