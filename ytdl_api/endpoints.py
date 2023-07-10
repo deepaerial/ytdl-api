@@ -192,13 +192,18 @@ async def delete_download(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
         )
-    if media_file.status not in (DownloadStatus.FINISHED, DownloadStatus.DOWNLOADED):
+    if media_file.status not in (
+        DownloadStatus.FINISHED,
+        DownloadStatus.DOWNLOADED,
+        DownloadStatus.FAILED,
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Media file is not downloaded yet",
         )
-    storage.remove_download(media_file.file_path)
     datasource.delete_download(media_file)
+    if media_file.status != DownloadStatus.FAILED:
+        storage.remove_download(media_file.file_path)
     return responses.DeleteResponse(
         media_id=media_file.media_id,
         status=DownloadStatus.DELETED,

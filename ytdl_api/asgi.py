@@ -1,3 +1,3 @@
-from .config import Settings
+from .config import Settings  # pragma: no cover
 
-app = Settings().init_app()  # type: ignore
+app = Settings().init_app()  # pragma: no cover

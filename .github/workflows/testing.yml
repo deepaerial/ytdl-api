@@ -9,6 +9,9 @@ on:
       - ytdl_api/**
       - tests/**
       - poetry.lock
+  push:
+    branches:
+      - master
 
 jobs:
   ruff:
