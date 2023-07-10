@@ -6,7 +6,7 @@ class DownloaderType(str, Enum):
     PYTUBE = "pytube"
     MOCK = "mocked"
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return self.value
 
 
@@ -19,7 +19,7 @@ class DownloadStatus(str, Enum):
     DELETED = "deleted"
     FAILED = "failed"
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return self.value
 
 
@@ -34,7 +34,7 @@ class MediaFormat(str, Enum):
     def is_audio(self) -> bool:
         return self.name in [MediaFormat.MP3, MediaFormat.WAV]
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return self.value
 
 
