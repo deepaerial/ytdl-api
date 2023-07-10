@@ -1,15 +1,10 @@
 name: Tests
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - synchronize
-    paths:
-      - ytdl_api/**
-      - tests/**
-      - pyproject.toml
-      - poetry.lock
       
 
 jobs:
