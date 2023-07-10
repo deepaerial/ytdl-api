@@ -5,7 +5,11 @@ on:
     types:
       - opened
       - synchronize
-      
+    paths:
+      - ytdl_api/**
+      - tests/**
+      - pyproject.toml
+      - poetry.lock
 
 jobs:
   test:
