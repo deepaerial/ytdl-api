@@ -17,6 +17,7 @@ class DownloadStatus(str, Enum):
     FINISHED = "finished"
     DOWNLOADED = "downloaded"  # by client
     DELETED = "deleted"
+    FAILED = "failed"
 
     def __str__(self) -> str:
         return self.value

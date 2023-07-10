@@ -1,15 +1,15 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
     paths:
       - ytdl_api/**
       - tests/**
       - pyproject.toml
       - poetry.lock
-      
 
 jobs:
   test:

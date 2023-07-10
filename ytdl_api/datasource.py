@@ -6,7 +6,7 @@ from deta import Deta
 from pydantic import parse_obj_as
 
 from .constants import DownloadStatus
-from .schemas.models import Download, DownloadProgress
+from .schemas.models import Download, DownloadStatusInfo
 
 
 class IDataSource(ABC):
@@ -34,7 +34,7 @@ class IDataSource(ABC):
     @abstractmethod
     def get_download(
         self, client_id: str, media_id: str
-    ) -> typing.Optional[Download]:  # pragma: no cover
+    ) -> Download | None:  # pragma: no cover
         """
         Abstract method for fetching download instance from data source
         """
@@ -49,7 +49,7 @@ class IDataSource(ABC):
 
     @abstractmethod
     def update_download_progress(
-        self, progress_obj: DownloadProgress
+        self, progress_obj: DownloadStatusInfo
     ):  # pragma: no cover
         """
         Abstract method that updates progress for media item of specific user/client.
@@ -60,7 +60,7 @@ class IDataSource(ABC):
     def delete_download(
         self,
         download: Download,
-        when_deleted: typing.Optional[datetime.datetime] = None,
+        when_deleted: datetime.datetime | None = None,
     ):  # pragma: no cover
         """
         Abstract method that deletes download.
@@ -71,7 +71,7 @@ class IDataSource(ABC):
     def mark_as_downloaded(
         self,
         download: Download,
-        when_file_downloaded: typing.Optional[datetime.datetime] = None,
+        when_file_downloaded: datetime.datetime | None = None,
     ):  # pragma: no cover
         """
         Abstract method that marks download as downloaded by user/client.
@@ -83,6 +83,15 @@ class IDataSource(ABC):
         """
         Method for clearing all downloads. If intended to be used in specific implementation then it should be
         reimplemented.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def mark_as_failed(
+        self, download: Download, when_failed: datetime.datetime | None = None
+    ):  # pragma: no cover
+        """
+        Method for setting download status to "failed" for download.
         """
         raise NotImplementedError()
 
@@ -114,9 +123,11 @@ class DetaDB(IDataSource):
             data["when_file_downloaded"] = download.when_file_downloaded.isoformat()
         if download.when_deleted:
             data["when_deleted"] = download.when_deleted.isoformat()
+        if download.when_failed:
+            data["when_failed"] = download.when_failed.isoformat()
         self.base.put(data, key)
 
-    def get_download(self, client_id: str, media_id: str) -> typing.Optional[Download]:
+    def get_download(self, client_id: str, media_id: str) -> Download | None:
         data = next(
             iter(self.base.fetch({"client_id": client_id, "media_id": media_id}).items),
             None,
@@ -141,7 +152,7 @@ class DetaDB(IDataSource):
             data["when_deleted"] = download.when_deleted.isoformat()
         self.base.update(data, download.media_id)
 
-    def update_download_progress(self, progress_obj: DownloadProgress):
+    def update_download_progress(self, progress_obj: DownloadStatusInfo):
         media_id = progress_obj.media_id
         status = progress_obj.status
         progress = progress_obj.progress
@@ -150,7 +161,7 @@ class DetaDB(IDataSource):
     def delete_download(
         self,
         download: Download,
-        when_deleted: typing.Optional[datetime.datetime] = None,
+        when_deleted: datetime.datetime | None = None,
     ):
         """
         Soft deleting download for now.
@@ -163,7 +174,7 @@ class DetaDB(IDataSource):
     def mark_as_downloaded(
         self,
         download: Download,
-        when_file_downloaded: typing.Optional[datetime.datetime] = None,
+        when_file_downloaded: datetime.datetime | None = None,
     ):
         when_file_downloaded = when_file_downloaded or datetime.datetime.utcnow()
         when_file_downloaded_iso = when_file_downloaded.isoformat()
@@ -178,3 +189,11 @@ class DetaDB(IDataSource):
         for download in all_downloads:
             self.base.delete(download["key"])
         self.base.client.close()
+
+    def mark_as_failed(
+        self, download: Download, when_failed: datetime.datetime | None = None
+    ):
+        when_failed = when_failed or datetime.datetime.utcnow()
+        when_failed_iso = when_failed.isoformat()
+        data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
+        self.base.update(data, download.media_id)

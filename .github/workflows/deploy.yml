@@ -2,11 +2,13 @@ name: Deploy
 
 
 on:
-  workflow_run:
-    workflows:
-      - Tests
-    types:
-      - completed
+  push:
+    branches:
+      - master
+    paths:
+      - ytdl_api/**
+      - pyproject.toml
+      - poetry.lock
 
 jobs:
   deploy:

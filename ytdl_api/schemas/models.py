@@ -67,6 +67,9 @@ class Download(BaseModel_):
     when_deleted: Optional[datetime.datetime] = Field(
         None, description="Date & time in UTC when download was soft-deleted."
     )
+    when_failed: Optional[datetime.datetime] = Field(
+        None, description="Date & time in UTC when error occured during download."
+    )
 
     @property
     def storage_filename(self) -> str:
@@ -83,10 +86,14 @@ class Download(BaseModel_):
         return f"{self.title}.{self.media_format}"
 
 
-class DownloadProgress(BaseModel_):
+class DownloadStatusInfo(BaseModel_):
     client_id: str = Field(..., description="Id of client")
     media_id: str = Field(..., description="Id of downloaded media")
     status: DownloadStatus = Field(
         ..., description="Download status", example=DownloadStatus.DOWNLOADING
     )
-    progress: int = Field(..., description="Download progress of a file", example=10)
+    progress: int | None = Field(
+        None,
+        description="Download progress of a file in case status is 'downloading'",
+        example=10,
+    )

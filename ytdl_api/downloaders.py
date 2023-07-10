@@ -1,6 +1,6 @@
 import asyncio
-import tempfile
 import logging
+import tempfile
 from abc import ABC, abstractmethod
 from functools import partial
 from pathlib import Path
@@ -9,11 +9,11 @@ from typing import Dict, Literal, Optional
 import ffmpeg
 from pytube import StreamQuery, YouTube
 
-
 from .callbacks import (
-    noop_callback,
-    OnDownloadStateChangedCallback,
     OnDownloadFinishedCallback,
+    OnDownloadStateChangedCallback,
+    OnErrorCallback,
+    noop_callback,
 )
 from .schemas.models import AudioStream, Download, VideoStream
 from .schemas.responses import VideoInfoResponse
@@ -33,11 +33,13 @@ class IDownloader(ABC):
         on_progress_callback: Optional[OnDownloadStateChangedCallback] = None,
         on_converting_callback: Optional[OnDownloadStateChangedCallback] = None,
         on_finish_callback: Optional[OnDownloadFinishedCallback] = None,
+        on_error_callback: Optional[OnErrorCallback] = None,
     ):
         self.on_download_callback_start = on_download_started_callback or noop_callback
         self.on_progress_callback = on_progress_callback or noop_callback
         self.on_converting_callback = on_converting_callback or noop_callback
         self.on_finish_callback = on_finish_callback or noop_callback
+        self.on_error_callback = on_error_callback or noop_callback
 
     @abstractmethod
     def get_video_info(self, url: VideoURL) -> VideoInfoResponse:  # pragma: no cover
@@ -103,6 +105,24 @@ class PytubeDownloader(IDownloader):
         )
         downloaded_streams_aggregation[stream_type] = Path(downloaded_stream_file_path)
 
+    def _merge_streams(
+        self,
+        video_stream_posix_path: str,
+        audio_stream_posix_path: str,
+        merged_streams_posix_path: str,
+    ):
+        (
+            ffmpeg.concat(
+                ffmpeg.input(video_stream_posix_path),
+                ffmpeg.input(audio_stream_posix_path),
+                a=1,
+                v=1,
+            )
+            .output(merged_streams_posix_path)
+            .overwrite_output()
+            .run(capture_stdout=True, capture_stderr=True)
+        )
+
     def download(
         self,
         download: Download,
@@ -120,47 +140,44 @@ class PytubeDownloader(IDownloader):
                 )
             )
         }
-        asyncio.run(self.on_download_callback_start(download))
-        streams = YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
-        downloaded_streams_file_paths: Dict[str, Path] = {}
-        with tempfile.TemporaryDirectory() as tmpdir:
-            directory_to_download_to = Path(tmpdir)
-            # Downloading audio stream if chosen
-            self.__download_stream(
-                directory_to_download_to,
-                download.audio_stream_id,
-                download.media_id,
-                streams,
-                downloaded_streams_file_paths,
-                "audio",
+        try:
+            asyncio.run(self.on_download_callback_start(download))
+            streams = (
+                YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
             )
-            # Downloading video stream if chosen
-            self.__download_stream(
-                directory_to_download_to,
-                download.video_stream_id,
-                download.media_id,
-                streams,
-                downloaded_streams_file_paths,
-                "video",
-            )
-            # Converting to chosen format
-            converted_file_path = directory_to_download_to / download.storage_filename
-            asyncio.run(self.on_converting_callback(download))
-            try:
-                (
-                    ffmpeg.concat(
-                        ffmpeg.input(downloaded_streams_file_paths["video"].as_posix()),
-                        ffmpeg.input(downloaded_streams_file_paths["audio"].as_posix()),
-                        a=1,
-                        v=1,
-                    )
-                    .output(converted_file_path.as_posix())
-                    .overwrite_output()
-                    .run(capture_stdout=True, capture_stderr=True)
+            downloaded_streams_file_paths: Dict[str, Path] = {}
+            with tempfile.TemporaryDirectory() as tmpdir:
+                directory_to_download_to = Path(tmpdir)
+                # Downloading audio stream if chosen
+                self.__download_stream(
+                    directory_to_download_to,
+                    download.audio_stream_id,
+                    download.media_id,
+                    streams,
+                    downloaded_streams_file_paths,
+                    "audio",
                 )
-                # Finshing donwload process
+                # Downloading video stream if chosen
+                self.__download_stream(
+                    directory_to_download_to,
+                    download.video_stream_id,
+                    download.media_id,
+                    streams,
+                    downloaded_streams_file_paths,
+                    "video",
+                )
+                # Converting to chosen format
+                asyncio.run(self.on_converting_callback(download))
+                converted_file_path = (
+                    directory_to_download_to / download.storage_filename
+                )
+                self._merge_streams(
+                    downloaded_streams_file_paths["video"].as_posix(),
+                    downloaded_streams_file_paths["audio"].as_posix(),
+                    converted_file_path.as_posix(),
+                )
+                # Finshing download process
                 asyncio.run(self.on_finish_callback(download, converted_file_path))
-            except ffmpeg.Error as e:
-                logger.exception(e)
-                logger.error(e.stderr)
-                logger.error(e.stdout)
+        except Exception as e:
+            if self.on_error_callback:
+                asyncio.run(self.on_error_callback(download, e))
