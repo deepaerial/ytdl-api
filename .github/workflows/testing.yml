@@ -5,6 +5,10 @@ on:
     types:
       - opened
       - synchronize
+    paths:
+      - ytdl_api/*
+      - tests/*
+      - poetry.lock
 
 jobs:
   ruff:
