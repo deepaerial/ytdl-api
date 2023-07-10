@@ -1,9 +1,8 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    types: [opened]
     paths:
       - ytdl_api/**
       - tests/**

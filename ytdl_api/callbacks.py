@@ -1,11 +1,14 @@
 from datetime import datetime
+from logging import Logger
 from pathlib import Path
 from typing import Any, Callable, Coroutine
+
+import ffmpeg
 
 from .constants import DownloadStatus
 from .datasource import IDataSource
 from .queue import NotificationQueue
-from .schemas.models import Download, DownloadProgress
+from .schemas.models import Download, DownloadStatusInfo
 from .storage import IStorage
 
 
@@ -30,7 +33,7 @@ async def on_download_start_callback(
     datasource.update_download(download)
     await queue.put(
         download.client_id,
-        DownloadProgress(
+        DownloadStatusInfo(
             client_id=download.client_id,
             media_id=download.media_id,
             status=DownloadStatus.STARTED,
@@ -49,7 +52,7 @@ async def on_pytube_progress_callback(
     """
     Callback which will be used in Pytube's progress update callback
     """
-    download_proress = DownloadProgress(
+    download_proress = DownloadStatusInfo(
         client_id=download.client_id,
         media_id=download.media_id,
         status=DownloadStatus.DOWNLOADING,
@@ -73,7 +76,7 @@ async def on_start_converting(
     datasource.put_download(download)
     await queue.put(
         download.client_id,
-        DownloadProgress(
+        DownloadStatusInfo(
             client_id=download.client_id,
             media_id=download.media_id,
             status=download.status,
@@ -101,11 +104,35 @@ async def on_finish_callback(
     datasource.update_download(download)
     await queue.put(
         download.client_id,
-        DownloadProgress(
+        DownloadStatusInfo(
             client_id=download.client_id,
             media_id=download.media_id,
             status=status,
             progress=download.progress,
+        ),
+    )
+
+
+async def on_error_callback(
+    download: Download,
+    exception: Exception,
+    datasource: IDataSource,
+    queue: NotificationQueue,
+    logger: Logger,
+):
+    """
+    Callback that is called when exception occured while downloading or converting media file.
+    """
+    if isinstance(exception, ffmpeg.Error):
+        logger.error(exception.stderr)
+    logger.exception(exception)
+    datasource.mark_as_failed(download)
+    await queue.put(
+        download.client_id,
+        download_progress=DownloadStatusInfo(
+            client_id=download.client_id,
+            media_id=download.media_id,
+            status=DownloadStatus.FAILED,
         ),
     )
 
@@ -116,3 +143,4 @@ OnDownloadStateChangedCallback = Callable[
 ]
 
 OnDownloadFinishedCallback = Callable[[Download, Path], Coroutine[Any, Any, Any]]
+OnErrorCallback = Callable[[Download, Exception], Coroutine[Any, Any, Any]]

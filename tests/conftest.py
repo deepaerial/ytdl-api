@@ -165,6 +165,8 @@ def mock_persisted_download(
         status=DownloadStatus.STARTED,
         when_started_download=None,
     )
+    download.audio_stream_id = random.choice(EXAMPLE_VIDEO_PREVIEW["audioStreams"])["id"]  # type: ignore
+    download.video_stream_id = random.choice(EXAMPLE_VIDEO_PREVIEW["videoStreams"])["id"]  # type: ignore
     datasource.put_download(download)
     yield download
 

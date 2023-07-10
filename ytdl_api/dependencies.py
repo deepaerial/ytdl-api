@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import secrets
 import tempfile
 from functools import lru_cache, partial
@@ -11,6 +12,7 @@ from starlette import status
 from . import datasource, downloaders, queue, storage
 from .callbacks import (
     on_download_start_callback,
+    on_error_callback,
     on_finish_callback,
     on_pytube_progress_callback,
     on_start_converting,
@@ -63,11 +65,20 @@ def get_downloader(
             storage=storage,
         )
     )
+    on_error_hook = asyncio.coroutine(
+        partial(
+            on_error_callback,
+            datasource=datasource,
+            queue=event_queue,
+            logger=logging.getLogger(),
+        )
+    )
     return downloaders.PytubeDownloader(
         on_download_started_callback=on_download_started_hook,
         on_progress_callback=on_progress_hook,
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
+        on_error_callback=on_error_hook,
     )
 
 
