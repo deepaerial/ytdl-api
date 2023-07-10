@@ -45,6 +45,8 @@ exclude = [
     "build",
     "dist"
 ]
+
+fixable = ["I001", "F401", "W291", "W292"]
 # Same as Black.
 line-length = 120
 # Allow unused variables when underscore-prefixed.

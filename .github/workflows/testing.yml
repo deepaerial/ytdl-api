@@ -8,10 +8,15 @@ on:
     paths:
       - ytdl_api/**
       - tests/**
-      - pyproject.toml
       - poetry.lock
 
 jobs:
+  ruff:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1
   test:
     name: Run tests
     runs-on: ubuntu-latest
