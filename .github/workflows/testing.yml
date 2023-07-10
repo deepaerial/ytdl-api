@@ -2,7 +2,8 @@ name: Tests
 
 on:
   pull_request:
-    types: [opened]
+    types:
+      - opened
     paths:
       - ytdl_api/**
       - tests/**
