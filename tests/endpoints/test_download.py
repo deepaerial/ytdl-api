@@ -45,7 +45,7 @@ def test_download_file_endpoint(
     response = app_client.get(
         "/api/download",
         params={
-            "media_id": mocked_downloaded_media.media_id,
+            "mediaId": mocked_downloaded_media.media_id,
         },
         cookies={"uid": mocked_downloaded_media.client_id},
     )
@@ -65,7 +65,7 @@ def test_download_file_but_non_exisiting_media_id(
     response = app_client.get(
         "/api/download",
         params={
-            "media_id": "*****",
+            "mediaId": "*****",
         },
         cookies={"uid": mocked_downloaded_media.client_id},
     )
@@ -78,7 +78,7 @@ def test_download_file_but_non_existing_client_id(
 ):
     response = app_client.get(
         "/api/download",
-        params={"media_id": mocked_downloaded_media.media_id},
+        params={"mediaId": mocked_downloaded_media.media_id},
         cookies={"uid": "******"},
     )
     assert response.status_code == 404
@@ -91,7 +91,7 @@ def test_download_file_but_download_not_finished(
     response = app_client.get(
         "/api/download",
         params={
-            "media_id": mock_persisted_download.media_id,
+            "mediaId": mock_persisted_download.media_id,
         },
         cookies={"uid": mock_persisted_download.client_id},
     )
@@ -108,7 +108,7 @@ def test_download_file_but_no_file_present(
 ):
     response = app_client.get(
         "/api/download",
-        params={"media_id": mocked_downloaded_media_no_file.media_id},
+        params={"mediaId": mocked_downloaded_media_no_file.media_id},
         cookies={"uid": mocked_downloaded_media_no_file.client_id},
     )
     assert response.status_code == 404

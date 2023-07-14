@@ -6,7 +6,7 @@ from functools import lru_cache, partial
 from pathlib import Path
 from typing import Generator, Optional
 
-from fastapi import Cookie, Depends, HTTPException, Response
+from fastapi import Cookie, Depends, HTTPException, Response, Query
 from starlette import status
 
 from . import datasource, downloaders, queue, storage
@@ -114,7 +114,7 @@ def get_uid_dependency_factory(raise_error_on_empty: bool = False):
 
 
 def get_download_file(
-    media_id: str,
+    media_id: str = Query(..., alias="mediaId", description="Download id"),
     uid: str = Depends(get_uid_dependency_factory(raise_error_on_empty=True)),
     datasource: datasource.IDataSource = Depends(get_database),
     storage: storage.IStorage = Depends(get_storage),

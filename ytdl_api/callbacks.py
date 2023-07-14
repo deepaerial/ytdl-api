@@ -36,7 +36,7 @@ async def on_download_start_callback(
         DownloadStatusInfo(
             client_id=download.client_id,
             media_id=download.media_id,
-            status=DownloadStatus.STARTED,
+            status=DownloadStatus.DOWNLOADING,
             progress=0,
         ),
     )

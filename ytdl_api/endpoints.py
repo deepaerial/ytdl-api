@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Query
 from fastapi.responses import FileResponse
 from sse_starlette.sse import EventSourceResponse
 from starlette import status
@@ -116,7 +116,7 @@ async def submit_download(
     },
 )
 async def download_file(
-    media_id: str,
+    media_id: str = Query(..., alias="mediaId", description="Download id"),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
     download_pair: tuple[models.Download, Path] = Depends(
         dependencies.get_download_file
@@ -179,7 +179,7 @@ async def fetch_stream(
     },
 )
 async def delete_download(
-    media_id: str,
+    media_id: str = Query(..., alias="mediaId", description="Download id"),
     uid: str = Depends(get_uid_or_403),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
     storage: storage.IStorage = Depends(dependencies.get_storage),
@@ -210,3 +210,48 @@ async def delete_download(
         isAudio=media_file.media_format.is_audio,
         title=media_file.title,
     )
+
+
+@router.put(
+    "/retry",
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "content": {"application/json": {}},
+            "model": responses.ErrorResponse,
+            "description": "Download not found",
+            "example": {"detail": "Download not found"},
+        },
+        status.HTTP_400_BAD_REQUEST: {
+            "content": {"application/json": {}},
+            "model": responses.ErrorResponse,
+            "description": "Download cannot be retried",
+            "example": {"detail": "Download cannot be retried"},
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse},
+    },
+)
+async def retry_download(
+    background_tasks: BackgroundTasks,
+    media_id: str = Query(..., alias="mediaId", description="Download id"),
+    uid: str = Depends(get_uid_or_403),
+    datasource: datasource.IDataSource = Depends(dependencies.get_database),
+    downloader: IDownloader = Depends(dependencies.get_downloader),
+):
+    """
+    Endpoint for retrying donwload of failed media file.
+    """
+    download = datasource.get_download(uid, media_id)
+    if download is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
+        )
+    if download.status not in (DownloadStatus.FAILED, DownloadStatus.STARTED):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Download cannot be retried",
+        )
+    download.status = DownloadStatus.STARTED
+    datasource.update_download(download)
+    background_tasks.add_task(downloader.download, download)
+    return status.HTTP_200_OK

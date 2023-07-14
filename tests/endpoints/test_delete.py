@@ -6,7 +6,7 @@ from ytdl_api.schemas.models import Download
 
 def test_delete_non_existing_download(app_client: TestClient):
     response = app_client.delete(
-        "/api/delete", params={"media_id": -1}, cookies={"uid": "-1"}
+        "/api/delete", params={"mediaId": -1}, cookies={"uid": "-1"}
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "Download not found"
@@ -18,7 +18,7 @@ def test_delete_existing_unfinished_download(
     response = app_client.delete(
         "/api/delete",
         params={
-            "media_id": mock_persisted_download.media_id,
+            "mediaId": mock_persisted_download.media_id,
         },
         cookies={"uid": mock_persisted_download.client_id},
     )
@@ -31,7 +31,7 @@ def test_delete_existing_downloaded_file(
 ):
     response = app_client.delete(
         "/api/delete",
-        params={"media_id": mocked_downloaded_media.media_id},
+        params={"mediaId": mocked_downloaded_media.media_id},
         cookies={"uid": mocked_downloaded_media.client_id},
     )
     assert response.status_code == 200
@@ -56,7 +56,7 @@ def test_delete_failed_to_download_media(
     """
     response = app_client.delete(
         "/api/delete",
-        params={"media_id": mocked_failed_media_file.media_id},
+        params={"mediaId": mocked_failed_media_file.media_id},
         cookies={"uid": mocked_failed_media_file.client_id},
     )
     assert response.status_code == 200

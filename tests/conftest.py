@@ -206,13 +206,32 @@ def mocked_downloaded_media_no_file(
 
 
 @pytest.fixture()
-def mocked_failed_media_file(uid: str, datasource: IDataSource):
+def mocked_failed_media_file(
+    uid: str, datasource: IDataSource
+) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
         media_format=MediaFormat.MP4,
         duration=1000,
         filesize=1024,
         status=DownloadStatus.FAILED,
+        file_path=None,
+        progress=100,
+    )
+    datasource.put_download(download)
+    yield download
+
+
+@pytest.fixture
+def mocked_downloading_media_file(
+    uid: str, datasource: IDataSource
+) -> Generator[Download, None, None]:
+    download = get_example_download_instance(
+        client_id=uid,
+        media_format=MediaFormat.MP4,
+        duration=1000,
+        filesize=1024,
+        status=DownloadStatus.DOWNLOADING,
         file_path=None,
         progress=100,
     )
