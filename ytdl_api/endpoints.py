@@ -251,5 +251,7 @@ async def retry_download(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Download cannot be retried",
         )
+    download.status = DownloadStatus.STARTED
+    datasource.update_download(download)
     background_tasks.add_task(downloader.download, download)
     return status.HTTP_200_OK

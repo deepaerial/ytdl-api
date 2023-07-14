@@ -150,6 +150,8 @@ class DetaDB(IDataSource):
             data["when_started_download"] = download.when_started_download.isoformat()
         if download.when_deleted is not None:
             data["when_deleted"] = download.when_deleted.isoformat()
+        if download.when_failed:
+            data["when_failed"] = download.when_failed.isoformat()
         self.base.update(data, download.media_id)
 
     def update_download_progress(self, progress_obj: DownloadStatusInfo):
