@@ -12,6 +12,8 @@ from .queue import NotificationQueue
 from .schemas.models import Download, DownloadStatusInfo
 from .storage import IStorage
 
+from .utils import extract_percentage_progress
+
 
 async def noop_callback(*args, **kwargs):  # pragma: no cover
     """
@@ -70,7 +72,7 @@ async def on_ytdlp_progress_callback(progress: DownloadDataInfo, **kwargs):
     download: Download = kwargs["download"]
     datasource: IDataSource = kwargs["datasource"]
     queue: NotificationQueue = kwargs["queue"]
-    progress = round(float(progress.get("_percent_str")[:-1]))
+    progress = extract_percentage_progress(progress.get("_percent_str"))
     download_proress = DownloadStatusInfo(
         client_id=download.client_id,
         media_id=download.media_id,
