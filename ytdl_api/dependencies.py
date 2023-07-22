@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import secrets
 import tempfile
 from functools import lru_cache, partial
