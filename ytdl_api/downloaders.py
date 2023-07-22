@@ -197,7 +197,7 @@ class YTDLPDownloader(IDownloader):
         audio_streams = [
             AudioStream(
                 id=stream["format_id"],
-                bitrate=stream["abr"],
+                bitrate=f"{round(float(stream['abr']))}kbps",
                 mimetype=stream["ext"],
             )
             for stream in streams
