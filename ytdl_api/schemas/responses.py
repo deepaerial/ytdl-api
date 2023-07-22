@@ -68,6 +68,8 @@ class DownloadsResponse(BaseModel_):
 
 class VersionResponse(BaseModel_):
     api_version: str
+    downloader: str
+    downloader_version: str
 
 
 class DeleteResponse(BaseModel_):

@@ -16,10 +16,12 @@ from .callbacks import (
     on_finish_callback,
     on_pytube_progress_callback,
     on_start_converting,
+    on_ytdlp_progress_callback,
 )
 from .config import Settings
-from .constants import DownloadStatus
+from .constants import DownloadStatus, DownloaderType
 from .schemas.models import Download
+from .utils import LOGGER
 
 
 # Ignoring get_settings dependency in coverage because it will be
@@ -42,12 +44,49 @@ def get_storage(settings: Settings = Depends(get_settings)) -> storage.IStorage:
     return settings.storage.get_storage()
 
 
-@lru_cache
+def get_ytdlp_downloader(
+    datasource: datasource.IDataSource,
+    event_queue: queue.NotificationQueue,
+    storage: storage.IStorage,
+):
+    on_download_started_hook = asyncio.coroutine(
+        partial(on_download_start_callback, datasource=datasource, queue=event_queue)
+    )
+    on_progress_hook = asyncio.coroutine(
+        partial(on_ytdlp_progress_callback, datasource=datasource, queue=event_queue)
+    )
+    on_finish_hook = asyncio.coroutine(
+        partial(
+            on_finish_callback,
+            datasource=datasource,
+            queue=event_queue,
+            storage=storage,
+        )
+    )
+    on_error_hook = asyncio.coroutine(
+        partial(
+            on_error_callback,
+            datasource=datasource,
+            queue=event_queue,
+            logger=LOGGER,
+        )
+    )
+    return downloaders.YTDLPDownloader(
+        on_download_started_callback=on_download_started_hook,
+        on_progress_callback=on_progress_hook,
+        on_finish_callback=on_finish_hook,
+        on_error_callback=on_error_hook,
+    )
+
+
 def get_downloader(
+    settings: Settings = Depends(get_settings),
     datasource: datasource.IDataSource = Depends(get_database),
     event_queue: queue.NotificationQueue = Depends(get_notification_queue),
     storage: storage.IStorage = Depends(get_storage),
 ) -> downloaders.IDownloader:
+    if settings.downloader == DownloaderType.YTDLP:
+        return get_ytdlp_downloader(datasource, event_queue, storage)
     on_download_started_hook = asyncio.coroutine(
         partial(on_download_start_callback, datasource=datasource, queue=event_queue)
     )
@@ -70,7 +109,7 @@ def get_downloader(
             on_error_callback,
             datasource=datasource,
             queue=event_queue,
-            logger=logging.getLogger(),
+            logger=LOGGER,
         )
     )
     return downloaders.PytubeDownloader(

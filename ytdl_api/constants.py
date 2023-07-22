@@ -4,7 +4,7 @@ from enum import Enum
 
 class DownloaderType(str, Enum):
     PYTUBE = "pytube"
-    MOCK = "mocked"
+    YTDLP = "yt-dlp"
 
     def __str__(self) -> str:  # pragma: no cover
         return self.value

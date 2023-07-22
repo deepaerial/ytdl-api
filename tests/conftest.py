@@ -16,7 +16,9 @@ from ytdl_api.datasource import DetaDB, IDataSource
 from ytdl_api.dependencies import get_settings
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
+from ytdl_api.storage import LocalFileStorage
 from ytdl_api.utils import get_unique_id
+from ytdl_api.queue import NotificationQueue
 
 EXAMPLE_VIDEO_PREVIEW = {
     "url": "https://www.youtube.com/watch?v=NcBjx_eyvxc",
@@ -92,6 +94,16 @@ def fake_media_path(temp_directory: TemporaryDirectory) -> Path:
 
 
 @pytest.fixture()
+def notification_queue() -> NotificationQueue:
+    return NotificationQueue()
+
+
+@pytest.fixture()
+def fake_local_storage(fake_media_path: Path) -> LocalFileStorage:
+    return LocalFileStorage(fake_media_path)
+
+
+@pytest.fixture()
 def fake_media_file_path(fake_media_path: Path) -> Path:
     filename = get_unique_id()
     fake_media_file_path = fake_media_path / filename
@@ -157,7 +169,7 @@ def clear_datasource(datasource: IDataSource):
 
 @pytest.fixture()
 def mock_persisted_download(
-    uid: str, datasource: IDataSource, clear_datasource
+    uid: str, datasource: IDataSource
 ) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,

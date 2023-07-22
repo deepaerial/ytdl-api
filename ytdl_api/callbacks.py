@@ -5,6 +5,7 @@ from typing import Any, Callable, Coroutine
 
 import ffmpeg
 
+from .types import DownloadDataInfo
 from .constants import DownloadStatus
 from .datasource import IDataSource
 from .queue import NotificationQueue
@@ -57,6 +58,24 @@ async def on_pytube_progress_callback(
         media_id=download.media_id,
         status=DownloadStatus.DOWNLOADING,
         progress=-1,
+    )
+    datasource.update_download_progress(download_proress)
+    return await queue.put(download.client_id, download_proress)
+
+
+async def on_ytdlp_progress_callback(progress: DownloadDataInfo, **kwargs):
+    """
+    Callback which will be used in Pytube's progress update callback
+    """
+    download: Download = kwargs["download"]
+    datasource: IDataSource = kwargs["datasource"]
+    queue: NotificationQueue = kwargs["queue"]
+    progress = round(float(progress.get("_percent_str")[:-1]))
+    download_proress = DownloadStatusInfo(
+        client_id=download.client_id,
+        media_id=download.media_id,
+        status=DownloadStatus.DOWNLOADING,
+        progress=progress,
     )
     datasource.update_download_progress(download_proress)
     return await queue.put(download.client_id, download_proress)

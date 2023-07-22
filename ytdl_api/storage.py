@@ -44,7 +44,7 @@ class LocalFileStorage(IStorage):
         return dest_path.as_posix()
 
     def get_download(self, storage_file_name: str) -> Optional[bytes]:
-        download_file = Path(storage_file_name)
+        download_file = self.dowloads_dir / Path(storage_file_name)
         if not download_file.exists():
             return None
         return download_file.read_bytes()

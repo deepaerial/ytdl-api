@@ -1,4 +1,3 @@
-import logging
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Union
@@ -13,6 +12,7 @@ from starlette.middleware import Middleware
 from .constants import DownloaderType
 from .datasource import DetaDB, IDataSource
 from .storage import DetaDriveStorage, IStorage, LocalFileStorage
+from .utils import LOGGER
 
 REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
@@ -98,6 +98,10 @@ class Settings(ConfZ):
         nested_separator="__",
     )
 
+    @property
+    def downloader_version(self) -> str:
+        return pkg_resources.get_distribution(self.downloader.value).version
+
     @validator("allow_origins", pre=True)
     def validate_allow_origins(cls, value):
         if isinstance(value, str):
@@ -143,10 +147,8 @@ class Settings(ConfZ):
     def __setup_exception_handlers(__pydantic_self__, app: FastAPI):
         from .exceptions import ERROR_HANDLERS
 
-        logger = logging.getLogger()
-
         for error, handler in ERROR_HANDLERS:
-            app.add_exception_handler(error, partial(handler, logger))  # type: ignore
+            app.add_exception_handler(error, partial(handler, LOGGER))  # type: ignore
 
     # In order to avoid TypeError: unhashable type: 'Settings' when overidding
     # dependencies.get_settings in tests.py __hash__ should be implemented

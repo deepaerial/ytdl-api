@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import tempfile
 from abc import ABC, abstractmethod
 from functools import partial
@@ -8,6 +7,7 @@ from typing import Dict, Literal, Optional
 
 import ffmpeg
 from pytube import StreamQuery, YouTube
+from yt_dlp import YoutubeDL
 
 from .callbacks import (
     OnDownloadFinishedCallback,
@@ -18,8 +18,6 @@ from .callbacks import (
 from .schemas.models import AudioStream, Download, VideoStream
 from .schemas.responses import VideoInfoResponse
 from .types import VideoURL
-
-logger = logging.getLogger()
 
 
 class IDownloader(ABC):
@@ -42,14 +40,16 @@ class IDownloader(ABC):
         self.on_error_callback = on_error_callback or noop_callback
 
     @abstractmethod
-    def get_video_info(self, url: VideoURL) -> VideoInfoResponse:  # pragma: no cover
+    def get_video_info(
+        self, url: VideoURL | str
+    ) -> VideoInfoResponse:  # pragma: no cover
         """
         Abstract method for retrieving information about media resource.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def download(self, download: Download):  # pragma: no cover
+    def download(self, download: Download) -> bool:  # pragma: no cover
         """
         Abstract method for downloading media given download parameters.
         """
@@ -58,10 +58,10 @@ class IDownloader(ABC):
 
 class PytubeDownloader(IDownloader):
     """
-    Downloader based on pytube library
+    Downloader based on pytube library https://github.com/pytube/pytube
     """
 
-    def get_video_info(self, url: VideoURL) -> VideoInfoResponse:
+    def get_video_info(self, url: VideoURL | str) -> VideoInfoResponse:
         video = YouTube(url)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
@@ -126,7 +126,7 @@ class PytubeDownloader(IDownloader):
     def download(
         self,
         download: Download,
-    ):
+    ) -> bool:
         on_progress_callback = asyncio.coroutine(
             partial(
                 self.on_progress_callback,
@@ -178,6 +178,89 @@ class PytubeDownloader(IDownloader):
                 )
                 # Finshing download process
                 asyncio.run(self.on_finish_callback(download, converted_file_path))
+                return True
         except Exception as e:
             if self.on_error_callback:
                 asyncio.run(self.on_error_callback(download, e))
+            return False
+
+
+class YTDLPDownloader(IDownloader):
+    """
+    Downloader based on yt-dlp library https://github.com/yt-dlp/yt-dlp
+    """
+
+    def get_video_info(self, url: VideoURL | str) -> VideoInfoResponse:
+        with YoutubeDL() as ydl:
+            info = ydl.extract_info(url, download=False)
+        streams = info["formats"]
+        audio_streams = [
+            AudioStream(
+                id=stream["format_id"],
+                bitrate=stream["abr"],
+                mimetype=stream["ext"],
+            )
+            for stream in streams
+            if stream.get("acodec") != "none"
+            and stream.get("vcodec") == "none"
+            and stream.get("abr") is not None
+        ]
+        video_streams = [
+            VideoStream(
+                id=stream["format_id"],
+                resolution=stream["format_note"],
+                mimetype=stream["ext"],
+            )
+            for stream in streams
+            if stream.get("acodec") == "none"
+            and stream.get("vcodec") != "none"
+            and stream.get("format_note") is not None
+        ]
+        return VideoInfoResponse(
+            url=info["webpage_url"],
+            title=info["title"],
+            duration=info["duration"],
+            thumbnail_url=info["thumbnail"],
+            audio_streams=audio_streams,
+            video_streams=video_streams,
+        )
+
+    def download(self, download: Download):
+        on_progress_callback = asyncio.coroutine(
+            partial(
+                self.on_progress_callback,
+                download=download,
+            )
+        )
+        try:
+            asyncio.run(self.on_download_callback_start(download))
+            with tempfile.TemporaryDirectory() as tmpdir:
+                directory_to_download_to = Path(tmpdir)
+                download_options = {
+                    "format": f"{download.video_stream_id}+{download.audio_stream_id}",
+                    "progress_hooks": [
+                        lambda d: asyncio.run(on_progress_callback(d)),
+                    ],
+                    "outtmpl": f"{directory_to_download_to.as_posix()}/{download.media_id}.%(ext)s",
+                    "merge_output_format": download.media_format,
+                    "nomtime": True,  # do not use modification time fro original video
+                }
+                if download.media_format.is_audio:
+                    download_options["postprocessors"] = [
+                        {
+                            "key": "FFmpegExtractAudio",
+                            "preferredcodec": download.media_format,
+                            "preferredquality": "192",
+                        }
+                    ]
+                with YoutubeDL(download_options) as ydl:
+                    ydl.download([download.url])
+                downloaded_file_path = (
+                    directory_to_download_to / download.storage_filename
+                )
+                asyncio.run(self.on_finish_callback(download, downloaded_file_path))
+                return True
+        except Exception as e:
+            if self.on_error_callback:
+                asyncio.run(self.on_error_callback(download, e))
+            return False

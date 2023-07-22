@@ -34,6 +34,8 @@ async def get_api_version(
     """
     return {
         "api_version": settings.version,
+        "downloader": settings.downloader,
+        "downloader_version": settings.downloader_version,
     }
 
 
@@ -116,7 +118,6 @@ async def submit_download(
     },
 )
 async def download_file(
-    media_id: str = Query(..., alias="mediaId", description="Download id"),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
     download_pair: tuple[models.Download, Path] = Depends(
         dependencies.get_download_file
