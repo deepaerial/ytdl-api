@@ -14,7 +14,7 @@ def settings(fake_media_path: Path) -> Iterable[Settings]:
     data_source = ConfZDataSource(
         data={
             "allow_origins": ["*"],
-            "downloader": "mocked",
+            "downloader": "mock",
             "datasource": {"deta_key": "*****", "deta_base": "*****"},
             "storage": {"path": fake_media_path},
             "disable_docs": True,

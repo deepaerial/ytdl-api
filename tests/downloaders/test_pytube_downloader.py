@@ -8,6 +8,7 @@ import pytest
 from ytdl_api.constants import DownloadStatus
 from ytdl_api.datasource import DetaDB
 from ytdl_api.dependencies import get_downloader
+from ytdl_api.config import Settings
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download, DownloadStatusInfo
 from ytdl_api.storage import LocalFileStorage
@@ -24,6 +25,7 @@ def notification_queue() -> NotificationQueue:
 
 
 def test_video_download(
+    settings: Settings,
     mock_persisted_download: Download,
     local_storage: LocalFileStorage,
     datasource: DetaDB,
@@ -38,7 +40,9 @@ def test_video_download(
     assert mock_persisted_download.file_path is None
     assert mock_persisted_download.when_started_download is None
     assert mock_persisted_download.when_download_finished is None
-    pytube_downloader = get_downloader(datasource, notification_queue, local_storage)
+    pytube_downloader = get_downloader(
+        settings, datasource, notification_queue, local_storage
+    )
     pytube_downloader.download(mock_persisted_download)
     finished_download = datasource.get_download(
         mock_persisted_download.client_id, mock_persisted_download.media_id
@@ -57,6 +61,7 @@ def _raise_ffmpeg_error(*args, **kwargs):
 
 
 def test_video_download_ffmpeg_failed(
+    settings: Settings,
     mock_persisted_download: Download,
     local_storage: LocalFileStorage,
     datasource: DetaDB,
@@ -65,7 +70,9 @@ def test_video_download_ffmpeg_failed(
     """
     Test code behaviour when ffmpeg failed.
     """
-    pytube_downloader = get_downloader(datasource, notification_queue, local_storage)
+    pytube_downloader = get_downloader(
+        settings, datasource, notification_queue, local_storage
+    )
     # mocking _merge_streams method for PytubeDownloader soi it will raise error
     pytube_downloader._merge_streams = _raise_ffmpeg_error
     pytube_downloader.download(mock_persisted_download)
