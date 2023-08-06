@@ -4,7 +4,8 @@ from enum import Enum
 
 class DownloaderType(str, Enum):
     PYTUBE = "pytube"
-    MOCK = "mocked"
+    YTDLP = "yt-dlp"
+    MOCK = "mock"
 
     def __str__(self) -> str:  # pragma: no cover
         return self.value
@@ -32,7 +33,7 @@ class MediaFormat(str, Enum):
 
     @property
     def is_audio(self) -> bool:
-        return self.name in [MediaFormat.MP3, MediaFormat.WAV]
+        return self in [MediaFormat.MP3, MediaFormat.WAV]
 
     def __str__(self) -> str:  # pragma: no cover
         return self.value

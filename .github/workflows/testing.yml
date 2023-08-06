@@ -9,6 +9,7 @@ on:
       - ytdl_api/**
       - tests/**
       - poetry.lock
+      - .github/workflows/**
   push:
     branches:
       - master
@@ -25,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install ffmpeg
-        run: sudo apt install ffmpeg -y
+        run: sudo apt update && sudo apt install ffmpeg -y
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
