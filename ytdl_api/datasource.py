@@ -1,7 +1,6 @@
 import datetime
 import typing
 from abc import ABC, abstractmethod
-
 from deta import Deta
 from pydantic import parse_obj_as
 

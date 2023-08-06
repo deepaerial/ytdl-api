@@ -7,7 +7,7 @@ from typing import Dict, Literal, Optional
 
 import ffmpeg
 from pytube import StreamQuery, YouTube
-from yt_dlp import YoutubeDL
+from yt_dlp import YoutubeDL, DownloadError
 
 from .callbacks import (
     OnDownloadFinishedCallback,
@@ -237,22 +237,25 @@ class YTDLPDownloader(IDownloader):
             with tempfile.TemporaryDirectory() as tmpdir:
                 directory_to_download_to = Path(tmpdir)
                 download_options = {
-                    "format": f"{download.video_stream_id}+{download.audio_stream_id}",
                     "progress_hooks": [
                         lambda d: asyncio.run(on_progress_callback(d)),
                     ],
                     "outtmpl": f"{directory_to_download_to.as_posix()}/{download.media_id}.%(ext)s",
-                    "merge_output_format": download.media_format,
                     "nomtime": True,  # do not use modification time fro original video
                 }
                 if download.media_format.is_audio:
+                    download_options["format"] = download.audio_stream_id
                     download_options["postprocessors"] = [
                         {
                             "key": "FFmpegExtractAudio",
-                            "preferredcodec": download.media_format,
-                            "preferredquality": "192",
+                            "preferredcodec": str(download.media_format),
                         }
                     ]
+                else:
+                    download_options[
+                        "format"
+                    ] = f"{download.video_stream_id}+{download.audio_stream_id}"
+                    download_options["merge_output_format"] = download.media_format
                 with YoutubeDL(download_options) as ydl:
                     ydl.download([download.url])
                 downloaded_file_path = (
@@ -260,7 +263,7 @@ class YTDLPDownloader(IDownloader):
                 )
                 asyncio.run(self.on_finish_callback(download, downloaded_file_path))
                 return True
-        except Exception as e:
+        except DownloadError as e:
             if self.on_error_callback:
                 asyncio.run(self.on_error_callback(download, e))
             return False
