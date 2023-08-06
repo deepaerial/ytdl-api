@@ -9,6 +9,7 @@ on:
       - ytdl_api/**
       - tests/**
       - poetry.lock
+      - .github/workflows/**
   push:
     branches:
       - master
