@@ -45,6 +45,7 @@ class Download(BaseModel_):
     )
     duration: int = Field(..., description="Video duration (in milliseconds)")
     filesize: int = Field(None, description="Video/audio filesize (in bytes)")
+    filesize_hr: str = Field(None, description="Video/audio filesize (human-readable)")
     thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail")
     status: DownloadStatus = Field(
         DownloadStatus.STARTED, description="Download status"

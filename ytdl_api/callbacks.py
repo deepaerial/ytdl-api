@@ -12,7 +12,7 @@ from .queue import NotificationQueue
 from .schemas.models import Download, DownloadStatusInfo
 from .storage import IStorage
 
-from .utils import extract_percentage_progress
+from .utils import extract_percentage_progress, get_file_size
 
 
 async def noop_callback(*args, **kwargs):  # pragma: no cover
@@ -50,7 +50,7 @@ async def on_pytube_progress_callback(
     datasource: IDataSource,
     queue: NotificationQueue,
     *args,
-    **kwargs
+    **kwargs,
 ):
     """
     Callback which will be used in Pytube's progress update callback
@@ -117,10 +117,17 @@ async def on_finish_callback(
     """
     Callback which is executed once ffmpeg finished converting files.
     """
+    file_posix_path = download_tmp_path.as_posix()
+    file_size_bytes, file_size_hr = get_file_size(download_tmp_path)
+    logger.debug(
+        f"Uploading downloaded file {file_posix_path} to storage."
+        f" File size: {file_size_hr}"
+    )
     try:
         in_storage_filename = storage.save_download_from_file(
             download, download_tmp_path
         )
+        logger.debug(f"File {file_posix_path} uploaded...")
     except Exception as e:
         logger.error("Failed to save download file to storage.")
         await on_error_callback(
@@ -135,8 +142,13 @@ async def on_finish_callback(
     download.file_path = in_storage_filename
     download.status = status
     download.progress = 100
+    download.filesize = file_size_bytes
+    download.filesize_hr = file_size_hr
     download.when_download_finished = datetime.utcnow()
     datasource.update_download(download)
+    logger.debug(
+        f'Download status for ({download.media_id}): {download.filename} updated to "{status}"'
+    )
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
