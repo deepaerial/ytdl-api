@@ -4,7 +4,7 @@ from pathlib import Path
 import humanize
 import logging
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger("uvicorn")
 
 PROGRESS_PATTERN = re.compile(r"(\d+.?\d+)?%")
 

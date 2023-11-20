@@ -36,9 +36,8 @@ class DownloadResponse(BaseModel_):
         description="Video or audio (when extracting) format of file.",
     )
     duration: int = Field(..., description="Video duration (in milliseconds).")
-    filesize_hr: str = Field(
+    filesize_hr: Optional[str] = Field(
         None,
-        alias="filesize",
         description="Video/audio file size in human-readable format.",
     )
     thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail.")

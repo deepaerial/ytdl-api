@@ -1,6 +1,6 @@
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Literal
 
 import pkg_resources
 from confz import ConfZ, ConfZEnvSource
@@ -73,6 +73,7 @@ class Settings(ConfZ):
     Application settings config
     """
 
+    logging_level: Literal["DEBUG", "INFO", "ERROR"] = "DEBUG"
     debug: bool = False
     docs_url: str = "/docs"
     openapi_prefix: str = ""
@@ -137,6 +138,8 @@ class Settings(ConfZ):
         app = FastAPI(**kwargs)
         __pydantic_self__.__setup_endpoints(app)
         __pydantic_self__.__setup_exception_handlers(app)
+        LOGGER.setLevel(__pydantic_self__.logging_level)
+        LOGGER.debug(f"API version: {__pydantic_self__.version}")
         return app
 
     def __setup_endpoints(__pydantic_self__, app: FastAPI):

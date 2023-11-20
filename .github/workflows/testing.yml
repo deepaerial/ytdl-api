@@ -71,8 +71,8 @@ jobs:
       - name: Run Pytest 
         env:
             DATASOURCE__DETA_KEY: ${{secrets.DATASOURCE__DETA_KEY}}
-            STORAGE__DETA_KEY: ${{secrets.STORAGE__DETA_KEY}}
-            STORAGE__DETA_DRIVE_NAME: ${{secrets.STORAGE__DETA_DRIVE_NAME}}
+            STORAGE__DETA_KEY: ${{secrets.TEST_STORAGE__DETA_KEY}}
+            STORAGE__DETA_DRIVE_NAME: ${{secrets.TEST_STORAGE__DETA_DRIVE_NAME}}
         run: poetry run pytest --cov=${{ github.workspace }} --cov-report=xml
       #----------------------------------------------
       #             upload coverage stats
@@ -83,3 +83,4 @@ jobs:
         with:
           file: ./coverage.xml
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
