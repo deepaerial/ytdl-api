@@ -112,12 +112,27 @@ async def on_finish_callback(
     datasource: IDataSource,
     queue: NotificationQueue,
     storage: IStorage,
+    logger: Logger,
 ):
     """
     Callback which is executed once ffmpeg finished converting files.
     """
+    try:
+        in_storage_filename = storage.save_download_from_file(
+            download, download_tmp_path
+        )
+    except Exception:
+        logger.exception("Failed to save download file to storage.")
+        await queue.put(
+            download.client_id,
+            DownloadStatusInfo(
+                client_id=download.client_id,
+                media_id=download.media_id,
+                status=DownloadStatus.FAILED,
+                progress=-1,
+            ),
+        )
     status = DownloadStatus.FINISHED
-    in_storage_filename = storage.save_download_from_file(download, download_tmp_path)
     download.file_path = in_storage_filename
     download.status = status
     download.progress = 100

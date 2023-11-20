@@ -59,7 +59,7 @@ target-version = "py310"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.4.0"
+version = "1.4.1"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"

@@ -7,7 +7,7 @@ from typing import Dict, Literal, Optional
 
 import ffmpeg
 from pytube import StreamQuery, YouTube
-from yt_dlp import YoutubeDL, DownloadError
+from yt_dlp import YoutubeDL
 
 from .callbacks import (
     OnDownloadFinishedCallback,
@@ -263,7 +263,7 @@ class YTDLPDownloader(IDownloader):
                 )
                 asyncio.run(self.on_finish_callback(download, downloaded_file_path))
                 return True
-        except DownloadError as e:
+        except Exception as e:
             if self.on_error_callback:
                 asyncio.run(self.on_error_callback(download, e))
             return False
