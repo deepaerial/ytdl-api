@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update download progress info json.
 - Logging.
+- Added volume config for app.
 
 ## [1.4.3] - 2023-11-20
 ### Changed
