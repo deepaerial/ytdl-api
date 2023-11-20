@@ -88,6 +88,7 @@ class Download(BaseModel_):
 
 
 class DownloadStatusInfo(BaseModel_):
+    title: str = Field(..., description="Video/audio title")
     client_id: str = Field(..., description="Id of client")
     media_id: str = Field(..., description="Id of downloaded media")
     status: DownloadStatus = Field(
