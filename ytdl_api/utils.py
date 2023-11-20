@@ -1,5 +1,7 @@
 import uuid
 import re
+from pathlib import Path
+import humanize
 import logging
 
 LOGGER = logging.getLogger()
@@ -17,3 +19,11 @@ def extract_percentage_progress(progress_string: str) -> int:
     """
 
     return round(float(PROGRESS_PATTERN.search(progress_string).group(1)))
+
+
+def get_file_size(file_path: Path) -> (int, str):
+    """
+    Return file in bytes and human readable file size string.
+    """
+    filesize_in_bytes = file_path.stat().st_size
+    return filesize_in_bytes, humanize.naturalsize(filesize_in_bytes)

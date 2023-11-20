@@ -15,29 +15,33 @@ class ErrorResponse(BaseModel_):
 
 
 class DownloadResponse(BaseModel_):
-    client_id: str = Field(..., description="Client ID")
-    media_id: str = Field(..., description="Download id")
-    title: str = Field(..., description="Video title")
-    url: VideoURL = Field(..., description="URL of video")
+    client_id: str = Field(..., description="Client ID.")
+    media_id: str = Field(..., description="Download id.")
+    title: str = Field(..., description="Video title.")
+    url: VideoURL = Field(..., description="URL of video.")
     video_streams: List[VideoStream] = Field(
-        description="List of video streams", default_factory=list
+        description="List of video streams.", default_factory=list
     )
     audio_streams: List[AudioStream] = Field(
-        description="List of audio streams", default_factory=list
+        description="List of audio streams.", default_factory=list
     )
     video_stream_id: Optional[str] = Field(
-        None, description="Video stream ID (downloaded)"
+        None, description="Video stream ID (downloaded)."
     )
     audio_stream_id: Optional[str] = Field(
-        None, description="Audio stream ID (downloaded)"
+        None, description="Audio stream ID (downloaded)."
     )
     media_format: MediaFormat = Field(
         None,
-        description="Video or audio (when extracting) format of file",
+        description="Video or audio (when extracting) format of file.",
     )
-    duration: int = Field(..., description="Video duration (in milliseconds)")
-    filesize: int = Field(None, description="Video/audio filesize (in bytes)")
-    thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail")
+    duration: int = Field(..., description="Video duration (in milliseconds).")
+    filesize_hr: str = Field(
+        None,
+        alias="filesize",
+        description="Video/audio file size in human-readable format.",
+    )
+    thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail.")
     status: DownloadStatus = Field(
         DownloadStatus.STARTED, description="Download status"
     )
