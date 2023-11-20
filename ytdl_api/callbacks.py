@@ -157,6 +157,7 @@ async def on_finish_callback(
         download.client_id,
         DownloadStatusInfo(
             title=download.title,
+            filesize_hr=file_size_hr,
             client_id=download.client_id,
             media_id=download.media_id,
             status=status,
