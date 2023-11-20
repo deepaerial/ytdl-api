@@ -16,7 +16,7 @@ def test_get_downloads(
     assert json_response["downloads"][0]["title"] == mock_persisted_download.title
     assert json_response["downloads"][0]["url"] == mock_persisted_download.url
     assert json_response["downloads"][0]["mediaId"] == mock_persisted_download.media_id
-    assert "filesize" in json_response["downloads"][0]
+    assert "filesizeHr" in json_response["downloads"][0]
     assert (
         datetime.fromisoformat(json_response["downloads"][0]["whenSubmitted"])
         == mock_persisted_download.when_submitted
