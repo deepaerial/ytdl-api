@@ -7,7 +7,7 @@ from typing import Dict, Literal, Optional
 
 import ffmpeg
 from pytube import StreamQuery, YouTube
-from yt_dlp import YoutubeDL, DownloadError
+from yt_dlp import YoutubeDL
 
 from .callbacks import (
     OnDownloadFinishedCallback,
