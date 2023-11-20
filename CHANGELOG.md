@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.4.4] - 2023-11-20
 ### Changed
-- Return title in download progress info json.
+- Update download progress info json.
 - Logging.
 
 ## [1.4.3] - 2023-11-20
