@@ -60,6 +60,7 @@ def get_ytdlp_downloader(
             datasource=datasource,
             queue=event_queue,
             storage=storage,
+            logger=LOGGER,
         )
     )
     on_error_hook = asyncio.coroutine(
