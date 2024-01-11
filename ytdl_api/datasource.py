@@ -128,7 +128,15 @@ class DetaDB(IDataSource):
 
     def get_download(self, client_id: str, media_id: str) -> Download | None:
         data = next(
-            iter(self.base.fetch({"client_id": client_id, "media_id": media_id}).items),
+            iter(
+                self.base.fetch(
+                    {
+                        "client_id": client_id,
+                        "media_id": media_id,
+                        "status?ne": DownloadStatus.DELETED,
+                    }
+                ).items
+            ),
             None,
         )
         if data is None:

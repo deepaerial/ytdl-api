@@ -43,16 +43,14 @@ def test_delete_existing_downloaded_file(
     download = datasource.get_download(
         mocked_downloaded_media.client_id, mocked_downloaded_media.media_id
     )
-    assert download is not None
-    assert download.status == "deleted"
-    assert download.when_deleted is not None
+    assert download is None
 
 
 def test_delete_failed_to_download_media(
     app_client: TestClient, mocked_failed_media_file: Download, datasource: IDataSource
 ):
     """
-    Test if app allows to remove media download that resulted in error during donwload.
+    Test if app allows to remove media download that resulted in error during download.
     """
     response = app_client.delete(
         "/api/delete",
@@ -68,7 +66,4 @@ def test_delete_failed_to_download_media(
     download = datasource.get_download(
         mocked_failed_media_file.client_id, mocked_failed_media_file.media_id
     )
-    assert download.media_id == mocked_failed_media_file.media_id
-    assert download is not None
-    assert download.status == "deleted"
-    assert download.when_deleted is not None
+    assert download is None

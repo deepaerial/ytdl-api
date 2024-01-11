@@ -8,14 +8,14 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.4.0
+    POETRY_VERSION=1.7.1
 
-RUN pip install --upgrade pip
-
-RUN apt-get update && apt-get install -y ffmpeg
-
-# Install poetry
-RUN pip install --no-cache-dir "poetry==$POETRY_VERSION" && poetry config virtualenvs.in-project true
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir "poetry==$POETRY_VERSION" && \
+    poetry config virtualenvs.in-project true
 
 FROM base as project-base
 WORKDIR /app

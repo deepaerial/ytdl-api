@@ -61,7 +61,6 @@ EOL
 ```
 
 3. Setup volume (optional)
-## Creating volume to store downloads
 Check the [docs](https://fly.io/docs/apps/volume-storage/) for more information. Note that volume name should be the same as specified in `fly.toml` file.
 ```shell
 $ fly volumes create media -r <region code>
