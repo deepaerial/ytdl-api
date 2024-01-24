@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.7] - 2024-01-24
+### Changed
+- Updated pytube version to 15.0.0.
+
+## [1.4.6] - 2024-01-24
+### Changed
+- Updated dependencies and Python to version 3.11.
+
+## [1.4.5] - 2024-01-11
+### Fix
+- Fix unit test for deletion endpoint.
+
 ## [1.4.4] - 2023-11-20
 ### Changed
 - Update download progress info json.
@@ -42,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  
 ## [1.2.4] - 2023-07-08
 ### Fix
-- Do not execute on download finish callback when ffmpeg error occured
+- Do not execute on download finish callback when ffmpeg error occured.
 
 ## [1.2.3] - 2023-07-08
 ### Changed
