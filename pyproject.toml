@@ -59,7 +59,7 @@ target-version = "py310"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.4.6"
+version = "1.4.7"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -74,7 +74,7 @@ deta = "^1.1.0"
 ffmpeg-python = "^0.2.0"
 confz = "^1.8.2"
 pyhumps = "^3.7.2"
-pytube = {git = "https://github.com/oncename/pytube.git"}
+pytube = "^15.0.0"
 yt-dlp = "^2023.12.30"
 humanize = "^4.8.0"
 
