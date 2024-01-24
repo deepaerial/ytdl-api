@@ -127,11 +127,9 @@ class PytubeDownloader(IDownloader):
         self,
         download: Download,
     ) -> bool:
-        on_progress_callback = asyncio.coroutine(
-            partial(
-                self.on_progress_callback,
-                download,
-            )
+        on_progress_callback = partial(
+            self.on_progress_callback,
+            download,
         )
         kwargs = {
             "on_progress_callback": lambda stream, chunk, bytes_remaining: asyncio.run(
@@ -226,11 +224,9 @@ class YTDLPDownloader(IDownloader):
         )
 
     def download(self, download: Download):
-        on_progress_callback = asyncio.coroutine(
-            partial(
-                self.on_progress_callback,
-                download=download,
-            )
+        on_progress_callback = partial(
+            self.on_progress_callback,
+            download=download,
         )
         try:
             asyncio.run(self.on_download_callback_start(download))
