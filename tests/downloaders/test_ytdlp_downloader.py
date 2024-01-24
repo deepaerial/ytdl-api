@@ -26,7 +26,7 @@ def settings(
 ) -> Generator[Settings, None, None]:
     monkeypatch.setenv("DOWNLOADER", "yt-dlp")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
-    monkeypatch.setenv("STORAGE_PATH", fake_media_path.as_posix())
+    monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
     data_source = ConfZEnvSource(
         allow_all=True,
         deny=["title", "description", "version"],

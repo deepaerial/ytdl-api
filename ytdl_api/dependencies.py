@@ -48,28 +48,24 @@ def get_ytdlp_downloader(
     event_queue: queue.NotificationQueue,
     storage: storage.IStorage,
 ):
-    on_download_started_hook = asyncio.coroutine(
-        partial(on_download_start_callback, datasource=datasource, queue=event_queue)
+    on_download_started_hook = partial(
+        on_download_start_callback, datasource=datasource, queue=event_queue
     )
-    on_progress_hook = asyncio.coroutine(
-        partial(on_ytdlp_progress_callback, datasource=datasource, queue=event_queue)
+    on_progress_hook = partial(
+        on_ytdlp_progress_callback, datasource=datasource, queue=event_queue
     )
-    on_finish_hook = asyncio.coroutine(
-        partial(
-            on_finish_callback,
-            datasource=datasource,
-            queue=event_queue,
-            storage=storage,
-            logger=LOGGER,
-        )
+    on_finish_hook = partial(
+        on_finish_callback,
+        datasource=datasource,
+        queue=event_queue,
+        storage=storage,
+        logger=LOGGER,
     )
-    on_error_hook = asyncio.coroutine(
-        partial(
-            on_error_callback,
-            datasource=datasource,
-            queue=event_queue,
-            logger=LOGGER,
-        )
+    on_error_hook = partial(
+        on_error_callback,
+        datasource=datasource,
+        queue=event_queue,
+        logger=LOGGER,
     )
     return downloaders.YTDLPDownloader(
         on_download_started_callback=on_download_started_hook,
@@ -87,31 +83,27 @@ def get_downloader(
 ) -> downloaders.IDownloader:
     if settings.downloader == DownloaderType.YTDLP:
         return get_ytdlp_downloader(datasource, event_queue, storage)
-    on_download_started_hook = asyncio.coroutine(
-        partial(on_download_start_callback, datasource=datasource, queue=event_queue)
+    on_download_started_hook = partial(
+        on_download_start_callback, datasource=datasource, queue=event_queue
     )
-    on_progress_hook = asyncio.coroutine(
-        partial(on_pytube_progress_callback, datasource=datasource, queue=event_queue)
+    on_progress_hook = partial(
+        on_pytube_progress_callback, datasource=datasource, queue=event_queue
     )
-    on_converting_hook = asyncio.coroutine(
-        partial(on_start_converting, datasource=datasource, queue=event_queue)
+    on_converting_hook = partial(
+        on_start_converting, datasource=datasource, queue=event_queue
     )
-    on_finish_hook = asyncio.coroutine(
-        partial(
-            on_finish_callback,
-            datasource=datasource,
-            queue=event_queue,
-            storage=storage,
-            logger=LOGGER,
-        )
+    on_finish_hook = partial(
+        on_finish_callback,
+        datasource=datasource,
+        queue=event_queue,
+        storage=storage,
+        logger=LOGGER,
     )
-    on_error_hook = asyncio.coroutine(
-        partial(
-            on_error_callback,
-            datasource=datasource,
-            queue=event_queue,
-            logger=LOGGER,
-        )
+    on_error_hook = partial(
+        on_error_callback,
+        datasource=datasource,
+        queue=event_queue,
+        logger=LOGGER,
     )
     return downloaders.PytubeDownloader(
         on_download_started_callback=on_download_started_hook,

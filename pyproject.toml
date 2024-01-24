@@ -72,7 +72,7 @@ sse-starlette = "^0.6.1"
 aiofiles = "^0.6.0"
 deta = "^1.1.0"
 ffmpeg-python = "^0.2.0"
-confz = "^1.6.1"
+confz = "^1.8.2"
 pyhumps = "^3.7.2"
 pytube = {git = "https://github.com/oncename/pytube.git"}
 yt-dlp = "^2023.12.30"
