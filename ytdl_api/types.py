@@ -39,13 +39,12 @@ class YoutubeURL(AnyHttpUrl, str):
         scheme = match.group(2)
         return cls(url=full_url, scheme=scheme)
 
-    def get_clear_video_url(self) -> 'YoutubeURL':
+    def get_clear_video_url(self) -> "YoutubeURL":
         query_params = urllib.parse.parse_qs(self.query)
         if "list" in query_params:
             video_id = query_params["v"][0]
-            return YoutubeURL(f'https://www.youtube.com/watch?v={video_id}')
+            return YoutubeURL(f"https://www.youtube.com/watch?v={video_id}")
         return self
-
 
 
 class DownloadDataInfo(TypedDict):
