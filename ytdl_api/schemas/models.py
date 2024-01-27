@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from pydantic import AnyHttpUrl, Field
 
 from ..constants import DownloadStatus, MediaFormat
-from ..types import VideoURL
+from ..types import YoutubeURL
 from ..utils import get_unique_id
 from .base import BaseModel_
 
@@ -26,7 +26,7 @@ class Download(BaseModel_):
     client_id: str = Field(..., description="Client ID")
     media_id: str = Field(description="Download id", default_factory=get_unique_id)
     title: str = Field(..., description="Video title")
-    url: VideoURL = Field(..., description="URL of video")
+    url: YoutubeURL = Field(..., description="URL of video")
     video_streams: List[VideoStream] = Field(
         description="List of video streams", default_factory=list
     )

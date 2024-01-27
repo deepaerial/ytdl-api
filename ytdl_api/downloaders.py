@@ -17,7 +17,7 @@ from .callbacks import (
 )
 from .schemas.models import AudioStream, Download, VideoStream
 from .schemas.responses import VideoInfoResponse
-from .types import VideoURL
+from .types import YoutubeURL
 
 
 class IDownloader(ABC):
@@ -41,7 +41,7 @@ class IDownloader(ABC):
 
     @abstractmethod
     def get_video_info(
-        self, url: VideoURL | str
+        self, url: YoutubeURL | str
     ) -> VideoInfoResponse:  # pragma: no cover
         """
         Abstract method for retrieving information about media resource.
@@ -61,7 +61,7 @@ class PytubeDownloader(IDownloader):
     Downloader based on pytube library https://github.com/pytube/pytube
     """
 
-    def get_video_info(self, url: VideoURL | str) -> VideoInfoResponse:
+    def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
         video = YouTube(url)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
@@ -188,7 +188,7 @@ class YTDLPDownloader(IDownloader):
     Downloader based on yt-dlp library https://github.com/yt-dlp/yt-dlp
     """
 
-    def get_video_info(self, url: VideoURL | str) -> VideoInfoResponse:
+    def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
         with YoutubeDL() as ydl:
             info = ydl.extract_info(url, download=False)
         streams = info["formats"]

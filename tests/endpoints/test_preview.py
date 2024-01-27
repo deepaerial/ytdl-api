@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
     [
         "https://www.youtube.com/watch?v=NcBjx_eyvxc",
         "https://www.youtube.com/watch?v=TNhaISOUy6Q",
+        "https://www.youtube.com/watch?v=QXeEoD0pB3E&list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3&index=1"
     ],
 )
 def test_get_preview(app_client: TestClient, url: str):
