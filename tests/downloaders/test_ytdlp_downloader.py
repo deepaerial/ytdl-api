@@ -11,7 +11,7 @@ from ytdl_api.dependencies import get_downloader
 from ytdl_api.downloaders import YTDLPDownloader
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.constants import MediaFormat, DownloadStatus
-from ytdl_api.schemas.models import Download, VideoURL
+from ytdl_api.schemas.models import Download, YoutubeURL
 from ytdl_api.schemas.responses import VideoInfoResponse
 from ytdl_api.storage import LocalFileStorage
 
@@ -60,7 +60,7 @@ def mock_persisted_download(
         "https://www.youtube.com/watch?v=TNhaISOUy6Q",
     ],
 )
-def test_get_video_info(url: VideoURL):
+def test_get_video_info(url: YoutubeURL):
     """
     Test functionality responsible for fetching video info.
     """

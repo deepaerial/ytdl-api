@@ -4,12 +4,12 @@ from typing import Optional
 from pydantic import Field, root_validator, validator
 
 from ..constants import YOUTUBE_URI_REGEX, MediaFormat
-from ..types import VideoURL
+from ..types import YoutubeURL
 from .base import BaseModel_
 
 
 class DownloadParams(BaseModel_):
-    url: VideoURL = Field(
+    url: YoutubeURL = Field(
         ...,
         title="URL",
         description="URL to video",

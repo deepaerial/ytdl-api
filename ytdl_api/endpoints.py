@@ -12,7 +12,7 @@ from .converters import create_download_from_download_params
 from .downloaders import IDownloader
 from .queue import NotificationQueue
 from .schemas import models, requests, responses
-from .types import VideoURL
+from .types import YoutubeURL
 
 router = APIRouter(tags=["base"])
 
@@ -67,13 +67,13 @@ async def get_downloads(
     },
 )
 async def preview(
-    url: VideoURL,
+    url: YoutubeURL,
     downloader: IDownloader = Depends(dependencies.get_downloader),
 ):
     """
     Endpoint for getting info about video.
     """
-    download = downloader.get_video_info(url)
+    download = downloader.get_video_info(url.get_clear_video_url())
     return download
 
 

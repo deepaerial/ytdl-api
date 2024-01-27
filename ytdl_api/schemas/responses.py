@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from pydantic import AnyHttpUrl, Field
 
 from ..constants import DownloadStatus, MediaFormat
-from ..types import VideoURL
+from ..types import YoutubeURL
 from .base import BaseModel_
 from .models import AudioStream, VideoStream
 
@@ -18,7 +18,7 @@ class DownloadResponse(BaseModel_):
     client_id: str = Field(..., description="Client ID.")
     media_id: str = Field(..., description="Download id.")
     title: str = Field(..., description="Video title.")
-    url: VideoURL = Field(..., description="URL of video.")
+    url: YoutubeURL = Field(..., description="URL of video.")
     video_streams: List[VideoStream] = Field(
         description="List of video streams.", default_factory=list
     )
@@ -83,7 +83,7 @@ class DeleteResponse(BaseModel_):
 
 
 class VideoInfoResponse(BaseModel_):
-    url: VideoURL = Field(..., title="URL", description="URL to video")
+    url: YoutubeURL = Field(..., title="URL", description="URL to video")
     title: str = Field(..., description="Video title")
     duration: int = Field(..., description="Video length in seconds")
     thumbnail_url: AnyHttpUrl = Field(..., description="Video thumbnail")

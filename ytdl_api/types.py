@@ -1,4 +1,5 @@
 import re
+import urllib.parse
 from typing import Optional, TypedDict
 
 from pydantic import AnyHttpUrl
@@ -8,7 +9,7 @@ YOUTUBE_REGEX = re.compile(
 )
 
 
-class VideoURL(AnyHttpUrl, str):
+class YoutubeURL(AnyHttpUrl, str):
     """
     Custom type for Youtube video video URL.
     """
@@ -37,6 +38,13 @@ class VideoURL(AnyHttpUrl, str):
         full_url = match.group(0)
         scheme = match.group(2)
         return cls(url=full_url, scheme=scheme)
+
+    def get_clear_video_url(self) -> "YoutubeURL":
+        query_params = urllib.parse.parse_qs(self.query)
+        if "list" in query_params.keys():
+            video_id = query_params["v"][0]
+            return YoutubeURL(f"https://www.youtube.com/watch?v={video_id}")
+        return self
 
 
 class DownloadDataInfo(TypedDict):
