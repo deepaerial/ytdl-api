@@ -73,7 +73,6 @@ async def preview(
     """
     Endpoint for getting info about video.
     """
-    breakpoint()
     download = downloader.get_video_info(url.get_clear_video_url())
     return download
 
