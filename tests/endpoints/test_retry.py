@@ -1,5 +1,6 @@
-from pytest_mock.plugin import MockerFixture
 from fastapi.testclient import TestClient
+from pytest_mock.plugin import MockerFixture
+
 from ytdl_api.schemas.models import Download
 
 

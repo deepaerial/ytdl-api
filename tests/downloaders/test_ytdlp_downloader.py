@@ -1,21 +1,21 @@
+import random
 from pathlib import Path
 from typing import Generator
-import random
 
 import pytest
 from confz import ConfZEnvSource
 
 from ytdl_api.config import REPO_PATH, Settings
+from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import IDataSource
 from ytdl_api.dependencies import get_downloader
 from ytdl_api.downloaders import YTDLPDownloader
 from ytdl_api.queue import NotificationQueue
-from ytdl_api.constants import MediaFormat, DownloadStatus
 from ytdl_api.schemas.models import Download, YoutubeURL
 from ytdl_api.schemas.responses import VideoInfoResponse
 from ytdl_api.storage import LocalFileStorage
 
-from ..utils import get_example_download_instance, EXAMPLE_VIDEO_PREVIEW
+from ..utils import EXAMPLE_VIDEO_PREVIEW, get_example_download_instance
 
 
 @pytest.fixture()

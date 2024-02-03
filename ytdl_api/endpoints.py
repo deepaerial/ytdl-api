@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from sse_starlette.sse import EventSourceResponse
 from starlette import status

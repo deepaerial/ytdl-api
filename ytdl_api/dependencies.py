@@ -4,7 +4,7 @@ from functools import lru_cache, partial
 from pathlib import Path
 from typing import Generator, Optional
 
-from fastapi import Cookie, Depends, HTTPException, Response, Query
+from fastapi import Cookie, Depends, HTTPException, Query, Response
 from starlette import status
 
 from . import datasource, downloaders, queue, storage
@@ -17,7 +17,7 @@ from .callbacks import (
     on_ytdlp_progress_callback,
 )
 from .config import Settings
-from .constants import DownloadStatus, DownloaderType
+from .constants import DownloaderType, DownloadStatus
 from .schemas.models import Download
 from .utils import LOGGER
 

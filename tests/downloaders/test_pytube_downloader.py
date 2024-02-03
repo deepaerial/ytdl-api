@@ -5,10 +5,10 @@ from pathlib import Path
 import ffmpeg
 import pytest
 
+from ytdl_api.config import Settings
 from ytdl_api.constants import DownloadStatus
 from ytdl_api.datasource import DetaDB
 from ytdl_api.dependencies import get_downloader
-from ytdl_api.config import Settings
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download, DownloadStatusInfo
 from ytdl_api.storage import LocalFileStorage
