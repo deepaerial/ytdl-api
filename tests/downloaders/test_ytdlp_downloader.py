@@ -1,4 +1,5 @@
 import random
+import inspect
 from pathlib import Path
 from typing import Generator
 
@@ -93,7 +94,7 @@ def test_download_video(
     file_bytes = fake_local_storage.get_download(
         mock_persisted_download.storage_filename
     )
-    assert isinstance(file_bytes, bytes)
+    assert inspect.isgenerator(file_bytes)
 
 
 def test_download_video_failed(

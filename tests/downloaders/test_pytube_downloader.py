@@ -1,3 +1,4 @@
+import inspect
 import asyncio
 from datetime import datetime
 from pathlib import Path
@@ -53,7 +54,7 @@ def test_video_download(
     assert finished_download.audio_stream_id == "251"
     assert finished_download.video_stream_id == "278"
     downloaded_file_bytes = local_storage.get_download(finished_download.file_path)
-    assert isinstance(downloaded_file_bytes, bytes)
+    assert inspect.isgenerator(downloaded_file_bytes)
 
 
 def _raise_ffmpeg_error(*args, **kwargs):
