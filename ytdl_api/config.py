@@ -1,6 +1,6 @@
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Union, Literal
+from typing import Any, Dict, List, Literal, Union
 
 import pkg_resources
 from confz import ConfZ, ConfZEnvSource

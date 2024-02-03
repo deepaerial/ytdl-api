@@ -1,3 +1,4 @@
+import inspect
 from datetime import datetime
 from pathlib import Path
 from typing import Generator
@@ -105,7 +106,7 @@ def test_deta_storage(
     )
     assert storage_file_name is not None
     file_bytes = deta_storage.get_download(storage_file_name)
-    assert isinstance(file_bytes, bytes)
+    assert inspect.isgenerator(file_bytes)
     deta_storage.remove_download(storage_file_name)
     file_bytes = deta_storage.get_download(storage_file_name)
     assert file_bytes is None

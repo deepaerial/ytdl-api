@@ -1,14 +1,15 @@
 import asyncio
+import inspect
 from datetime import datetime
 from pathlib import Path
 
 import ffmpeg
 import pytest
 
+from ytdl_api.config import Settings
 from ytdl_api.constants import DownloadStatus
 from ytdl_api.datasource import DetaDB
 from ytdl_api.dependencies import get_downloader
-from ytdl_api.config import Settings
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download, DownloadStatusInfo
 from ytdl_api.storage import LocalFileStorage
@@ -53,7 +54,7 @@ def test_video_download(
     assert finished_download.audio_stream_id == "251"
     assert finished_download.video_stream_id == "278"
     downloaded_file_bytes = local_storage.get_download(finished_download.file_path)
-    assert isinstance(downloaded_file_bytes, bytes)
+    assert inspect.isgenerator(downloaded_file_bytes)
 
 
 def _raise_ffmpeg_error(*args, **kwargs):

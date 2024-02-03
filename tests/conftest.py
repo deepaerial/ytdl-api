@@ -12,11 +12,11 @@ from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import DetaDB, IDataSource
 from ytdl_api.dependencies import get_settings
+from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
 from ytdl_api.storage import LocalFileStorage
 from ytdl_api.utils import get_unique_id
-from ytdl_api.queue import NotificationQueue
 
 from .utils import EXAMPLE_VIDEO_PREVIEW, get_example_download_instance
 

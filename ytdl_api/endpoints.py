@@ -1,8 +1,7 @@
 import asyncio
-from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Query
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
+from fastapi.responses import StreamingResponse
 from sse_starlette.sse import EventSourceResponse
 from starlette import status
 
@@ -11,8 +10,9 @@ from .constants import DownloadStatus
 from .converters import create_download_from_download_params
 from .downloaders import IDownloader
 from .queue import NotificationQueue
-from .schemas import models, requests, responses
+from .schemas import requests, responses
 from .types import YoutubeURL
+from .utils import get_content_disposition_header_value
 
 router = APIRouter(tags=["base"])
 
@@ -118,20 +118,40 @@ async def submit_download(
     },
 )
 async def download_file(
-    datasource: datasource.IDataSource = Depends(dependencies.get_database),
-    download_pair: tuple[models.Download, Path] = Depends(
-        dependencies.get_download_file
+    media_id: str = Query(..., alias="mediaId", description="Download id"),
+    uid: str = Depends(
+        dependencies.get_uid_dependency_factory(raise_error_on_empty=True)
     ),
+    datasource: datasource.IDataSource = Depends(dependencies.get_database),
+    storage: storage.IStorage = Depends(dependencies.get_storage),
 ):
     """
     Endpoint for downloading fetched video from Youtube.
     """
-    download, file_path = download_pair
-    datasource.mark_as_downloaded(download)
-    return FileResponse(
-        file_path,
+    media_file = datasource.get_download(uid, media_id)
+    if media_file is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
+        )
+    if media_file.status not in (DownloadStatus.FINISHED, DownloadStatus.DOWNLOADED):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not downloaded yet"
+        )
+    if media_file.file_path is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Download is finished but file not found",
+        )
+    bytes_stream = storage.get_download(media_file.file_path)
+    datasource.mark_as_downloaded(media_file)
+    return StreamingResponse(
+        bytes_stream,
         media_type="application/octet-stream",
-        filename=download.filename,
+        headers={
+            "content-disposition": get_content_disposition_header_value(
+                media_file.filename
+            )
+        },
     )
 
 

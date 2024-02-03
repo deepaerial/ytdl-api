@@ -5,13 +5,12 @@ from typing import Any, Callable, Coroutine
 
 import ffmpeg
 
-from .types import DownloadDataInfo
 from .constants import DownloadStatus
 from .datasource import IDataSource
 from .queue import NotificationQueue
 from .schemas.models import Download, DownloadStatusInfo
 from .storage import IStorage
-
+from .types import DownloadDataInfo
 from .utils import extract_percentage_progress, get_file_size
 
 

@@ -1,5 +1,7 @@
-from pydantic import parse_obj_as
 from datetime import datetime
+
+from pydantic import parse_obj_as
+
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.schemas.models import Download
 
