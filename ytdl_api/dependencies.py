@@ -1,10 +1,8 @@
 import secrets
-import tempfile
 from functools import lru_cache, partial
-from pathlib import Path
-from typing import Generator, Optional
+from typing import Optional
 
-from fastapi import Cookie, Depends, HTTPException, Query, Response
+from fastapi import Cookie, Depends, HTTPException, Response
 from starlette import status
 
 from . import datasource, downloaders, queue, storage
@@ -17,8 +15,7 @@ from .callbacks import (
     on_ytdlp_progress_callback,
 )
 from .config import Settings
-from .constants import DownloaderType, DownloadStatus
-from .schemas.models import Download
+from .constants import DownloaderType
 from .utils import LOGGER
 
 
