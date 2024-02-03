@@ -1,5 +1,5 @@
-import random
 import inspect
+import random
 from pathlib import Path
 from typing import Generator
 
