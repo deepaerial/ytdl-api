@@ -34,7 +34,7 @@ def get_file_size(file_path: Path) -> (int, str):
 def get_content_disposition_header_value(filename: str) -> str:
     """
     Helper function to add file name to StreamingResponse response class.
-    Copied from fastapi.responses.FileResponse __init__ method.
+    Copied from starlette.responses.FileResponse __init__ method.
     """
     content_disposition_type: str = "attachment"
     content_disposition_filename = quote(filename)

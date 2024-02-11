@@ -1,4 +1,5 @@
 import asyncio
+import mimetypes
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
@@ -146,7 +147,7 @@ async def download_file(
     datasource.mark_as_downloaded(media_file)
     return StreamingResponse(
         bytes_stream,
-        media_type="application/octet-stream",
+        media_type=mimetypes.guess_type(media_file.filename)[0],
         headers={
             "content-disposition": get_content_disposition_header_value(
                 media_file.filename

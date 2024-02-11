@@ -50,7 +50,7 @@ def test_download_file_endpoint(
         cookies={"uid": mocked_downloaded_media.client_id},
     )
     assert response.status_code == 200
-    assert response.headers["content-type"] == "application/octet-stream"
+    assert response.headers["content-type"] == "video/mp4"
     download = datasource.get_download(
         mocked_downloaded_media.client_id, mocked_downloaded_media.media_id
     )

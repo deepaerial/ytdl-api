@@ -30,10 +30,9 @@ class IStorage(abc.ABC):
         raise NotImplementedError
 
 
-def _read_file_at_chunks(file: Path, chunk_size: int = 1024) -> Iterator[bytes]:
+def _read_file_at_chunks(file: Path) -> Iterator[bytes]:
     with file.open(mode="rb") as f:
-        while data := f.read(chunk_size):
-            yield data
+        yield from f
 
 
 class LocalFileStorage(IStorage):
