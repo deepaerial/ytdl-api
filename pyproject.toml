@@ -69,7 +69,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.98.0"
+fastapi = "^0.109.1"
 uvicorn = "^0.18.2"
 sse-starlette = "^0.6.1"
 aiofiles = "^0.6.0"
