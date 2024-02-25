@@ -86,8 +86,8 @@ This section describes potential issues that may occur when using API.
 ### 1. Issue: Video is downloaded and playing but audio is absent when opening video in QuickTime Player.
 **Solution:** Open video in another player (VLC Player for example). Maybe QuickTime Player doesn't support audio codec used in video.
 
-### 2. Test `test_deta_storage` fails with `OSError: [Errno 30] Read-only file system: '/app'`
-This error most likely occurs because in project you have both `.env` and `.env.test` files. For some weird reason ConfZ tries to read both files although in the test we change the source of env variables. This is most likely a bug in ConfZ library. Workaround for this issue is simply comment out content of`.env` file and run pytest separately for `tests/storage/test_deta_storage.py` file again:
+### 2. Issue: Test `test_deta_storage` fails with `OSError: [Errno 30] Read-only file system: '/app'`
+**Solution:** This error most likely occurs because in project you have both `.env` and `.env.test` files. For some weird reason ConfZ tries to read both files although in the test we change the source of env variables. This is most likely a bug in ConfZ library. Workaround for this issue is simply comment out content of`.env` file and run pytest separately for `tests/storage/test_deta_storage.py` file again:
 ```shell
 $ pytest tests/storage/test_deta_storage.py
 ```
