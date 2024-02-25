@@ -2,7 +2,7 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Union
 
-import pkg_resources
+from importlib.metadata import version
 from confz import BaseConfig, EnvSource
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -81,7 +81,7 @@ class Settings(BaseConfig):
     redoc_url: str = "/redoc"
     title: str = "YTDL API"
     description: str = "API for YTDL backend server."
-    version: str = pkg_resources.get_distribution("ytdl-api").version
+    version: str = version("ytdl-api")
     disable_docs: bool = False
     allow_origins: List[str] = []
     cookie_samesite: str = "None"
@@ -101,7 +101,7 @@ class Settings(BaseConfig):
 
     @property
     def downloader_version(self) -> str:
-        return pkg_resources.get_distribution(self.downloader.value).version
+        return version(self.downloader.value)
 
     @validator("allow_origins", pre=True)
     def validate_allow_origins(cls, value):
