@@ -393,17 +393,17 @@ files = [
 
 [[package]]
 name = "confz"
-version = "1.8.2"
+version = "2.0.1"
 description = "ConfZ is a configuration management library for Python based on pydantic."
 optional = false
 python-versions = ">=3.7.2,<4.0.0"
 files = [
-    {file = "confz-1.8.2-py3-none-any.whl", hash = "sha256:f872ab7848445192ca04d5914c2e5b476bfb9ecf7ec0f5f25e337eff9c997036"},
-    {file = "confz-1.8.2.tar.gz", hash = "sha256:79925db91e3fcf5710b62521f79f4596fbef91c8d75eba97dff591d4164b2fb1"},
+    {file = "confz-2.0.1-py3-none-any.whl", hash = "sha256:271dfbc7343dafda414f731c4931ba91bc62a448e4a3b2fdf2fb7334ffac1d36"},
+    {file = "confz-2.0.1.tar.gz", hash = "sha256:c2d7af28224d8e70c72f66c4ea7ca0069abdc73dda11732d74f2be7dbe8641a0"},
 ]
 
 [package.dependencies]
-pydantic = ">=1.9.0,<2.0.0"
+pydantic = ">=1.9.0,<3.0.0"
 python-dotenv = ">=0.19.2,<2.0.0"
 PyYAML = ">=5.4.1,<7.0.0"
 toml = ">=0.10.2,<0.11.0"
@@ -1556,4 +1556,4 @@ websockets = ">=12.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "905cd9387cc4d51b56a6662ba5a0231edbc5b5d3e56f510bc7c81e649b141814"
+content-hash = "0a6d2c43fcfcdd29d10d4ea51eee48dbd5e701cf2b2b5e4b608749c7fff90a18"

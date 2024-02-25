@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-from confz import ConfZEnvSource
+from confz import EnvSource
 from pydantic import parse_obj_as
 
 from ytdl_api.config import REPO_PATH, Settings
@@ -14,13 +14,13 @@ from ytdl_api.storage import DetaDriveStorage
 
 
 @pytest.fixture()
-def settings(
+def mocked_settings(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Settings, None, None]:
     # ignoring datasource config as in this test it's not needed
     monkeypatch.setenv("DATASOURCE__DETA_KEY", "*****")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", "*****")
-    data_source = ConfZEnvSource(
+    data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
         file=(REPO_PATH / ".env.test").resolve(),
@@ -31,8 +31,8 @@ def settings(
 
 
 @pytest.fixture()
-def deta_storage(settings: Settings) -> DetaDriveStorage:
-    return settings.storage.get_storage()
+def deta_storage(mocked_settings: Settings) -> DetaDriveStorage:
+    return mocked_settings.storage.get_storage()
 
 
 @pytest.fixture()
