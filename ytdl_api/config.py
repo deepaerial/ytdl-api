@@ -90,7 +90,10 @@ class Settings(BaseConfig):
 
     downloader: DownloaderType = DownloaderType.PYTUBE
     datasource: DetaBaseDataSourceConfig
-    storage: Union[LocalStorageConfig, DetaDriveStorageConfig]
+    storage: Union[
+        DetaDriveStorageConfig,
+        LocalStorageConfig,
+    ]
 
     CONFIG_SOURCES = EnvSource(
         allow_all=True,
