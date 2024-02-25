@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from typing import Generator, Iterable
 
 import pytest
-from confz import ConfZEnvSource
+from confz import EnvSource
 from fastapi.testclient import TestClient
 
 from ytdl_api.config import REPO_PATH, Settings
@@ -71,7 +71,7 @@ def settings(
     monkeypatch.setenv("DOWNLOADER", "pytube")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
     monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
-    data_source = ConfZEnvSource(
+    data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
         file=(REPO_PATH / ".env.test").resolve(),

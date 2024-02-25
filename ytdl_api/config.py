@@ -2,8 +2,8 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Union
 
-import pkg_resources
-from confz import ConfZ, ConfZEnvSource
+from importlib.metadata import version
+from confz import BaseConfig, EnvSource
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import validator
@@ -18,7 +18,7 @@ REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
 
 
-class DetaBaseDataSourceConfig(ConfZ):
+class DetaBaseDataSourceConfig(BaseConfig):
     """
     Deta Base DB datasource config.
     """
@@ -37,7 +37,7 @@ class DetaBaseDataSourceConfig(ConfZ):
         return hash((type(self),) + attrs)
 
 
-class LocalStorageConfig(ConfZ):
+class LocalStorageConfig(BaseConfig):
     """
     Local filesystem storage config.
     """
@@ -56,7 +56,7 @@ class LocalStorageConfig(ConfZ):
         return LocalFileStorage(self.path)
 
 
-class DetaDriveStorageConfig(ConfZ):
+class DetaDriveStorageConfig(BaseConfig):
     """
     Deta Drive storage config.
     """
@@ -68,7 +68,7 @@ class DetaDriveStorageConfig(ConfZ):
         return DetaDriveStorage(self.deta_key, self.deta_drive_name)
 
 
-class Settings(ConfZ):
+class Settings(BaseConfig):
     """
     Application settings config
     """
@@ -81,7 +81,7 @@ class Settings(ConfZ):
     redoc_url: str = "/redoc"
     title: str = "YTDL API"
     description: str = "API for YTDL backend server."
-    version: str = pkg_resources.get_distribution("ytdl-api").version
+    version: str = version("ytdl-api")
     disable_docs: bool = False
     allow_origins: List[str] = []
     cookie_samesite: str = "None"
@@ -92,7 +92,7 @@ class Settings(ConfZ):
     datasource: DetaBaseDataSourceConfig
     storage: Union[LocalStorageConfig, DetaDriveStorageConfig]
 
-    CONFIG_SOURCES = ConfZEnvSource(
+    CONFIG_SOURCES = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
         file=ENV_PATH,
@@ -101,7 +101,7 @@ class Settings(ConfZ):
 
     @property
     def downloader_version(self) -> str:
-        return pkg_resources.get_distribution(self.downloader.value).version
+        return version(self.downloader.value)
 
     @validator("allow_origins", pre=True)
     def validate_allow_origins(cls, value):

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-from confz import ConfZEnvSource
+from confz import EnvSource
 
 from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
@@ -28,7 +28,7 @@ def settings(
     monkeypatch.setenv("DOWNLOADER", "yt-dlp")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
     monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
-    data_source = ConfZEnvSource(
+    data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
         file=(REPO_PATH / ".env.test").resolve(),

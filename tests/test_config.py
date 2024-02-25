@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Iterable
 
 import pytest
-from confz import ConfZDataSource
+from confz import DataSource
 from fastapi.testclient import TestClient
 
 from ytdl_api.config import Settings
@@ -11,7 +11,7 @@ from ytdl_api.dependencies import get_settings
 
 @pytest.fixture()
 def settings(fake_media_path: Path) -> Iterable[Settings]:
-    data_source = ConfZDataSource(
+    data_source = DataSource(
         data={
             "allow_origins": ["*"],
             "downloader": "mock",
