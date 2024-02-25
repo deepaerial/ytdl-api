@@ -10,6 +10,9 @@ on:
       - tests/**
       - poetry.lock
       - .github/workflows/**
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
   push:
     branches:
       - master
@@ -17,6 +20,9 @@ on:
       - ytdl_api/**
       - tests/**
       - poetry.lock
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
   workflow_dispatch:
 jobs:
   ruff:
