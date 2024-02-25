@@ -13,6 +13,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - ytdl_api/**
+      - tests/**
+      - poetry.lock
   workflow_dispatch:
 jobs:
   ruff:
