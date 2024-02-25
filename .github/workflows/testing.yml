@@ -10,9 +10,6 @@ on:
       - tests/**
       - poetry.lock
       - .github/workflows/**
-    paths-ignore:
-      - "README.md"
-      - "CHANGELOG.md"
   push:
     branches:
       - master
