@@ -1,7 +1,7 @@
 import abc
 import shutil
 from pathlib import Path
-from typing import Iterator
+from typing import Generator
 
 from deta import Deta
 
@@ -22,7 +22,7 @@ class IStorage(abc.ABC):
     @abc.abstractmethod
     def get_download(
         self, storage_file_name: str
-    ) -> Iterator[bytes] | None:  # pragma: no cover
+    ) -> Generator[bytes, None, None] | None:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -30,7 +30,7 @@ class IStorage(abc.ABC):
         raise NotImplementedError
 
 
-def _read_file_at_chunks(file: Path) -> Iterator[bytes]:
+def _read_file_at_chunks(file: Path) -> Generator[bytes, None, None]:
     with file.open(mode="rb") as f:
         yield from f
 
@@ -48,7 +48,9 @@ class LocalFileStorage(IStorage):
         shutil.copy(path, dest_path)
         return dest_path.as_posix()
 
-    def get_download(self, storage_file_name: str) -> Iterator[bytes] | None:
+    def get_download(
+        self, storage_file_name: str
+    ) -> Generator[bytes, None, None] | None:
         download_file = self.dowloads_dir / Path(storage_file_name)
         if not download_file.exists():
             return None
@@ -75,7 +77,9 @@ class DetaDriveStorage(IStorage):
         self.drive.put(download.storage_filename, path=path)
         return download.storage_filename
 
-    def get_download(self, storage_file_name: str) -> Iterator[bytes] | None:
+    def get_download(
+        self, storage_file_name: str
+    ) -> Generator[bytes, None, None] | None:
         file = self.drive.get(storage_file_name)
         if file is None:
             return file
