@@ -64,9 +64,7 @@ def deta_testbase() -> str:
 
 
 @pytest.fixture()
-def settings(
-    fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str
-) -> Iterable[Settings]:
+def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str) -> Iterable[Settings]:
     monkeypatch.setenv("DEBUG", True)
     monkeypatch.setenv("DOWNLOADER", "pytube")
     monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
@@ -113,9 +111,7 @@ def clear_datasource(datasource: IDataSource):
 
 
 @pytest.fixture()
-def mock_persisted_download(
-    uid: str, datasource: IDataSource
-) -> Generator[Download, None, None]:
+def mock_persisted_download(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
         media_format=MediaFormat.MP4,
@@ -163,9 +159,7 @@ def mocked_downloaded_media_no_file(
 
 
 @pytest.fixture()
-def mocked_failed_media_file(
-    uid: str, datasource: IDataSource
-) -> Generator[Download, None, None]:
+def mocked_failed_media_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
         media_format=MediaFormat.MP4,
@@ -180,9 +174,7 @@ def mocked_failed_media_file(
 
 
 @pytest.fixture
-def mocked_downloading_media_file(
-    uid: str, datasource: IDataSource
-) -> Generator[Download, None, None]:
+def mocked_downloading_media_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
         media_format=MediaFormat.MP4,

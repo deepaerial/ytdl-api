@@ -15,12 +15,8 @@ class DownloadParams(BaseModel_):
         description="URL to video",
         example="https://www.youtube.com/watch?v=B8WgNGN0IVA",
     )
-    video_stream_id: Optional[str] = Field(
-        None, description="Video stream ID", example="133"
-    )
-    audio_stream_id: Optional[str] = Field(
-        None, description="Audio stream ID", example="118"
-    )
+    video_stream_id: Optional[str] = Field(None, description="Video stream ID", example="133")
+    audio_stream_id: Optional[str] = Field(None, description="Audio stream ID", example="118")
     media_format: MediaFormat = Field(
         ...,
         description="Video or audio (when extracting) format of file",
@@ -36,9 +32,7 @@ class DownloadParams(BaseModel_):
             values.get("audio_stream_id"),
         )
         if not any((video_stream_id, audio_stream_id)):
-            raise ValueError(
-                "Video or/and audio stream id should be specified for download."
-            )
+            raise ValueError("Video or/and audio stream id should be specified for download.")
         return values
 
     @validator("url")

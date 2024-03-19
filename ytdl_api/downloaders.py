@@ -40,9 +40,7 @@ class IDownloader(ABC):
         self.on_error_callback = on_error_callback or noop_callback
 
     @abstractmethod
-    def get_video_info(
-        self, url: YoutubeURL | str
-    ) -> VideoInfoResponse:  # pragma: no cover
+    def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:  # pragma: no cover
         """
         Abstract method for retrieving information about media resource.
         """
@@ -65,9 +63,7 @@ class PytubeDownloader(IDownloader):
         video = YouTube(url)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
-            AudioStream(
-                id=str(stream.itag), bitrate=stream.abr, mimetype=stream.mime_type
-            )
+            AudioStream(id=str(stream.itag), bitrate=stream.abr, mimetype=stream.mime_type)
             for stream in streams.filter(only_audio=True)
         ]
         video_streams = [
@@ -133,16 +129,12 @@ class PytubeDownloader(IDownloader):
         )
         kwargs = {
             "on_progress_callback": lambda stream, chunk, bytes_remaining: asyncio.run(
-                on_progress_callback(
-                    stream=stream, chunk=chunk, bytes_remaining=bytes_remaining
-                )
+                on_progress_callback(stream=stream, chunk=chunk, bytes_remaining=bytes_remaining)
             )
         }
         try:
             asyncio.run(self.on_download_callback_start(download))
-            streams = (
-                YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
-            )
+            streams = YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
             downloaded_streams_file_paths: Dict[str, Path] = {}
             with tempfile.TemporaryDirectory() as tmpdir:
                 directory_to_download_to = Path(tmpdir)
@@ -166,9 +158,7 @@ class PytubeDownloader(IDownloader):
                 )
                 # Converting to chosen format
                 asyncio.run(self.on_converting_callback(download))
-                converted_file_path = (
-                    directory_to_download_to / download.storage_filename
-                )
+                converted_file_path = directory_to_download_to / download.storage_filename
                 self._merge_streams(
                     downloaded_streams_file_paths["video"].as_posix(),
                     downloaded_streams_file_paths["audio"].as_posix(),
@@ -199,9 +189,7 @@ class YTDLPDownloader(IDownloader):
                 mimetype=stream["ext"],
             )
             for stream in streams
-            if stream.get("acodec") != "none"
-            and stream.get("vcodec") == "none"
-            and stream.get("abr") is not None
+            if stream.get("acodec") != "none" and stream.get("vcodec") == "none" and stream.get("abr") is not None
         ]
         video_streams = [
             VideoStream(
@@ -248,15 +236,11 @@ class YTDLPDownloader(IDownloader):
                         }
                     ]
                 else:
-                    download_options[
-                        "format"
-                    ] = f"{download.video_stream_id}+{download.audio_stream_id}"
+                    download_options["format"] = f"{download.video_stream_id}+{download.audio_stream_id}"
                     download_options["merge_output_format"] = download.media_format
                 with YoutubeDL(download_options) as ydl:
                     ydl.download([download.url])
-                downloaded_file_path = (
-                    directory_to_download_to / download.storage_filename
-                )
+                downloaded_file_path = directory_to_download_to / download.storage_filename
                 asyncio.run(self.on_finish_callback(download, downloaded_file_path))
                 return True
         except Exception as e:

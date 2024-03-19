@@ -14,15 +14,11 @@ class IStorage(abc.ABC):
     """
 
     @abc.abstractmethod
-    def save_download_from_file(
-        self, download: Download, path: Path
-    ) -> str:  # pragma: no cover
+    def save_download_from_file(self, download: Download, path: Path) -> str:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_download(
-        self, storage_file_name: str
-    ) -> Generator[bytes, None, None] | None:  # pragma: no cover
+    def get_download(self, storage_file_name: str) -> Generator[bytes, None, None] | None:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -48,9 +44,7 @@ class LocalFileStorage(IStorage):
         shutil.copy(path, dest_path)
         return dest_path.as_posix()
 
-    def get_download(
-        self, storage_file_name: str
-    ) -> Generator[bytes, None, None] | None:
+    def get_download(self, storage_file_name: str) -> Generator[bytes, None, None] | None:
         download_file = self.dowloads_dir / Path(storage_file_name)
         if not download_file.exists():
             return None
@@ -77,9 +71,7 @@ class DetaDriveStorage(IStorage):
         self.drive.put(download.storage_filename, path=path)
         return download.storage_filename
 
-    def get_download(
-        self, storage_file_name: str
-    ) -> Generator[bytes, None, None] | None:
+    def get_download(self, storage_file_name: str) -> Generator[bytes, None, None] | None:
         file = self.drive.get(storage_file_name)
         if file is None:
             return file

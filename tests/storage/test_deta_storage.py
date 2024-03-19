@@ -101,9 +101,7 @@ def test_deta_storage(
     fake_media_file_path: Path,
     clear_drive: None,
 ):
-    storage_file_name = deta_storage.save_download_from_file(
-        example_download, fake_media_file_path
-    )
+    storage_file_name = deta_storage.save_download_from_file(example_download, fake_media_file_path)
     assert storage_file_name is not None
     file_bytes = deta_storage.get_download(storage_file_name)
     assert inspect.isgenerator(file_bytes)

@@ -44,12 +44,8 @@ def get_ytdlp_downloader(
     event_queue: queue.NotificationQueue,
     storage: storage.IStorage,
 ):
-    on_download_started_hook = partial(
-        on_download_start_callback, datasource=datasource, queue=event_queue
-    )
-    on_progress_hook = partial(
-        on_ytdlp_progress_callback, datasource=datasource, queue=event_queue
-    )
+    on_download_started_hook = partial(on_download_start_callback, datasource=datasource, queue=event_queue)
+    on_progress_hook = partial(on_ytdlp_progress_callback, datasource=datasource, queue=event_queue)
     on_finish_hook = partial(
         on_finish_callback,
         datasource=datasource,
@@ -79,15 +75,9 @@ def get_downloader(
 ) -> downloaders.IDownloader:
     if settings.downloader == DownloaderType.YTDLP:
         return get_ytdlp_downloader(datasource, event_queue, storage)
-    on_download_started_hook = partial(
-        on_download_start_callback, datasource=datasource, queue=event_queue
-    )
-    on_progress_hook = partial(
-        on_pytube_progress_callback, datasource=datasource, queue=event_queue
-    )
-    on_converting_hook = partial(
-        on_start_converting, datasource=datasource, queue=event_queue
-    )
+    on_download_started_hook = partial(on_download_start_callback, datasource=datasource, queue=event_queue)
+    on_progress_hook = partial(on_pytube_progress_callback, datasource=datasource, queue=event_queue)
+    on_converting_hook = partial(on_start_converting, datasource=datasource, queue=event_queue)
     on_finish_hook = partial(
         on_finish_callback,
         datasource=datasource,
@@ -124,9 +114,7 @@ def get_uid_dependency_factory(raise_error_on_empty: bool = False):
         Dependency for fetchng user ID from cookie or setting it in cookie if absent.
         """
         if uid is None and raise_error_on_empty:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="No cookie provided :("
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No cookie provided :(")
         elif uid is None and not raise_error_on_empty:
             uid = secrets.token_hex(16)
             response.set_cookie(

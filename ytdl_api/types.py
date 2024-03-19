@@ -44,9 +44,7 @@ class YoutubeURL(AnyHttpUrl, str):
         query_params = urllib.parse.parse_qs(url.query)
         if "list" in query_params.keys():
             video_id = query_params["v"][0]
-            return YoutubeURL(
-                url=f"https://www.youtube.com/watch?v={video_id}", scheme="https"
-            )
+            return YoutubeURL(url=f"https://www.youtube.com/watch?v={video_id}", scheme="https")
         return self
 
 

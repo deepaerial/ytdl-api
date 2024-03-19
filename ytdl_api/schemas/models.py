@@ -27,18 +27,10 @@ class Download(BaseModel_):
     media_id: str = Field(description="Download id", default_factory=get_unique_id)
     title: str = Field(..., description="Video title")
     url: YoutubeURL = Field(..., description="URL of video")
-    video_streams: List[VideoStream] = Field(
-        description="List of video streams", default_factory=list
-    )
-    audio_streams: List[AudioStream] = Field(
-        description="List of audio streams", default_factory=list
-    )
-    video_stream_id: Optional[str] = Field(
-        None, description="Video stream ID (downloaded)"
-    )
-    audio_stream_id: Optional[str] = Field(
-        None, description="Audio stream ID (downloaded)"
-    )
+    video_streams: List[VideoStream] = Field(description="List of video streams", default_factory=list)
+    audio_streams: List[AudioStream] = Field(description="List of audio streams", default_factory=list)
+    video_stream_id: Optional[str] = Field(None, description="Video stream ID (downloaded)")
+    audio_stream_id: Optional[str] = Field(None, description="Audio stream ID (downloaded)")
     media_format: MediaFormat = Field(
         None,
         description="Video or audio (when extracting) format of file",
@@ -47,9 +39,7 @@ class Download(BaseModel_):
     filesize: int = Field(None, description="Video/audio filesize (in bytes)")
     filesize_hr: str = Field(None, description="Video/audio filesize (human-readable)")
     thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail")
-    status: DownloadStatus = Field(
-        DownloadStatus.STARTED, description="Download status"
-    )
+    status: DownloadStatus = Field(DownloadStatus.STARTED, description="Download status")
     file_path: Optional[str] = Field(None, description="Path to file")
     progress: int = Field(0, description="Download progress in %")
     when_submitted: datetime.datetime = Field(
@@ -89,14 +79,10 @@ class Download(BaseModel_):
 
 class DownloadStatusInfo(BaseModel_):
     title: str = Field(..., description="Video/audio title")
-    filesize_hr: str | None = Field(
-        None, description="Video/audio file size in human-readable format"
-    )
+    filesize_hr: str | None = Field(None, description="Video/audio file size in human-readable format")
     client_id: str = Field(..., description="Id of client")
     media_id: str = Field(..., description="Id of downloaded media")
-    status: DownloadStatus = Field(
-        ..., description="Download status", example=DownloadStatus.DOWNLOADING
-    )
+    status: DownloadStatus = Field(..., description="Download status", example=DownloadStatus.DOWNLOADING)
     progress: int | None = Field(
         None,
         description="Download progress of a file in case status is 'downloading'",

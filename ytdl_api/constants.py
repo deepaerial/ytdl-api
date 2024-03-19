@@ -40,6 +40,5 @@ class MediaFormat(str, Enum):
 
 
 YOUTUBE_URI_REGEX = re.compile(
-    r"^((?:https?:)?\/\/)?((?:www|m)\.)?"
-    r"((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$"
+    r"^((?:https?:)?\/\/)?((?:www|m)\.)?" r"((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$"
 )

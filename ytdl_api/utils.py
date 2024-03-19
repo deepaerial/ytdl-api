@@ -39,11 +39,7 @@ def get_content_disposition_header_value(filename: str) -> str:
     content_disposition_type: str = "attachment"
     content_disposition_filename = quote(filename)
     if content_disposition_filename != filename:
-        content_disposition = "{}; filename*=utf-8''{}".format(
-            content_disposition_type, content_disposition_filename
-        )
+        content_disposition = "{}; filename*=utf-8''{}".format(content_disposition_type, content_disposition_filename)
     else:
-        content_disposition = '{}; filename="{}"'.format(
-            content_disposition_type, filename
-        )
+        content_disposition = '{}; filename="{}"'.format(content_disposition_type, filename)
     return content_disposition

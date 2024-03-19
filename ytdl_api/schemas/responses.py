@@ -19,18 +19,10 @@ class DownloadResponse(BaseModel_):
     media_id: str = Field(..., description="Download id.")
     title: str = Field(..., description="Video title.")
     url: YoutubeURL = Field(..., description="URL of video.")
-    video_streams: List[VideoStream] = Field(
-        description="List of video streams.", default_factory=list
-    )
-    audio_streams: List[AudioStream] = Field(
-        description="List of audio streams.", default_factory=list
-    )
-    video_stream_id: Optional[str] = Field(
-        None, description="Video stream ID (downloaded)."
-    )
-    audio_stream_id: Optional[str] = Field(
-        None, description="Audio stream ID (downloaded)."
-    )
+    video_streams: List[VideoStream] = Field(description="List of video streams.", default_factory=list)
+    audio_streams: List[AudioStream] = Field(description="List of audio streams.", default_factory=list)
+    video_stream_id: Optional[str] = Field(None, description="Video stream ID (downloaded).")
+    audio_stream_id: Optional[str] = Field(None, description="Audio stream ID (downloaded).")
     media_format: MediaFormat = Field(
         None,
         description="Video or audio (when extracting) format of file.",
@@ -41,9 +33,7 @@ class DownloadResponse(BaseModel_):
         description="Video/audio file size in human-readable format.",
     )
     thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail.")
-    status: DownloadStatus = Field(
-        DownloadStatus.STARTED, description="Download status"
-    )
+    status: DownloadStatus = Field(DownloadStatus.STARTED, description="Download status")
     when_submitted: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow,
         description="Date & time in UTC when download was submitted to API.",
@@ -89,6 +79,4 @@ class VideoInfoResponse(BaseModel_):
     thumbnail_url: AnyHttpUrl = Field(..., description="Video thumbnail")
     audio_streams: List[AudioStream] = Field([], description="Available audio streams")
     video_streams: List[VideoStream] = Field([], description="Available video streams")
-    media_formats: List[MediaFormat] = Field(
-        list(MediaFormat), description="Available media formats"
-    )
+    media_formats: List[MediaFormat] = Field(list(MediaFormat), description="Available media formats")

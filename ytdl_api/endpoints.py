@@ -44,9 +44,7 @@ async def get_api_version(
     "/downloads",
     response_model=responses.DownloadsResponse,
     status_code=status.HTTP_200_OK,
-    responses={
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}
-    },
+    responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}},
 )
 async def get_downloads(
     uid: str = Depends(get_uid_or_403),
@@ -63,9 +61,7 @@ async def get_downloads(
     "/preview",
     response_model=responses.VideoInfoResponse,
     status_code=status.HTTP_200_OK,
-    responses={
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}
-    },
+    responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}},
 )
 async def preview(
     url: YoutubeURL,
@@ -82,9 +78,7 @@ async def preview(
     "/download",
     response_model=responses.DownloadsResponse,
     status_code=status.HTTP_201_CREATED,
-    responses={
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}
-    },
+    responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}},
 )
 async def submit_download(
     download_params: requests.DownloadParams,
@@ -120,9 +114,7 @@ async def submit_download(
 )
 async def download_file(
     media_id: str = Query(..., alias="mediaId", description="Download id"),
-    uid: str = Depends(
-        dependencies.get_uid_dependency_factory(raise_error_on_empty=True)
-    ),
+    uid: str = Depends(dependencies.get_uid_dependency_factory(raise_error_on_empty=True)),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
     storage: storage.IStorage = Depends(dependencies.get_storage),
 ):
@@ -131,13 +123,9 @@ async def download_file(
     """
     media_file = datasource.get_download(uid, media_id)
     if media_file is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Download not found")
     if media_file.status not in (DownloadStatus.FINISHED, DownloadStatus.DOWNLOADED):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="File not downloaded yet"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not downloaded yet")
     if media_file.file_path is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -148,11 +136,7 @@ async def download_file(
     return StreamingResponse(
         bytes_stream,
         media_type=mimetypes.guess_type(media_file.filename)[0],
-        headers={
-            "content-disposition": get_content_disposition_header_value(
-                media_file.filename
-            )
-        },
+        headers={"content-disposition": get_content_disposition_header_value(media_file.filename)},
     )
 
 
@@ -211,9 +195,7 @@ async def delete_download(
     """
     media_file = datasource.get_download(uid, media_id)
     if media_file is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Download not found")
     if media_file.status not in (
         DownloadStatus.FINISHED,
         DownloadStatus.DOWNLOADED,
@@ -265,9 +247,7 @@ async def retry_download(
     """
     download = datasource.get_download(uid, media_id)
     if download is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Download not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Download not found")
     if download.status not in (DownloadStatus.FAILED, DownloadStatus.STARTED):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
