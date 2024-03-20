@@ -1,6 +1,7 @@
 import logging
 import re
 import uuid
+from typing import Tuple
 from pathlib import Path
 from urllib.parse import quote
 
@@ -23,7 +24,7 @@ def extract_percentage_progress(progress_string: str) -> int:
     return round(float(PROGRESS_PATTERN.search(progress_string).group(1)))
 
 
-def get_file_size(file_path: Path) -> (int, str):
+def get_file_size(file_path: Path) -> Tuple[int, str]:
     """
     Return file in bytes and human readable file size string.
     """
