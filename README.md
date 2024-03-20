@@ -71,20 +71,6 @@ $ fly volumes create media -r <region code>
 $ fly deploy
 ```
 
-## Deploy PostgreSQL database on Aiven.io
-
-To setup infrastructure on Aiven.io you should have Terraform or OpenTofu installed. After you have installed Terraform you should follow these steps:
-
-1. Generate API token on Aiven.io and save it to `infrasctructure/terraform.tfvars` file as such:
-```hcl
-aiven_token = "<your token here>"
-```
-2. In `terraform.tfvars` file specify your organization name and stage. Example configuration for development stage and "My Organisation" organization:
-```hcl
-stage = "dev"
-organization_name = "My Organisation"
-```
-
 ## Generating token for Github Actions
 Instructions based on [this documentation page from Fly.io](https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/)
 1. Run the command below and copy and copy the output:
