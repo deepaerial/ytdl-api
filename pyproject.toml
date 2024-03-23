@@ -84,6 +84,10 @@ pyhumps = "^3.7.2"
 pytube = "^15.0.0"
 yt-dlp = "^2023.12.30"
 humanize = "^4.8.0"
+psycopg2 = "^2.9.9"
+sqlmodel = "^0.0.16"
+sqlalchemy = "^2.0.28"
+alembic = "^1.13.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

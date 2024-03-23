@@ -6,7 +6,7 @@ from importlib.metadata import version
 from confz import BaseConfig, EnvSource
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import validator
+from pydantic import validator, PostgresDsn
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
@@ -32,6 +32,14 @@ class DetaBaseDataSourceConfig(BaseConfig):
     def __hash__(self):  # make hashable BaseModel subclass
         attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
+
+
+class PostgresDataSourceConfig(BaseConfig):
+    """
+    Postgres datasource config.
+    """
+
+    dsn: PostgresDsn
 
 
 class LocalStorageConfig(BaseConfig):
@@ -86,7 +94,8 @@ class Settings(BaseConfig):
     cookie_httponly: bool = True
 
     downloader: DownloaderType = DownloaderType.PYTUBE
-    datasource: DetaBaseDataSourceConfig
+    datasource: DetaBaseDataSourceConfig | None = None
+    psql: PostgresDataSourceConfig | None = None
     storage: Union[LocalStorageConfig, DetaDriveStorageConfig]
 
     CONFIG_SOURCES = EnvSource(

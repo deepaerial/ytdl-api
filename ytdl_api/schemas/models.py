@@ -1,4 +1,5 @@
 import datetime
+from functools import partial
 from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, Field
@@ -32,7 +33,7 @@ class Download(BaseModel_):
     video_stream_id: Optional[str] = Field(None, description="Video stream ID (downloaded)")
     audio_stream_id: Optional[str] = Field(None, description="Audio stream ID (downloaded)")
     media_format: MediaFormat = Field(
-        None,
+        ...,
         description="Video or audio (when extracting) format of file",
     )
     duration: int = Field(..., description="Video duration (in milliseconds)")
@@ -43,7 +44,7 @@ class Download(BaseModel_):
     file_path: Optional[str] = Field(None, description="Path to file")
     progress: int = Field(0, description="Download progress in %")
     when_submitted: datetime.datetime = Field(
-        default_factory=datetime.datetime.utcnow,
+        default_factory=partial(datetime.datetime.now, datetime.UTC),
         description="Date & time in UTC when download was submitted to API.",
     )
     when_started_download: Optional[datetime.datetime] = Field(

@@ -1,5 +1,5 @@
 import inspect
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Generator
 
@@ -89,7 +89,7 @@ def example_download() -> Download:
         "filesize": 1024,
         "status": DownloadStatus.FINISHED,
         "progress": 0,
-        "when_started_download": datetime.utcnow(),
+        "when_started_download": datetime.now(UTC),
     }
     download = parse_obj_as(Download, download_data)
     return download

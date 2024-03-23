@@ -1,5 +1,16 @@
 version: '3.7'
 services:
+  ytdl-api-db:
+    container_name: "ytdl-api-db"
+    image: postgres:16
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - ytdl-api-db-data:/var/lib/postgresql/data
+    networks:
+      - default
   ytdl-api:
     container_name: "ytdl-api"
     build:
@@ -36,3 +47,5 @@ services:
         reservations:
           cpus: '0.25'
           memory: 20M
+volumes:
+  ytdl-api-db-data:

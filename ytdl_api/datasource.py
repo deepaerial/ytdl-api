@@ -166,7 +166,7 @@ class DetaDB(IDataSource):
         """
         Soft deleting download for now.
         """
-        when_deleted = when_deleted or datetime.datetime.utcnow()
+        when_deleted = when_deleted or datetime.datetime.now(datetime.UTC)
         when_deleted_iso = when_deleted.isoformat()
         data = {"status": DownloadStatus.DELETED, "when_deleted": when_deleted_iso}
         self.base.update(data, key=download.media_id)
@@ -176,7 +176,7 @@ class DetaDB(IDataSource):
         download: Download,
         when_file_downloaded: datetime.datetime | None = None,
     ):
-        when_file_downloaded = when_file_downloaded or datetime.datetime.utcnow()
+        when_file_downloaded = when_file_downloaded or datetime.datetime.now(datetime.UTC)
         when_file_downloaded_iso = when_file_downloaded.isoformat()
         data = {
             "status": DownloadStatus.DOWNLOADED,
@@ -191,7 +191,7 @@ class DetaDB(IDataSource):
         self.base.client.close()
 
     def mark_as_failed(self, download: Download, when_failed: datetime.datetime | None = None):
-        when_failed = when_failed or datetime.datetime.utcnow()
+        when_failed = when_failed or datetime.datetime.now(datetime.UTC)
         when_failed_iso = when_failed.isoformat()
         data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
         self.base.update(data, download.media_id)

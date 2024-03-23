@@ -35,7 +35,7 @@ class DownloadResponse(BaseModel_):
     thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail.")
     status: DownloadStatus = Field(DownloadStatus.STARTED, description="Download status")
     when_submitted: datetime.datetime = Field(
-        default_factory=datetime.datetime.utcnow,
+        ...,
         description="Date & time in UTC when download was submitted to API.",
     )
     when_started_download: Optional[datetime.datetime] = Field(
