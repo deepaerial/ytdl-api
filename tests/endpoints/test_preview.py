@@ -29,9 +29,7 @@ def test_get_preview(app_client: TestClient, url: str):
 
 
 def test_get_preview_422(app_client: TestClient):
-    response = app_client.get(
-        "/api/preview", params={"url": "https://www.youcube.com/watch?v=9TJx7QTrTyo"}
-    )
+    response = app_client.get("/api/preview", params={"url": "https://www.youcube.com/watch?v=9TJx7QTrTyo"})
     assert response.status_code == 422
     json_response = response.json()
     assert json_response["detail"][0]["msg"] == "Bad youtube video link provided."

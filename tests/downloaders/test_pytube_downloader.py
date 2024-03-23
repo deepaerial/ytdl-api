@@ -41,13 +41,9 @@ def test_video_download(
     assert mock_persisted_download.file_path is None
     assert mock_persisted_download.when_started_download is None
     assert mock_persisted_download.when_download_finished is None
-    pytube_downloader = get_downloader(
-        settings, datasource, notification_queue, local_storage
-    )
+    pytube_downloader = get_downloader(settings, datasource, notification_queue, local_storage)
     pytube_downloader.download(mock_persisted_download)
-    finished_download = datasource.get_download(
-        mock_persisted_download.client_id, mock_persisted_download.media_id
-    )
+    finished_download = datasource.get_download(mock_persisted_download.client_id, mock_persisted_download.media_id)
     assert finished_download.status == DownloadStatus.FINISHED
     assert isinstance(finished_download.when_download_finished, datetime)
     assert finished_download.file_path is not None
@@ -71,15 +67,11 @@ def test_video_download_ffmpeg_failed(
     """
     Test code behaviour when ffmpeg failed.
     """
-    pytube_downloader = get_downloader(
-        settings, datasource, notification_queue, local_storage
-    )
+    pytube_downloader = get_downloader(settings, datasource, notification_queue, local_storage)
     # mocking _merge_streams method for PytubeDownloader soi it will raise error
     pytube_downloader._merge_streams = _raise_ffmpeg_error
     pytube_downloader.download(mock_persisted_download)
-    failed_download = datasource.get_download(
-        mock_persisted_download.client_id, mock_persisted_download.media_id
-    )
+    failed_download = datasource.get_download(mock_persisted_download.client_id, mock_persisted_download.media_id)
     assert failed_download.status == DownloadStatus.FAILED
     assert isinstance(failed_download.when_failed, datetime)
     # bad looking loop, but I did not know a better way to get last event
@@ -87,9 +79,7 @@ def test_video_download_ffmpeg_failed(
     event = None
     while True:
         try:
-            event = notification_queue.queues[
-                mock_persisted_download.client_id
-            ].get_nowait()
+            event = notification_queue.queues[mock_persisted_download.client_id].get_nowait()
         except asyncio.QueueEmpty:
             assert isinstance(event, DownloadStatusInfo)
             assert event.status == DownloadStatus.FAILED

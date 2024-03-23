@@ -23,7 +23,7 @@ def extract_percentage_progress(progress_string: str) -> int:
     return round(float(PROGRESS_PATTERN.search(progress_string).group(1)))
 
 
-def get_file_size(file_path: Path) -> (int, str):
+def get_file_size(file_path: Path) -> tuple[int, str]:
     """
     Return file in bytes and human readable file size string.
     """
@@ -39,11 +39,7 @@ def get_content_disposition_header_value(filename: str) -> str:
     content_disposition_type: str = "attachment"
     content_disposition_filename = quote(filename)
     if content_disposition_filename != filename:
-        content_disposition = "{}; filename*=utf-8''{}".format(
-            content_disposition_type, content_disposition_filename
-        )
+        content_disposition = "{}; filename*=utf-8''{}".format(content_disposition_type, content_disposition_filename)
     else:
-        content_disposition = '{}; filename="{}"'.format(
-            content_disposition_type, filename
-        )
+        content_disposition = '{}; filename="{}"'.format(content_disposition_type, filename)
     return content_disposition
