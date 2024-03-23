@@ -29,7 +29,7 @@ class DetaBaseDataSourceConfig(BaseConfig):
     def get_datasource(self) -> IDataSource:
         return DetaDB(self.deta_key, self.deta_base)
 
-    def __hash__(self):  # make hashable BaseModel subclass
+    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
         attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
 
@@ -152,7 +152,7 @@ class Settings(BaseConfig):
 
     # In order to avoid TypeError: unhashable type: 'Settings' when overidding
     # dependencies.get_settings in tests.py __hash__ should be implemented
-    def __hash__(self):  # make hashable BaseModel subclass
+    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
         attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
 
