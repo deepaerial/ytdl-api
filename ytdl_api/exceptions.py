@@ -22,16 +22,12 @@ def make_internal_error(
     )
 
 
-async def on_default_exception_handler(
-    logger: Logger, request: Request, exc: Exception
-):
+async def on_default_exception_handler(logger: Logger, request: Request, exc: Exception):
     logger.exception(exc)
     return make_internal_error()
 
 
-async def on_remote_disconnected(
-    logger: Logger, request: Request, exc: RemoteDisconnected
-):
+async def on_remote_disconnected(logger: Logger, request: Request, exc: RemoteDisconnected):
     logger.exception(exc)
     return make_internal_error("external-service-network-error")
 
@@ -46,9 +42,7 @@ async def on_runtimeerror(logger: Logger, request: Request, exc: RuntimeError):
     return make_internal_error()
 
 
-async def on_pytube_agerestricted_error(
-    logger: Logger, request: Request, exc: AgeRestrictedError
-):
+async def on_pytube_agerestricted_error(logger: Logger, request: Request, exc: AgeRestrictedError):
     logger.exception(exc)
     return make_internal_error(
         "age-restricted-content",
@@ -56,14 +50,13 @@ async def on_pytube_agerestricted_error(
         HTTP_401_UNAUTHORIZED,
     )
 
-async def on_pytube_regexmatch_error(
-    logger: Logger, request: Request, exc: RegexMatchError
-):
+
+async def on_pytube_regexmatch_error(logger: Logger, request: Request, exc: RegexMatchError):
     logger.exception(exc)
     return make_internal_error(
         "downloader-error",
         "Downloader encountered error. Please try again later or contact administrator",
-        HTTP_500_INTERNAL_SERVER_ERROR
+        HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 

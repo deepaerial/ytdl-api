@@ -1,5 +1,4 @@
 import datetime
-import typing
 from abc import ABC, abstractmethod
 
 from deta import Deta
@@ -16,9 +15,7 @@ class IDataSource(ABC):
     """
 
     @abstractmethod
-    def fetch_downloads(
-        self, client_id: str
-    ) -> typing.List[Download]:  # pragma: no cover
+    def fetch_downloads(self, client_id: str) -> list[Download]:  # pragma: no cover
         """
         Abstract method that returns list of clients downloads from data source.
         """
@@ -32,9 +29,7 @@ class IDataSource(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_download(
-        self, client_id: str, media_id: str
-    ) -> Download | None:  # pragma: no cover
+    def get_download(self, client_id: str, media_id: str) -> Download | None:  # pragma: no cover
         """
         Abstract method for fetching download instance from data source
         """
@@ -48,9 +43,7 @@ class IDataSource(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def update_download_progress(
-        self, progress_obj: DownloadStatusInfo
-    ):  # pragma: no cover
+    def update_download_progress(self, progress_obj: DownloadStatusInfo):  # pragma: no cover
         """
         Abstract method that updates progress for media item of specific user/client.
         """
@@ -87,9 +80,7 @@ class IDataSource(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def mark_as_failed(
-        self, download: Download, when_failed: datetime.datetime | None = None
-    ):  # pragma: no cover
+    def mark_as_failed(self, download: Download, when_failed: datetime.datetime | None = None):  # pragma: no cover
         """
         Method for setting download status to "failed" for download.
         """
@@ -105,11 +96,9 @@ class DetaDB(IDataSource):
         deta = Deta(deta_project_key)
         self.base = deta.Base(base_name)
 
-    def fetch_downloads(self, client_id: str) -> typing.List[Download]:
-        downloads = self.base.fetch(
-            {"client_id": client_id, "status?ne": DownloadStatus.DELETED}
-        ).items
-        return parse_obj_as(typing.List[Download], downloads)
+    def fetch_downloads(self, client_id: str) -> list[Download]:
+        downloads = self.base.fetch({"client_id": client_id, "status?ne": DownloadStatus.DELETED}).items
+        return parse_obj_as(list[Download], downloads)
 
     def put_download(self, download: Download):
         data = download.dict()
@@ -176,7 +165,7 @@ class DetaDB(IDataSource):
         """
         Soft deleting download for now.
         """
-        when_deleted = when_deleted or datetime.datetime.utcnow()
+        when_deleted = when_deleted or datetime.datetime.now(datetime.UTC)
         when_deleted_iso = when_deleted.isoformat()
         data = {"status": DownloadStatus.DELETED, "when_deleted": when_deleted_iso}
         self.base.update(data, key=download.media_id)
@@ -186,7 +175,7 @@ class DetaDB(IDataSource):
         download: Download,
         when_file_downloaded: datetime.datetime | None = None,
     ):
-        when_file_downloaded = when_file_downloaded or datetime.datetime.utcnow()
+        when_file_downloaded = when_file_downloaded or datetime.datetime.now(datetime.UTC)
         when_file_downloaded_iso = when_file_downloaded.isoformat()
         data = {
             "status": DownloadStatus.DOWNLOADED,
@@ -200,10 +189,8 @@ class DetaDB(IDataSource):
             self.base.delete(download["key"])
         self.base.client.close()
 
-    def mark_as_failed(
-        self, download: Download, when_failed: datetime.datetime | None = None
-    ):
-        when_failed = when_failed or datetime.datetime.utcnow()
+    def mark_as_failed(self, download: Download, when_failed: datetime.datetime | None = None):
+        when_failed = when_failed or datetime.datetime.now(datetime.UTC)
         when_failed_iso = when_failed.isoformat()
         data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
         self.base.update(data, download.media_id)

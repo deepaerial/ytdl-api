@@ -1,6 +1,6 @@
 import re
 import urllib.parse
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from pydantic import AnyHttpUrl
 
@@ -44,25 +44,23 @@ class YoutubeURL(AnyHttpUrl, str):
         query_params = urllib.parse.parse_qs(url.query)
         if "list" in query_params.keys():
             video_id = query_params["v"][0]
-            return YoutubeURL(
-                url=f"https://www.youtube.com/watch?v={video_id}", scheme="https"
-            )
+            return YoutubeURL(url=f"https://www.youtube.com/watch?v={video_id}", scheme="https")
         return self
 
 
 class DownloadDataInfo(TypedDict):
-    _eta_str: Optional[str]
-    _percent_str: Optional[str]
-    _speed_str: Optional[str]
-    _total_bytes_str: Optional[str]
+    _eta_str: str | None
+    _percent_str: str | None
+    _speed_str: str | None
+    _total_bytes_str: str | None
     status: str
     filename: str
     tmpfilename: str
     downloaded_bytes: int
     total_bytes: int
-    total_bytes_estimate: Optional[int]
+    total_bytes_estimate: int | None
     elapsed: int
-    eta: Optional[int]
-    speed: Optional[int]
-    fragment_index: Optional[int]
-    fragment_count: Optional[int]
+    eta: int | None
+    speed: int | None
+    fragment_index: int | None
+    fragment_count: int | None

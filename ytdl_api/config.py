@@ -1,8 +1,8 @@
 from functools import partial
-from pathlib import Path
-from typing import Any, Dict, List, Literal, Union
-
 from importlib.metadata import version
+from pathlib import Path
+from typing import Any, Literal
+
 from confz import BaseConfig, EnvSource
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,11 +29,8 @@ class DetaBaseDataSourceConfig(BaseConfig):
     def get_datasource(self) -> IDataSource:
         return DetaDB(self.deta_key, self.deta_base)
 
-    def __hash__(self):  # make hashable BaseModel subclass
-        attrs = tuple(
-            attr if not isinstance(attr, list) else ",".join(attr)
-            for attr in self.__dict__.values()
-        )
+    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
+        attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
 
 
@@ -83,14 +80,14 @@ class Settings(BaseConfig):
     description: str = "API for YTDL backend server."
     version: str = version("ytdl-api")
     disable_docs: bool = False
-    allow_origins: List[str] = []
+    allow_origins: list[str] = []
     cookie_samesite: str = "None"
     cookie_secure: bool = True
     cookie_httponly: bool = True
 
     downloader: DownloaderType = DownloaderType.PYTUBE
     datasource: DetaBaseDataSourceConfig
-    storage: Union[LocalStorageConfig, DetaDriveStorageConfig]
+    storage: LocalStorageConfig | DetaDriveStorageConfig
 
     CONFIG_SOURCES = EnvSource(
         allow_all=True,
@@ -113,7 +110,7 @@ class Settings(BaseConfig):
         """
         Generate FastAPI instance.
         """
-        kwargs: Dict[str, Any] = {
+        kwargs: dict[str, Any] = {
             "debug": __pydantic_self__.debug,
             "docs_url": __pydantic_self__.docs_url,
             "openapi_prefix": __pydantic_self__.openapi_prefix,
@@ -155,11 +152,8 @@ class Settings(BaseConfig):
 
     # In order to avoid TypeError: unhashable type: 'Settings' when overidding
     # dependencies.get_settings in tests.py __hash__ should be implemented
-    def __hash__(self):  # make hashable BaseModel subclass
-        attrs = tuple(
-            attr if not isinstance(attr, list) else ",".join(attr)
-            for attr in self.__dict__.values()
-        )
+    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
+        attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
 
     class Config:

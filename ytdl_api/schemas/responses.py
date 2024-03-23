@@ -1,5 +1,4 @@
 import datetime
-from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, Field
 
@@ -19,53 +18,43 @@ class DownloadResponse(BaseModel_):
     media_id: str = Field(..., description="Download id.")
     title: str = Field(..., description="Video title.")
     url: YoutubeURL = Field(..., description="URL of video.")
-    video_streams: List[VideoStream] = Field(
-        description="List of video streams.", default_factory=list
-    )
-    audio_streams: List[AudioStream] = Field(
-        description="List of audio streams.", default_factory=list
-    )
-    video_stream_id: Optional[str] = Field(
-        None, description="Video stream ID (downloaded)."
-    )
-    audio_stream_id: Optional[str] = Field(
-        None, description="Audio stream ID (downloaded)."
-    )
+    video_streams: list[VideoStream] = Field(description="list of video streams.", default_factory=list)
+    audio_streams: list[AudioStream] = Field(description="list of audio streams.", default_factory=list)
+    video_stream_id: str | None = Field(None, description="Video stream ID (downloaded).")
+    audio_stream_id: str | None = Field(None, description="Audio stream ID (downloaded).")
     media_format: MediaFormat = Field(
-        None,
+        ...,
         description="Video or audio (when extracting) format of file.",
     )
     duration: int = Field(..., description="Video duration (in milliseconds).")
-    filesize_hr: Optional[str] = Field(
+    filesize_hr: str | None = Field(
         None,
         description="Video/audio file size in human-readable format.",
     )
-    thumbnail_url: Union[AnyHttpUrl, str] = Field(..., description="Video thumbnail.")
-    status: DownloadStatus = Field(
-        DownloadStatus.STARTED, description="Download status"
-    )
+    thumbnail_url: AnyHttpUrl | str = Field(..., description="Video thumbnail.")
+    status: DownloadStatus = Field(DownloadStatus.STARTED, description="Download status")
     when_submitted: datetime.datetime = Field(
-        default_factory=datetime.datetime.utcnow,
+        ...,
         description="Date & time in UTC when download was submitted to API.",
     )
-    when_started_download: Optional[datetime.datetime] = Field(
+    when_started_download: datetime.datetime | None = Field(
         None, description="Date & time in UTC when download started."
     )
-    when_download_finished: Optional[datetime.datetime] = Field(
+    when_download_finished: datetime.datetime | None = Field(
         None, description="Date & time in UTC when download finished."
     )
-    when_file_downloaded: Optional[datetime.datetime] = Field(
+    when_file_downloaded: datetime.datetime | None = Field(
         None, description="Date & time in UTC when file was downloaded."
     )
-    when_deleted: Optional[datetime.datetime] = Field(
+    when_deleted: datetime.datetime | None = Field(
         None, description="Date & time in UTC when download was soft-deleted."
     )
 
 
 class DownloadsResponse(BaseModel_):
-    downloads: List[DownloadResponse] = Field(
+    downloads: list[DownloadResponse] = Field(
         ...,
-        description="List of pending and finished downloads",
+        description="list of pending and finished downloads",
     )
 
 
@@ -87,8 +76,6 @@ class VideoInfoResponse(BaseModel_):
     title: str = Field(..., description="Video title")
     duration: int = Field(..., description="Video length in seconds")
     thumbnail_url: AnyHttpUrl = Field(..., description="Video thumbnail")
-    audio_streams: List[AudioStream] = Field([], description="Available audio streams")
-    video_streams: List[VideoStream] = Field([], description="Available video streams")
-    media_formats: List[MediaFormat] = Field(
-        list(MediaFormat), description="Available media formats"
-    )
+    audio_streams: list[AudioStream] = Field([], description="Available audio streams")
+    video_streams: list[VideoStream] = Field([], description="Available video streams")
+    media_formats: list[MediaFormat] = Field(list(MediaFormat), description="Available media formats")

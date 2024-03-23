@@ -14,15 +14,11 @@ class IStorage(abc.ABC):
     """
 
     @abc.abstractmethod
-    def save_download_from_file(
-        self, download: Download, path: Path
-    ) -> str:  # pragma: no cover
+    def save_download_from_file(self, download: Download, path: Path) -> str:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_download(
-        self, storage_file_name: str
-    ) -> Iterator[bytes] | None:  # pragma: no cover
+    def get_download(self, storage_file_name: str) -> Iterator[bytes] | None:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
