@@ -18,8 +18,8 @@ def mocked_settings(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Settings, None, None]:
     # ignoring datasource config as in this test it's not needed
-    monkeypatch.setenv("DATASOURCE__DETA_KEY", "*****")
-    monkeypatch.setenv("DATASOURCE__DETA_BASE", "*****")
+    monkeypatch.setenv("DATASOURCE__DETA__KEY", "*****")
+    monkeypatch.setenv("DATASOURCE__DETA__BASE", "*****")
     data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],

@@ -114,7 +114,7 @@ async def submit_download(
 )
 async def download_file(
     media_id: str = Query(..., alias="mediaId", description="Download id"),
-    uid: str = Depends(dependencies.get_uid_dependency_factory(raise_error_on_empty=True)),
+    uid: str = Depends(get_uid_or_403),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
     storage: storage.IStorage = Depends(dependencies.get_storage),
 ):

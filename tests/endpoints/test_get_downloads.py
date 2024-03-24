@@ -18,3 +18,9 @@ def test_get_downloads(uid: str, app_client: TestClient, mock_persisted_download
     assert (
         datetime.fromisoformat(json_response["downloads"][0]["whenSubmitted"]) == mock_persisted_download.when_submitted
     )
+
+
+def test_get_downloads_no_cookie(app_client: TestClient):
+    response = app_client.get("/api/downloads")
+    assert response.status_code == 403
+    assert response.json()["detail"] == "No cookie provided :("
