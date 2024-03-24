@@ -94,10 +94,8 @@ class Settings(BaseConfig):
 
     def __setup_endpoints(__pydantic_self__, app: FastAPI):
         from ..endpoints import router
-        from ..enpoints_403 import router as router_403
 
         app.include_router(router, prefix="/api")
-        app.include_router(router_403, prefix="")
 
     def __setup_exception_handlers(__pydantic_self__, app: FastAPI):
         from ..exceptions import ERROR_HANDLERS
