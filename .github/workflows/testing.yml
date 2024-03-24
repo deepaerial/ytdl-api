@@ -10,13 +10,6 @@ on:
       - tests/**
       - poetry.lock
       - .github/workflows/**
-  push:
-    branches:
-      - master
-    paths:
-      - ytdl_api/**
-      - tests/**
-      - poetry.lock
   workflow_dispatch:
 jobs:
   ruff:

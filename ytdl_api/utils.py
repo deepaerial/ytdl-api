@@ -1,6 +1,7 @@
 import logging
 import re
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import quote
 
@@ -13,6 +14,14 @@ PROGRESS_PATTERN = re.compile(r"(\d+.?\d+)?%")
 
 def get_unique_id() -> str:
     return uuid.uuid4().hex
+
+
+def get_datetime_now() -> datetime:
+    return datetime.now(UTC)
+
+
+def get_epoch_now() -> int:
+    return int(get_datetime_now().timestamp())
 
 
 def extract_percentage_progress(progress_string: str) -> int:
