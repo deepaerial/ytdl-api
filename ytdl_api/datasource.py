@@ -6,6 +6,7 @@ from pydantic import parse_obj_as
 
 from .constants import DownloadStatus
 from .schemas.models import Download, DownloadStatusInfo
+from .utils import get_datetime_now
 
 
 class IDataSource(ABC):
@@ -97,12 +98,11 @@ class DetaDB(IDataSource):
         self.base = deta.Base(base_name)
 
     def fetch_downloads(self, client_id: str) -> list[Download]:
-        downloads = self.base.fetch({"client_id": client_id, "status?ne": DownloadStatus.DELETED}).items
+        downloads = self.base.fetch({"client_id": client_id, "status?ne": DownloadStatus.DELETED}, desc=True).items
         return parse_obj_as(list[Download], downloads)
 
     def put_download(self, download: Download):
         data = download.dict()
-        key = data["media_id"]
         data["when_submitted"] = download.when_submitted.isoformat()
         if download.when_started_download:
             data["when_started_download"] = download.when_started_download.isoformat()
@@ -114,7 +114,7 @@ class DetaDB(IDataSource):
             data["when_deleted"] = download.when_deleted.isoformat()
         if download.when_failed:
             data["when_failed"] = download.when_failed.isoformat()
-        self.base.put(data, key)
+        self.base.put(data, download.key)
 
     def get_download(self, client_id: str, media_id: str) -> Download | None:
         data = next(
@@ -124,7 +124,7 @@ class DetaDB(IDataSource):
                         "client_id": client_id,
                         "media_id": media_id,
                         "status?ne": DownloadStatus.DELETED,
-                    }
+                    },
                 ).items
             ),
             None,
@@ -149,13 +149,13 @@ class DetaDB(IDataSource):
             data["when_deleted"] = download.when_deleted.isoformat()
         if download.when_failed:
             data["when_failed"] = download.when_failed.isoformat()
-        self.base.update(data, download.media_id)
+        self.base.update(data, download.key)
 
     def update_download_progress(self, progress_obj: DownloadStatusInfo):
         media_id = progress_obj.media_id
         status = progress_obj.status
         progress = progress_obj.progress
-        self.base.update({"status": status, "progress": progress}, media_id)
+        self.base.update({"status": status, "progress": progress, "media_id": media_id}, progress_obj.key)
 
     def delete_download(
         self,
@@ -165,23 +165,23 @@ class DetaDB(IDataSource):
         """
         Soft deleting download for now.
         """
-        when_deleted = when_deleted or datetime.datetime.now(datetime.UTC)
+        when_deleted = when_deleted or get_datetime_now()
         when_deleted_iso = when_deleted.isoformat()
         data = {"status": DownloadStatus.DELETED, "when_deleted": when_deleted_iso}
-        self.base.update(data, key=download.media_id)
+        self.base.update(data, key=download.key)
 
     def mark_as_downloaded(
         self,
         download: Download,
         when_file_downloaded: datetime.datetime | None = None,
     ):
-        when_file_downloaded = when_file_downloaded or datetime.datetime.now(datetime.UTC)
+        when_file_downloaded = when_file_downloaded or get_datetime_now()
         when_file_downloaded_iso = when_file_downloaded.isoformat()
         data = {
             "status": DownloadStatus.DOWNLOADED,
             "when_file_downloaded": when_file_downloaded_iso,
         }
-        self.base.update(data, download.media_id)
+        self.base.update(data, download.key)
 
     def clear_downloads(self):
         all_downloads = self.base.fetch().items
@@ -190,7 +190,7 @@ class DetaDB(IDataSource):
         self.base.client.close()
 
     def mark_as_failed(self, download: Download, when_failed: datetime.datetime | None = None):
-        when_failed = when_failed or datetime.datetime.now(datetime.UTC)
+        when_failed = when_failed or get_datetime_now()
         when_failed_iso = when_failed.isoformat()
         data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
-        self.base.update(data, download.media_id)
+        self.base.update(data, download.key)

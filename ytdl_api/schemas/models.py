@@ -1,11 +1,10 @@
 import datetime
-from functools import partial
 
 from pydantic import AnyHttpUrl, Field
 
 from ..constants import DownloadStatus, MediaFormat
 from ..types import YoutubeURL
-from ..utils import get_unique_id
+from ..utils import get_datetime_now, get_epoch_now, get_unique_id
 from .base import BaseModel_
 
 
@@ -23,6 +22,7 @@ class AudioStream(BaseStream):
 
 
 class Download(BaseModel_):
+    epoch: int = Field(description="Epoch timestamp", default_factory=get_epoch_now)
     client_id: str = Field(..., description="Client ID")
     media_id: str = Field(description="Download id", default_factory=get_unique_id)
     title: str = Field(..., description="Video title")
@@ -43,7 +43,7 @@ class Download(BaseModel_):
     file_path: str | None = Field(None, description="Path to file")
     progress: int = Field(0, description="Download progress in %")
     when_submitted: datetime.datetime = Field(
-        default_factory=partial(datetime.datetime.now, datetime.UTC),
+        default_factory=get_datetime_now,
         description="Date & time in UTC when download was submitted to API.",
     )
     when_started_download: datetime.datetime | None = Field(
@@ -63,6 +63,13 @@ class Download(BaseModel_):
     )
 
     @property
+    def key(self) -> str:
+        """
+        Key used for PK in database.
+        """
+        return f"{self.epoch}"
+
+    @property
     def storage_filename(self) -> str:
         """
         File name used when storing download in file storage.
@@ -78,6 +85,7 @@ class Download(BaseModel_):
 
 
 class DownloadStatusInfo(BaseModel_):
+    key: str = Field(..., description="Unique key used in database.")
     title: str = Field(..., description="Video/audio title")
     filesize_hr: str | None = Field(None, description="Video/audio file size in human-readable format")
     client_id: str = Field(..., description="Id of client")

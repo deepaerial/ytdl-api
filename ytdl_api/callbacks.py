@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from logging import Logger
 from pathlib import Path
 from typing import Any, Callable, Coroutine
@@ -11,7 +10,7 @@ from .queue import NotificationQueue
 from .schemas.models import Download, DownloadStatusInfo
 from .storage import IStorage
 from .types import DownloadDataInfo
-from .utils import extract_percentage_progress, get_file_size
+from .utils import extract_percentage_progress, get_datetime_now, get_file_size
 
 
 async def noop_callback(*args, **kwargs):  # pragma: no cover
@@ -31,11 +30,12 @@ async def on_download_start_callback(
     queue: NotificationQueue,
 ):
     download.status = DownloadStatus.DOWNLOADING
-    download.when_started_download = datetime.now(UTC)
+    download.when_started_download = get_datetime_now()
     datasource.update_download(download)
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
+            key=download.key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,
@@ -56,6 +56,7 @@ async def on_pytube_progress_callback(
     Callback which will be used in Pytube's progress update callback
     """
     download_proress = DownloadStatusInfo(
+        key=download.key,
         title=download.title,
         client_id=download.client_id,
         media_id=download.media_id,
@@ -75,6 +76,7 @@ async def on_ytdlp_progress_callback(progress: DownloadDataInfo, **kwargs):
     queue: NotificationQueue = kwargs["queue"]
     progress = extract_percentage_progress(progress.get("_percent_str"))
     download_proress = DownloadStatusInfo(
+        key=download.key,
         title=download.title,
         client_id=download.client_id,
         media_id=download.media_id,
@@ -100,6 +102,7 @@ async def on_start_converting(
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
+            key=download.key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,
@@ -142,12 +145,13 @@ async def on_finish_callback(
     download.progress = 100
     download.filesize = file_size_bytes
     download.filesize_hr = file_size_hr
-    download.when_download_finished = datetime.now(UTC)
+    download.when_download_finished = get_datetime_now()
     datasource.update_download(download)
     logger.debug(f'Download status for ({download.media_id}): {download.filename} updated to "{status}"')
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
+            key=download.key,
             title=download.title,
             filesize_hr=file_size_hr,
             client_id=download.client_id,
@@ -175,6 +179,7 @@ async def on_error_callback(
     await queue.put(
         download.client_id,
         download_progress=DownloadStatusInfo(
+            key=download.key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,

@@ -1,5 +1,4 @@
 import inspect
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import Generator
 
@@ -11,6 +10,7 @@ from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.schemas.models import Download
 from ytdl_api.storage import DetaDriveStorage
+from ytdl_api.utils import get_datetime_now
 
 
 @pytest.fixture()
@@ -89,7 +89,7 @@ def example_download() -> Download:
         "filesize": 1024,
         "status": DownloadStatus.FINISHED,
         "progress": 0,
-        "when_started_download": datetime.now(UTC),
+        "when_started_download": get_datetime_now(),
     }
     download = parse_obj_as(Download, download_data)
     return download
