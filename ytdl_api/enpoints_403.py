@@ -1,6 +1,6 @@
 import secrets
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
+from fastapi import APIRouter, Cookie, Depends, FastAPI, HTTPException, Response
 from starlette import status
 
 
@@ -45,3 +45,8 @@ async def get_api_version(
 ):
     ...
     return status.HTTP_200_OK
+
+
+if __name__ == "__main__":
+    fastapi_app = FastAPI()
+    fastapi_app.add_router(router)
