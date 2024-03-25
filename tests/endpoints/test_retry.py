@@ -24,6 +24,25 @@ def test_retry_failed_download(
     assert response.status_code == 200
 
 
+def test_retry_download_with_no_cookies(
+    uid: str,
+    app_client: TestClient,
+    mocked_failed_media_file: Download,
+    mocker: MockerFixture,
+    clear_datasource,
+):
+    """
+    Test if failed download can be retried.
+    """
+    # Mocking BackgroundTasks because we don't actually want to start process of downloading video
+    mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
+    response = app_client.put(
+        "/api/retry",
+        params={"mediaId": mocked_failed_media_file.media_id},
+    )
+    assert response.status_code == 403
+
+
 def test_retry_downloading_download(
     uid: str,
     app_client: TestClient,

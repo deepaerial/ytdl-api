@@ -47,7 +47,7 @@ async def get_api_version(
     responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}},
 )
 async def get_downloads(
-    uid: str = Depends(get_uid_or_403),
+    uid: str = Depends(dependencies.get_uid_dependency_factory(raise_error_on_empty=True)),
     datasource: datasource.IDataSource = Depends(dependencies.get_database),
 ):
     """
