@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Literal
 
 from confz import BaseConfig
 from pydantic import root_validator, validator
@@ -44,9 +45,10 @@ class StorageConfig(BaseConfig):
 
     local: LocalStorageConfig | None = None
     deta: DetaDriveStorageConfig | None = None
+    preffered: Literal["local", "deta"] = "local"
 
     def get_storage(self) -> IStorage:
-        if self.deta:
+        if self.deta is not None and self.preffered == "deta":
             return self.deta.get_storage()
         return self.local.get_storage()
 

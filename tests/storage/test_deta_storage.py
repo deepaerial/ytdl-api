@@ -20,6 +20,7 @@ def mocked_settings(
     # ignoring datasource config as in this test it's not needed
     monkeypatch.setenv("DATASOURCE__DETA__KEY", "*****")
     monkeypatch.setenv("DATASOURCE__DETA__BASE", "*****")
+    monkeypatch.setenv("STORAGE__PREFFERED", "deta")
     data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
