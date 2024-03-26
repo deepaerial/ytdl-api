@@ -67,8 +67,8 @@ def deta_testbase() -> str:
 def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str) -> Iterable[Settings]:
     monkeypatch.setenv("DEBUG", True)
     monkeypatch.setenv("DOWNLOADER", "pytube")
-    monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
-    monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
+    monkeypatch.setenv("DATASOURCE__DETA__BASE", deta_testbase)
+    monkeypatch.setenv("STORAGE__LOCAL__PATH", fake_media_path.as_posix())
     data_source = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
@@ -82,8 +82,8 @@ def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testba
 @pytest.fixture()
 def datasource(settings: Settings):
     return DetaDB(
-        deta_project_key=settings.datasource.deta_key,
-        base_name=settings.datasource.deta_base,
+        deta_project_key=settings.datasource.deta.key,
+        base_name=settings.datasource.deta.base,
     )
 
 

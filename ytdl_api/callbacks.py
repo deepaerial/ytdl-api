@@ -16,7 +16,7 @@ from .utils import extract_percentage_progress, get_datetime_now, get_file_size
 async def noop_callback(*args, **kwargs):  # pragma: no cover
     """
     Empty on downaload progess callback. Use as default/placeholder callback for
-    - on start downaload event
+    - on start download event
     - on download progress event
     - on start converting event
     - on download finish event

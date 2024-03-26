@@ -26,7 +26,7 @@ def settings(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Settings, None, None]:
     monkeypatch.setenv("DOWNLOADER", "yt-dlp")
-    monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
+    monkeypatch.setenv("DATASOURCE__DETA__BASE", deta_testbase)
     monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
     data_source = EnvSource(
         allow_all=True,

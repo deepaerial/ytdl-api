@@ -9,60 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import validator
 from starlette.middleware import Middleware
 
-from .constants import DownloaderType
-from .datasource import DetaDB, IDataSource
-from .storage import DetaDriveStorage, IStorage, LocalFileStorage
-from .utils import LOGGER
+from ..constants import DownloaderType
+from ..utils import LOGGER
+from .datasources import DataSourceConfig
+from .storages import StorageConfig
 
-REPO_PATH = (Path(__file__).parent / "..").resolve()
+REPO_PATH = (Path(__file__).parent / ".." / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
-
-
-class DetaBaseDataSourceConfig(BaseConfig):
-    """
-    Deta Base DB datasource config.
-    """
-
-    deta_key: str
-    deta_base: str
-
-    def get_datasource(self) -> IDataSource:
-        return DetaDB(self.deta_key, self.deta_base)
-
-    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
-        attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
-        return hash((type(self),) + attrs)
-
-
-class LocalStorageConfig(BaseConfig):
-    """
-    Local filesystem storage config.
-    """
-
-    path: Path
-
-    @validator("path")
-    def validate_path(cls, value):
-        media_path = Path(value)
-        if not media_path.exists():  # pragma: no cover
-            print(f'Media path "{value}" does not exist...Creating...')
-            media_path.mkdir(parents=True)
-        return value
-
-    def get_storage(self) -> IStorage:
-        return LocalFileStorage(self.path)
-
-
-class DetaDriveStorageConfig(BaseConfig):
-    """
-    Deta Drive storage config.
-    """
-
-    deta_key: str
-    deta_drive_name: str
-
-    def get_storage(self) -> IStorage:
-        return DetaDriveStorage(self.deta_key, self.deta_drive_name)
 
 
 class Settings(BaseConfig):
@@ -86,8 +39,8 @@ class Settings(BaseConfig):
     cookie_httponly: bool = True
 
     downloader: DownloaderType = DownloaderType.PYTUBE
-    datasource: DetaBaseDataSourceConfig
-    storage: LocalStorageConfig | DetaDriveStorageConfig
+    datasource: DataSourceConfig
+    storage: StorageConfig
 
     CONFIG_SOURCES = EnvSource(
         allow_all=True,
@@ -140,12 +93,12 @@ class Settings(BaseConfig):
         return app
 
     def __setup_endpoints(__pydantic_self__, app: FastAPI):
-        from .endpoints import router
+        from ..endpoints import router
 
         app.include_router(router, prefix="/api")
 
     def __setup_exception_handlers(__pydantic_self__, app: FastAPI):
-        from .exceptions import ERROR_HANDLERS
+        from ..exceptions import ERROR_HANDLERS
 
         for error, handler in ERROR_HANDLERS:
             app.add_exception_handler(error, partial(handler, LOGGER))  # type: ignore

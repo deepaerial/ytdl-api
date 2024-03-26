@@ -66,14 +66,11 @@ def get_ytdlp_downloader(
     )
 
 
-def get_downloader(
-    settings: Settings = Depends(get_settings),
+def get_pytube_downloader(
     datasource: datasource.IDataSource = Depends(get_database),
     event_queue: queue.NotificationQueue = Depends(get_notification_queue),
     storage: storage.IStorage = Depends(get_storage),
-) -> downloaders.IDownloader:
-    if settings.downloader == DownloaderType.YTDLP:
-        return get_ytdlp_downloader(datasource, event_queue, storage)
+) -> downloaders.PytubeDownloader:
     on_download_started_hook = partial(on_download_start_callback, datasource=datasource, queue=event_queue)
     on_progress_hook = partial(on_pytube_progress_callback, datasource=datasource, queue=event_queue)
     on_converting_hook = partial(on_start_converting, datasource=datasource, queue=event_queue)
@@ -99,9 +96,20 @@ def get_downloader(
     )
 
 
+def get_downloader(
+    settings: Settings = Depends(get_settings),
+    datasource: datasource.IDataSource = Depends(get_database),
+    event_queue: queue.NotificationQueue = Depends(get_notification_queue),
+    storage: storage.IStorage = Depends(get_storage),
+) -> downloaders.IDownloader:
+    if settings.downloader == DownloaderType.YTDLP:
+        return get_ytdlp_downloader(datasource, event_queue, storage)
+    return get_pytube_downloader(datasource, event_queue, storage)
+
+
 def get_uid_dependency_factory(raise_error_on_empty: bool = False):
     """
-    Factory function fore returning dependency that fetches client ID.
+    Factory function for returning dependency that fetches client ID.
     """
 
     def get_uid(
