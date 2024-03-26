@@ -109,7 +109,7 @@ def get_downloader(
 
 def get_uid_dependency_factory(raise_error_on_empty: bool = False):
     """
-    Factory function fore returning dependency that fetches client ID.
+    Factory function for returning dependency that fetches client ID.
     """
 
     def get_uid(
