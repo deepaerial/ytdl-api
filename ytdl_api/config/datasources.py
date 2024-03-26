@@ -28,9 +28,7 @@ class DataSourceConfig(BaseConfig):
     deta: DetaBaseDataSourceConfig | None = None
 
     def get_datasource(self) -> IDataSource:
-        if self.deta:
-            return self.deta.get_datasource()
-        raise ValueError("No datasource config provided.")
+        return self.deta.get_datasource()
 
     @root_validator
     def validate_datasources(cls, values):

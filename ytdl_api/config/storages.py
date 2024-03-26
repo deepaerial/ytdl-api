@@ -46,11 +46,9 @@ class StorageConfig(BaseConfig):
     deta: DetaDriveStorageConfig | None = None
 
     def get_storage(self) -> IStorage:
-        if self.local:
-            return self.local.get_storage()
         if self.deta:
             return self.deta.get_storage()
-        raise ValueError("No storage config provided.")
+        return self.local.get_storage()
 
     @root_validator
     def validate_storages(cls, values):
