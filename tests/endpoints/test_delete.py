@@ -4,6 +4,11 @@ from ytdl_api.datasource import IDataSource
 from ytdl_api.schemas.models import Download
 
 
+def test_delete_no_cookie_provided(app_client: TestClient):
+    response = app_client.delete("/api/delete", params={"mediaId": -1})
+    assert response.status_code == 403
+
+
 def test_delete_non_existing_download(app_client: TestClient):
     response = app_client.delete("/api/delete", params={"mediaId": -1}, cookies={"uid": "-1"})
     assert response.status_code == 404

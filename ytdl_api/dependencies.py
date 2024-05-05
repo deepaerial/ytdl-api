@@ -101,7 +101,7 @@ def get_downloader(
 
 def get_uid_dependency_factory(raise_error_on_empty: bool = False):
     """
-    Factory function fore returning dependency that fetches client ID.
+    Factory function for returning dependency that fetches client ID.
     """
 
     def get_uid(
@@ -113,7 +113,10 @@ def get_uid_dependency_factory(raise_error_on_empty: bool = False):
         Dependency for fetchng user ID from cookie or setting it in cookie if absent.
         """
         if uid is None and raise_error_on_empty:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No cookie provided :(")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="No cookie provided :( Make sure that your browser does not block cookies.",
+            )
         elif uid is None and not raise_error_on_empty:
             uid = secrets.token_hex(16)
             response.set_cookie(

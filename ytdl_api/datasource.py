@@ -114,7 +114,7 @@ class DetaDB(IDataSource):
             data["when_deleted"] = download.when_deleted.isoformat()
         if download.when_failed:
             data["when_failed"] = download.when_failed.isoformat()
-        self.base.put(data, download.key)
+        self.base.put(data, download.deta_db_key)
 
     def get_download(self, client_id: str, media_id: str) -> Download | None:
         data = next(
@@ -149,7 +149,7 @@ class DetaDB(IDataSource):
             data["when_deleted"] = download.when_deleted.isoformat()
         if download.when_failed:
             data["when_failed"] = download.when_failed.isoformat()
-        self.base.update(data, download.key)
+        self.base.update(data, download.deta_db_key)
 
     def update_download_progress(self, progress_obj: DownloadStatusInfo):
         media_id = progress_obj.media_id
@@ -168,7 +168,7 @@ class DetaDB(IDataSource):
         when_deleted = when_deleted or get_datetime_now()
         when_deleted_iso = when_deleted.isoformat()
         data = {"status": DownloadStatus.DELETED, "when_deleted": when_deleted_iso}
-        self.base.update(data, key=download.key)
+        self.base.update(data, key=download.deta_db_key)
 
     def mark_as_downloaded(
         self,
@@ -181,7 +181,7 @@ class DetaDB(IDataSource):
             "status": DownloadStatus.DOWNLOADED,
             "when_file_downloaded": when_file_downloaded_iso,
         }
-        self.base.update(data, download.key)
+        self.base.update(data, download.deta_db_key)
 
     def clear_downloads(self):
         all_downloads = self.base.fetch().items
@@ -193,4 +193,4 @@ class DetaDB(IDataSource):
         when_failed = when_failed or get_datetime_now()
         when_failed_iso = when_failed.isoformat()
         data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
-        self.base.update(data, download.key)
+        self.base.update(data, download.deta_db_key)

@@ -11,10 +11,9 @@ def test_get_downloads(uid: str, app_client: TestClient, mock_persisted_download
     json_response = response.json()
     assert "downloads" in json_response
     assert len(json_response) == 1
-    assert json_response["downloads"][0]["title"] == mock_persisted_download.title
-    assert json_response["downloads"][0]["url"] == mock_persisted_download.url
-    assert json_response["downloads"][0]["mediaId"] == mock_persisted_download.media_id
-    assert "filesizeHr" in json_response["downloads"][0]
-    assert (
-        datetime.fromisoformat(json_response["downloads"][0]["whenSubmitted"]) == mock_persisted_download.when_submitted
-    )
+    download = json_response["downloads"][0]
+    assert download["title"] == mock_persisted_download.title
+    assert download["url"] == mock_persisted_download.url
+    assert download["mediaId"] == mock_persisted_download.media_id
+    assert "filesizeHr" in download
+    assert datetime.fromisoformat(download["whenSubmitted"]) == mock_persisted_download.when_submitted
