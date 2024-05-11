@@ -88,6 +88,7 @@ pyhumps = "^3.7.2"
 pytube = "^15.0.0"
 yt-dlp = "^2023.12.30"
 humanize = "^4.8.0"
+croniter = "^2.0.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
