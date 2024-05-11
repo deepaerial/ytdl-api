@@ -116,7 +116,12 @@ class DetaDB(IDataSource):
         return parse_obj_as(list[Download], downloads)
 
     def fetch_downloads_till_datetime(self, till_when: datetime.datetime) -> list[Download]:
-        downloads = self.base.fetch({"when_submitted?lte": till_when.isoformat()}).items
+        downloads = self.base.fetch(
+            {
+                "when_submitted?lte": till_when.isoformat(),
+                "status?not_contains": [DownloadStatus.DELETED, DownloadStatus.DOWNLOADING, DownloadStatus.CONVERTING],
+            }
+        ).items
         return parse_obj_as(list[Download], downloads)
 
     def put_download(self, download: Download):
