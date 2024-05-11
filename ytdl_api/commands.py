@@ -6,7 +6,7 @@ from .storage import IStorage
 from .utils import get_datetime_now
 
 
-def hard_remove_downloads(storage: IStorage, datasource: IDataSource, expired: timedelta, logger: Logger):
+def remove_expired_downloads(storage: IStorage, datasource: IDataSource, expired: timedelta, logger: Logger):
     """
     Remove all expired downloads including media files associated with them. `expired` parameter
     is a timedelta object that specifies how old download has to be to be considered as expired.

@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from ytdl_api.commands import hard_remove_downloads
+from ytdl_api.commands import remove_expired_downloads
 from ytdl_api.datasource import IDataSource
 from ytdl_api.schemas.models import Download
 from ytdl_api.utils import get_datetime_now
@@ -62,8 +62,12 @@ def test_hard_remove_downloads(
     assert len(datasource.fetch_downloads_by_client_id(client_id)) == len(downloads)
 
     # Call the function
-    hard_remove_downloads(fake_local_storage, datasource, expiration_delta, mocked_logger)
+    remove_expired_downloads(fake_local_storage, datasource, expiration_delta, mocked_logger)
 
     mocked_logger.info.assert_called_with("Soft deleted expired downloads from database.")
 
     assert len(datasource.fetch_downloads_by_client_id(client_id)) == 2
+    expired_download1 = downloads[0]
+    assert datasource.get_download(expired_download1.client_id, expired_download1.key) is None
+    expired_download2 = downloads[1]
+    assert datasource.get_download(expired_download1.client_id, expired_download2.key) is None
