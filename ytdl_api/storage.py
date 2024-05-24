@@ -25,6 +25,10 @@ class IStorage(abc.ABC):
     def remove_download(self, storage_file_name: str):  # pragma: no cover
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def remove_download_batch(self, storage_file_names: list[str]):  # pragma: no cover
+        raise NotImplementedError
+
 
 def _read_file_at_chunks(file: Path) -> Iterator[bytes]:
     with file.open(mode="rb") as f:
@@ -55,6 +59,10 @@ class LocalFileStorage(IStorage):
         if download_file.exists():
             download_file.unlink()
 
+    def remove_download_batch(self, storage_file_names: list[str]):
+        for storage_file_name in storage_file_names:
+            self.remove_download(storage_file_name)
+
 
 class DetaDriveStorage(IStorage):
     """
@@ -79,3 +87,6 @@ class DetaDriveStorage(IStorage):
 
     def remove_download(self, storage_file_name: str):
         self.drive.delete(storage_file_name)
+
+    def remove_download_batch(self, storage_file_names: list[str]):
+        self.drive.delete_many(storage_file_names)

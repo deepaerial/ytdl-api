@@ -45,6 +45,7 @@ def get_example_download_instance(
     status: DownloadStatus = DownloadStatus.STARTED,
     file_path: str | None = None,
     progress: int = 0,
+    when_submitted: datetime | None = None,
     when_started_download: datetime | None = None,
 ) -> Download:
     download_data = {
@@ -58,4 +59,7 @@ def get_example_download_instance(
         "progress": progress,
         "when_started_download": when_started_download,
     }
+    if when_submitted:
+        download_data["when_submitted"] = when_submitted
+        download_data["epoch"] = int(when_submitted.timestamp())
     return parse_obj_as(Download, download_data)

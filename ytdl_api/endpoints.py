@@ -53,7 +53,7 @@ async def get_downloads(
     """
     Endpoint for fetching list of downloaded videos for current client/user.
     """
-    downloads = datasource.fetch_downloads(uid)
+    downloads = datasource.fetch_downloads_by_client_id(uid)
     return {"downloads": downloads}
 
 
@@ -94,7 +94,7 @@ async def submit_download(
     download = create_download_from_download_params(uid, download_params, downloader)
     datasource.put_download(download)
     background_tasks.add_task(downloader.download, download)
-    return {"downloads": datasource.fetch_downloads(uid)}
+    return {"downloads": datasource.fetch_downloads_by_client_id(uid)}
 
 
 @router.get(

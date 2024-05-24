@@ -1,9 +1,11 @@
+from contextlib import asynccontextmanager
 from functools import partial
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any, Literal
 
 from confz import BaseConfig, EnvSource
+from croniter import croniter
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import validator
@@ -89,6 +91,9 @@ class Settings(BaseConfig):
     datasource: DetaBaseDataSourceConfig
     storage: LocalStorageConfig | DetaDriveStorageConfig
 
+    expiration_period_in_seconds: int = 60 * 60 * 24  # 1 day in seconds
+    remove_expired_downloads_task_cron: str = "0 0 * * *"  # every day at midnight
+
     CONFIG_SOURCES = EnvSource(
         allow_all=True,
         deny=["title", "description", "version"],
@@ -99,6 +104,12 @@ class Settings(BaseConfig):
     @property
     def downloader_version(self) -> str:
         return version(self.downloader.value)
+
+    @validator("remove_expired_downloads_task_cron", pre=True)
+    def validate_remove_expired_downloads_task_cron(cls, value):
+        if croniter.is_valid(value):
+            return value
+        raise ValueError("Invalid cron expression value.")
 
     @validator("allow_origins", pre=True)
     def validate_allow_origins(cls, value):
@@ -132,7 +143,8 @@ class Settings(BaseConfig):
         }
         if __pydantic_self__.disable_docs:
             kwargs.update({"docs_url": None, "openapi_url": None, "redoc_url": None})
-        app = FastAPI(**kwargs)
+        lifespan = __pydantic_self__.__get_lifespan_function__()
+        app = FastAPI(**kwargs, lifespan=lifespan)
         __pydantic_self__.__setup_endpoints(app)
         __pydantic_self__.__setup_exception_handlers(app)
         LOGGER.setLevel(__pydantic_self__.logging_level)
@@ -149,6 +161,23 @@ class Settings(BaseConfig):
 
         for error, handler in ERROR_HANDLERS:
             app.add_exception_handler(error, partial(handler, LOGGER))  # type: ignore
+
+    def __get_lifespan_function__(__pydantic_self__):
+        from .commands import remove_expired_downloads_task
+        from .utils import repeat_at
+
+        partial_remove_expired_downloads = partial(remove_expired_downloads_task, __pydantic_self__, LOGGER)
+        cyclic_remove_expired_downloads_task = repeat_at(
+            cron=__pydantic_self__.remove_expired_downloads_task_cron, logger=LOGGER
+        )(partial_remove_expired_downloads)
+
+        @asynccontextmanager
+        async def lifespan_context(app: FastAPI):  # pragma: no cover
+            cyclic_remove_expired_downloads_task()
+            yield
+            LOGGER.debug("Application shutdown...")
+
+        return lifespan_context
 
     # In order to avoid TypeError: unhashable type: 'Settings' when overidding
     # dependencies.get_settings in tests.py __hash__ should be implemented

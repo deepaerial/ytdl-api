@@ -1,11 +1,15 @@
+import asyncio
 import logging
 import re
 import uuid
 from datetime import UTC, datetime
+from functools import wraps
 from pathlib import Path
 from urllib.parse import quote
 
 import humanize
+from croniter import croniter
+from starlette.concurrency import run_in_threadpool
 
 LOGGER = logging.getLogger("uvicorn")
 
@@ -52,3 +56,72 @@ def get_content_disposition_header_value(filename: str) -> str:
     else:
         content_disposition = '{}; filename="{}"'.format(content_disposition_type, filename)
     return content_disposition
+
+
+def get_sleep_time(cron) -> float:
+    """
+    This function returns the time delta between now and the next cron execution time.
+    Original source code copied from
+    https://github.com/priyanshu-panwar/fastapi-utilities/blob/master/fastapi_utilities/repeat/repeat_at.py
+    """
+    now = get_datetime_now()
+    cron = croniter(cron, now)
+    return (cron.get_next(datetime) - now).total_seconds()
+
+
+def repeat_at(
+    *,
+    cron: str,
+    logger: logging.Logger = None,
+    raise_exceptions: bool = False,
+    max_repetitions: int = None,
+):
+    """
+    Original source code copied from
+    https://github.com/priyanshu-panwar/fastapi-utilities/blob/master/fastapi_utilities/repeat/repeat_at.py
+    This function returns a decorator that makes a function execute periodically as per the cron expression provided.
+
+    :: Params ::
+    ------------
+    cron: str
+        Cron-style string for periodic execution, eg. '0 0 * * *' every midnight
+    logger: logging.Logger (default None)
+        Logger object to log exceptions
+    raise_exceptions: bool (default False)
+        Whether to raise exceptions or log them
+    max_repetitions: int (default None)
+        Maximum number of times to repeat the function. If None, repeat indefinitely.
+
+    """
+
+    def decorator(func):
+        is_coroutine = asyncio.iscoroutinefunction(func)
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            repititions = 0
+            if not croniter.is_valid(cron):
+                raise ValueError("Invalid cron expression")
+
+            async def loop(*args, **kwargs):
+                nonlocal repititions
+                while max_repetitions is None or repititions < max_repetitions:
+                    try:
+                        sleepTime = get_sleep_time(cron)
+                        await asyncio.sleep(sleepTime)
+                        if is_coroutine:
+                            await func(*args, **kwargs)
+                        else:
+                            await run_in_threadpool(func, *args, **kwargs)
+                    except Exception as e:
+                        if logger is not None:
+                            logger.exception(e)
+                        if raise_exceptions:
+                            raise e
+                    repititions += 1
+
+            asyncio.ensure_future(loop(*args, **kwargs))
+
+        return wrapper
+
+    return decorator
