@@ -172,7 +172,7 @@ class Settings(BaseConfig):
         )(partial_remove_expired_downloads)
 
         @asynccontextmanager
-        async def lifespan_context(app: FastAPI):
+        async def lifespan_context(app: FastAPI):  # pragma: no cover
             cyclic_remove_expired_downloads_task()
             yield
             LOGGER.debug("Application shutdown...")
