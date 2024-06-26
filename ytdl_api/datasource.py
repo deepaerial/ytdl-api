@@ -16,9 +16,16 @@ class IDataSource(ABC):
     """
 
     @abstractmethod
-    def fetch_downloads(self, client_id: str) -> list[Download]:  # pragma: no cover
+    def fetch_downloads_by_client_id(self, client_id: str) -> list[Download]:  # pragma: no cover
         """
         Abstract method that returns list of clients downloads from data source.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def fetch_downloads_till_datetime(self, till_when: datetime.datetime) -> list[Download]:  # pragma: no cover
+        """
+        Abstract method that returns list of downloads from data source till specific datetime.
         """
         raise NotImplementedError()
 
@@ -87,6 +94,13 @@ class IDataSource(ABC):
         """
         raise NotImplementedError()
 
+    @abstractmethod
+    def delete_download_batch(self, downloads: list[Download]):  # pragma: no cover
+        """
+        Abstract method for deleting multiple downloads from database.
+        """
+        raise NotImplementedError()
+
 
 class DetaDB(IDataSource):
     """
@@ -97,8 +111,17 @@ class DetaDB(IDataSource):
         deta = Deta(deta_project_key)
         self.base = deta.Base(base_name)
 
-    def fetch_downloads(self, client_id: str) -> list[Download]:
+    def fetch_downloads_by_client_id(self, client_id: str) -> list[Download]:
         downloads = self.base.fetch({"client_id": client_id, "status?ne": DownloadStatus.DELETED}, desc=True).items
+        return parse_obj_as(list[Download], downloads)
+
+    def fetch_downloads_till_datetime(self, till_when: datetime.datetime) -> list[Download]:
+        downloads = self.base.fetch(
+            {
+                "when_submitted?lte": till_when.isoformat(),
+                "status?not_contains": [DownloadStatus.DELETED, DownloadStatus.DOWNLOADING, DownloadStatus.CONVERTING],
+            }
+        ).items
         return parse_obj_as(list[Download], downloads)
 
     def put_download(self, download: Download):
@@ -193,4 +216,11 @@ class DetaDB(IDataSource):
         when_failed = when_failed or get_datetime_now()
         when_failed_iso = when_failed.isoformat()
         data = {"status": DownloadStatus.FAILED, "when_failed": when_failed_iso}
-        self.base.update(data, download.deta_db_key)
+        self.base.update(data, download.key)
+
+    def delete_download_batch(self, downloads: list[Download]):
+        """
+        Soft deleting data from database.
+        """
+        for download in downloads:
+            self.delete_download(download)
