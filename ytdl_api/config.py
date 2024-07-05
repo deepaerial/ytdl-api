@@ -36,6 +36,19 @@ class DetaBaseDataSourceConfig(BaseConfig):
         return hash((type(self),) + attrs)
 
 
+class SupabaseConfig(BaseConfig):
+    """
+    Supabase datasource config.
+    """
+
+    SUPABASE_PROJECT_URL: str
+    SUPABASE_PROJECT_API_KEY: str
+    SUPABASE_DATABASE_TABLE: str = "downloads"
+
+    def get_datasource(self) -> IDataSource:
+        return SupabaseDB(self.supabase_url, self.supabase_key, self.supabase_table)
+
+
 class LocalStorageConfig(BaseConfig):
     """
     Local filesystem storage config.
