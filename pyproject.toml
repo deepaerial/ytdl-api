@@ -70,7 +70,7 @@ profile = "black"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.6.0"
+version = "1.6.1"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"

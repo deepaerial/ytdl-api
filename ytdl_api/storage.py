@@ -24,7 +24,7 @@ class IStorage(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def remove_download_batch(self, storage_file_names: list[str]):  # pragma: no cover
+    def remove_download_batch(self, storage_file_names: list[str], skip_on_error: bool = None):  # pragma: no cover
         raise NotImplementedError
 
 
@@ -59,6 +59,10 @@ class LocalFileStorage(IStorage):
         else:
             raise FileNotFoundError(f"File {download_file.as_posix()} does not exist.")
 
-    def remove_download_batch(self, storage_file_names: list[str]):
+    def remove_download_batch(self, storage_file_names: list[str], skip_on_error: bool = False):
         for storage_file_name in storage_file_names:
-            self.remove_download(storage_file_name)
+            try:
+                self.remove_download(storage_file_name)
+            except FileNotFoundError as e:
+                if not skip_on_error:
+                    raise e
