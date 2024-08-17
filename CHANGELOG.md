@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.0] - 2-24-08-17
+## [1.7.0] - 2024-08-17
+### Fixed
+- FilenotFoundError when trying to remove file from local storage if it is not exists. Added flag to skip on error.
+
+## [1.6.0] - 2024-08-17
 ### Fixed
  - Local media manager not removing files.
 ### Removed
