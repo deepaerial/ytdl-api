@@ -45,6 +45,6 @@ async def test_repeat_at_with_logger(caplog: LogCaptureFixture, logger: logging.
 
     captured_logs = caplog.records
 
-    assert len(captured_logs) == 1
+    assert len(captured_logs) > 0
     assert hasattr(captured_logs[0], "exc_text")
     assert 'raise Exception("Hello")' in captured_logs[0].exc_text

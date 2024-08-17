@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -21,7 +22,7 @@ def mocked_logger():
 
 
 @pytest.fixture
-def example_expired_downloads(datasource: IDataSource):
+def example_expired_downloads(fake_media_path: Path, datasource: IDataSource):
     dt_now = get_datetime_now()
     expiration_delta = timedelta(days=7)
     expired_downloads = [
@@ -48,6 +49,7 @@ def example_expired_downloads(datasource: IDataSource):
         ),
     ]
     for download in expired_downloads:
+        Path(fake_media_path / download.storage_filename).touch()
         datasource.put_download(download)
     yield expiration_delta, expired_downloads
     datasource.clear_downloads()

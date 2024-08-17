@@ -119,7 +119,12 @@ class DetaDB(IDataSource):
         downloads = self.base.fetch(
             {
                 "when_submitted?lte": till_when.isoformat(),
-                "status?not_contains": [DownloadStatus.DELETED, DownloadStatus.DOWNLOADING, DownloadStatus.CONVERTING],
+                "status?not_contains": [
+                    DownloadStatus.STARTED,
+                    DownloadStatus.DELETED,
+                    DownloadStatus.DOWNLOADING,
+                    DownloadStatus.CONVERTING,
+                ],  # this condition seems not to work :(
             }
         ).items
         return parse_obj_as(list[Download], downloads)

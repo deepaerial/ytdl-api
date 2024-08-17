@@ -17,7 +17,7 @@ services:
     tty: true
     networks:
       - default
-  ytdl-api-testing:
+  tests:
     container_name: "ytdl-api-pytest"
     build: 
       context: .
