@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3] - 2-24-08-17
+### fixed
+ - Local media manager not removing files.
+
 ## [1.5.2] - 2024-07-05
 ### Changed
 - Bumped up version of yt-dlp from 2024.5.27 to 2024.7.1.

@@ -55,9 +55,11 @@ class LocalFileStorage(IStorage):
         return _read_file_at_chunks(download_file)
 
     def remove_download(self, storage_file_name: str):
-        download_file = Path(storage_file_name)
+        download_file = self.dowloads_dir / Path(storage_file_name)
         if download_file.exists():
             download_file.unlink()
+        else:
+            raise FileNotFoundError(f"File {download_file.as_posix()} does not exist.")
 
     def remove_download_batch(self, storage_file_names: list[str]):
         for storage_file_name in storage_file_names:
