@@ -13,7 +13,7 @@ from starlette.middleware import Middleware
 
 from .constants import DownloaderType
 from .datasource import DetaDB, IDataSource
-from .storage import DetaDriveStorage, IStorage, LocalFileStorage
+from .storage import IStorage, LocalFileStorage
 from .utils import LOGGER
 
 REPO_PATH = (Path(__file__).parent / "..").resolve()
@@ -55,18 +55,6 @@ class LocalStorageConfig(BaseConfig):
         return LocalFileStorage(self.path)
 
 
-class DetaDriveStorageConfig(BaseConfig):
-    """
-    Deta Drive storage config.
-    """
-
-    deta_key: str
-    deta_drive_name: str
-
-    def get_storage(self) -> IStorage:
-        return DetaDriveStorage(self.deta_key, self.deta_drive_name)
-
-
 class Settings(BaseConfig):
     """
     Application settings config
@@ -89,7 +77,7 @@ class Settings(BaseConfig):
 
     downloader: DownloaderType = DownloaderType.PYTUBE
     datasource: DetaBaseDataSourceConfig
-    storage: LocalStorageConfig | DetaDriveStorageConfig
+    storage: LocalStorageConfig
 
     expiration_period_in_seconds: int = 60 * 60 * 24  # 1 day in seconds
     remove_expired_downloads_task_cron: str = "0 0 * * *"  # every day at midnight

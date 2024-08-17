@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.5.3] - 2-24-08-17
-### fixed
+### Fixed
  - Local media manager not removing files.
+### Removed
+- Deta storage repo code and tests.
+- pdbpp from dev dependencies.
+### Changed
+- Updated yt-dlp from 2024.7.1 to version 2024.8.6.
 
 ## [1.5.2] - 2024-07-05
 ### Changed
