@@ -18,6 +18,11 @@ from ytdl_api.storage import LocalFileStorage
 
 from ..utils import EXAMPLE_VIDEO_PREVIEW, get_example_download_instance
 
+SKIP_REASON = (
+    "Skipped because of 'yt_dlp.utils.ExtractorError: Sign in to confirm you’re not a bot."
+    "This helps protect our community.' error"
+)
+
 
 @pytest.fixture()
 def settings(
@@ -52,6 +57,7 @@ def mock_persisted_download(uid: str, datasource: IDataSource) -> Generator[Down
     yield download
 
 
+@pytest.skip(SKIP_REASON)
 @pytest.mark.parametrize(
     "url",
     [
@@ -74,6 +80,7 @@ def test_get_video_info(url: YoutubeURL):
     assert isinstance(video_info.video_streams, list)
 
 
+@pytest.skip(SKIP_REASON)
 def test_download_video(
     settings: Settings,
     mock_persisted_download: Download,
@@ -91,6 +98,7 @@ def test_download_video(
     assert inspect.isgenerator(file_bytes)
 
 
+@pytest.skip(SKIP_REASON)
 def test_download_video_failed(
     settings: Settings,
     mock_persisted_download: Download,
@@ -109,6 +117,7 @@ def test_download_video_failed(
     assert file_bytes is None
 
 
+@pytest.skip(SKIP_REASON)
 def test_download_audio(
     settings: Settings,
     mock_persisted_download: Download,
