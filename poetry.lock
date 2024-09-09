@@ -1127,10 +1127,14 @@ version = "15.0.0"
 description = "Python 3 library for downloading YouTube Videos."
 optional = false
 python-versions = ">=3.7"
-files = [
-    {file = "pytube-15.0.0-py3-none-any.whl", hash = "sha256:07b9904749e213485780d7eb606e5e5b8e4341aa4dccf699160876da00e12d78"},
-    {file = "pytube-15.0.0.tar.gz", hash = "sha256:076052efe76f390dfa24b1194ff821d4e86c17d41cb5562f3a276a8bcbfc9d1d"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/Mohit-majumdar/pytube.git"
+reference = "master"
+resolved_reference = "114cb74cfd6e683510c6272051eea94f405d84ae"
 
 [[package]]
 name = "pytz"
@@ -1534,4 +1538,4 @@ test = ["pytest (>=8.1,<9.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1ed36af89af331c14bb7db3ea9b0b591383a0d99d6e27969d82a767b50028be7"
+content-hash = "926f7572e940e348d888f5394ce58cb495cada4112f39cb0f70434a976c909a6"
