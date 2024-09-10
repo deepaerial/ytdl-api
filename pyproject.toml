@@ -85,10 +85,10 @@ deta = "1.2.0"
 ffmpeg-python = "^0.2.0"
 confz = "2.0.1"
 pyhumps = "^3.7.2"
-pytube = {git = "https://github.com/Mohit-majumdar/pytube.git", rev = "master"}
 yt-dlp = "2024.8.6"
 humanize = "^4.8.0"
 croniter = "^2.0.5"
+pytubefix = "^6.15.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

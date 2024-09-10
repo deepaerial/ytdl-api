@@ -1122,19 +1122,15 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
-name = "pytube"
-version = "15.0.0"
-description = "Python 3 library for downloading YouTube Videos."
+name = "pytubefix"
+version = "6.15.4"
+description = "Python3 library for downloading YouTube Videos."
 optional = false
 python-versions = ">=3.7"
-files = []
-develop = false
-
-[package.source]
-type = "git"
-url = "https://github.com/Mohit-majumdar/pytube.git"
-reference = "master"
-resolved_reference = "114cb74cfd6e683510c6272051eea94f405d84ae"
+files = [
+    {file = "pytubefix-6.15.4-py3-none-any.whl", hash = "sha256:9840f1707676a9d597c6ff1f2237e58da64406362b3b44564da0185485ac6237"},
+    {file = "pytubefix-6.15.4.tar.gz", hash = "sha256:85bd649ef32173a14381ff452aa9032cbce8483b8f8d8afe002c54f2932c056d"},
+]
 
 [[package]]
 name = "pytz"
@@ -1538,4 +1534,4 @@ test = ["pytest (>=8.1,<9.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "926f7572e940e348d888f5394ce58cb495cada4112f39cb0f70434a976c909a6"
+content-hash = "18ac37391c90c3485be47d6ec55b99f6ac9929dd8a22aae48f930581142cae1d"

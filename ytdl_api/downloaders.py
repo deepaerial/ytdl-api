@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Literal, Optional
 
 import ffmpeg
-from pytube import StreamQuery, YouTube
+from pytubefix import StreamQuery, YouTube
 from yt_dlp import YoutubeDL
 
 from .callbacks import (

@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.6.2] - 2024-09-10
 ### Fixed
-- Changed version of pytube to https://github.com/Mohit-majumdar/pytube.git#master to fix issue with downloading videos.
-- Fix for error 400 and get_throttiling_function_name https://github.com/pytube/pytube/pull/1990
+- Changed version of pytube to pytubefix to fix issue with downloading videos.
 
 ## [1.6.1] - 2024-08-17
 ### Fixed
