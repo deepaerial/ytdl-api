@@ -93,7 +93,7 @@ def get_pytube_downloader(
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
         on_error_callback=on_error_hook,
-        proxies={"http": "203.115.101.55"},
+        proxies={"http": "4.159.29.241:8080"},
     )
 
 

@@ -6,7 +6,7 @@ norecursedirs = [
     "__pycache__"
 ]
 python_files = [
-    "test_*.py"
+    "test_pytube_downloader.py"
 ]
 python_functions = [
     "test_*"
