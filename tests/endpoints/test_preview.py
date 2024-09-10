@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from pytest_mock.plugin import MockerFixture
-from pytubefix.exceptions import VideoPrivate, LoginRequired
+from pytubefix.exceptions import LoginRequired, VideoPrivate
 
 from ytdl_api.schemas.responses import VideoInfoResponse
 
