@@ -87,13 +87,16 @@ def get_pytube_downloader(
         queue=event_queue,
         logger=LOGGER,
     )
+    from swiftshadow import QuickProxy
+
+    protocol, host = QuickProxy()
     return downloaders.PytubeDownloader(
         on_download_started_callback=on_download_started_hook,
         on_progress_callback=on_progress_hook,
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
         on_error_callback=on_error_hook,
-        proxies={"http": "179.96.28.58"},
+        proxies={protocol: host},
     )
 
 
