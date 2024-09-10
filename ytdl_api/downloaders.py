@@ -59,8 +59,26 @@ class PytubeDownloader(IDownloader):
     Downloader based on pytube library https://github.com/pytube/pytube
     """
 
+    def __init__(
+        self,
+        on_download_started_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_progress_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_converting_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_finish_callback: Optional[OnDownloadFinishedCallback] = None,
+        on_error_callback: Optional[OnErrorCallback] = None,
+        proxies: dict[str, str] | None = None,
+    ):
+        super().__init__(
+            on_download_started_callback,
+            on_progress_callback,
+            on_converting_callback,
+            on_finish_callback,
+            on_error_callback,
+        )
+        self.proxies = proxies
+
     def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
-        video = YouTube(url)
+        video = YouTube(url, proxies=self.proxies)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
             AudioStream(id=str(stream.itag), bitrate=stream.abr, mimetype=stream.mime_type)
@@ -134,7 +152,7 @@ class PytubeDownloader(IDownloader):
         }
         try:
             asyncio.run(self.on_download_callback_start(download))
-            streams = YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
+            streams = YouTube(download.url, proxies=self.proxies, **kwargs).streams.filter(is_dash=True).desc()
             downloaded_streams_file_paths: dict[str, Path] = {}
             with tempfile.TemporaryDirectory() as tmpdir:
                 directory_to_download_to = Path(tmpdir)
