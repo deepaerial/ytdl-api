@@ -14,7 +14,7 @@ from .callbacks import (
     on_start_converting,
     on_ytdlp_progress_callback,
 )
-from .config import Settings
+from .config import PROXIES, Settings
 from .constants import DownloaderType
 from .utils import LOGGER
 
