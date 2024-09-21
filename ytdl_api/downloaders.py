@@ -77,8 +77,11 @@ class PytubeDownloader(IDownloader):
         )
         self.proxies = proxies
 
+    def __get_youtube_client(self, url: YoutubeURL | str, **kwargs) -> YouTube:
+        return YouTube(url, proxies=self.proxies, use_po_token=True, **kwargs)
+
     def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
-        video = YouTube(url, proxies=self.proxies)
+        video = self.__get_youtube_client(url)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
             AudioStream(id=str(stream.itag), bitrate=stream.abr, mimetype=stream.mime_type)
@@ -152,7 +155,8 @@ class PytubeDownloader(IDownloader):
         }
         try:
             asyncio.run(self.on_download_callback_start(download))
-            streams = YouTube(download.url, proxies=self.proxies, **kwargs).streams.filter(is_dash=True).desc()
+            video = self.__get_youtube_client(download.url, **kwargs)
+            streams = video.streams.filter(is_dash=True).desc()
             downloaded_streams_file_paths: dict[str, Path] = {}
             with tempfile.TemporaryDirectory() as tmpdir:
                 directory_to_download_to = Path(tmpdir)

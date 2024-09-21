@@ -19,6 +19,8 @@ from .utils import LOGGER
 REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
 
+PROXIES = ["103.172.17.51:8080", "160.86.242.23:8080"]
+
 
 class DetaBaseDataSourceConfig(BaseConfig):
     """
