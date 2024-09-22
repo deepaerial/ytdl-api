@@ -78,7 +78,7 @@ class PytubeDownloader(IDownloader):
         self.proxies = proxies
 
     def __get_youtube_client(self, url: YoutubeURL | str, **kwargs) -> YouTube:
-        return YouTube(url, proxies=self.proxies, use_po_token=True, **kwargs)
+        return YouTube(url, proxies=self.proxies, **kwargs)
 
     def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
         video = self.__get_youtube_client(url)
