@@ -14,7 +14,7 @@ from .callbacks import (
     on_start_converting,
     on_ytdlp_progress_callback,
 )
-from .config import PROXIES, Settings
+from .config import Settings
 from .constants import DownloaderType
 from .utils import LOGGER
 
@@ -94,9 +94,6 @@ def get_pytube_downloader(
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
         on_error_callback=on_error_hook,
-        proxies={
-            "http": random.choice(PROXIES),
-        },
     )
 
 
