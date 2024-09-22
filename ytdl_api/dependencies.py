@@ -93,6 +93,8 @@ def get_pytube_downloader(
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
         on_error_callback=on_error_hook,
+        po_token_verifier=...,
+        logger=LOGGER,
     )
 
 
