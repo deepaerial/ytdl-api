@@ -1,14 +1,13 @@
 import asyncio
-import logging
 import json
-
+import logging
 from pathlib import Path
 
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.logging import LogCaptureFixture
 
-from ytdl_api.utils import repeat_at, get_po_token_verifier
+from ytdl_api.utils import get_po_token_verifier, repeat_at
 
 
 @pytest.fixture
