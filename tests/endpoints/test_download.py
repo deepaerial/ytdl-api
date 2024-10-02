@@ -4,6 +4,9 @@ from pytest_mock.plugin import MockerFixture
 from ytdl_api.datasource import IDataSource
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
+from ytdl_api.schemas.responses import VideoInfoResponse
+
+from ..utils import EXAMPLE_VIDEO_PREVIEW
 
 
 def test_submit_download(
@@ -15,6 +18,11 @@ def test_submit_download(
 ):
     # Mocking BackgroundTasks because we don't actually want to start process of downloading video
     mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
+    # TODO: Should probably create some mock factory for this
+    get_video_info_patch = mocker.patch("ytdl_api.downloaders.PytubeDownloader.get_video_info")
+    get_video_info_patch.return_value = VideoInfoResponse(
+        **EXAMPLE_VIDEO_PREVIEW,
+    )
     response = app_client.put("/api/download", cookies={"uid": uid}, json=mock_download_params.dict())
     assert response.status_code == 201
     json_response = response.json()

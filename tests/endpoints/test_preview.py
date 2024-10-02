@@ -1,17 +1,22 @@
-import pytest
 from fastapi.testclient import TestClient
+from pytest_mock.plugin import MockerFixture
+from pytubefix.exceptions import LoginRequired, VideoPrivate
+
+from ytdl_api.schemas.responses import VideoInfoResponse
+
+from ..utils import EXAMPLE_VIDEO_PREVIEW
 
 
-@pytest.mark.parametrize(
-    "url",
-    [
-        "https://www.youtube.com/watch?v=NcBjx_eyvxc",
-        "https://www.youtube.com/watch?v=TNhaISOUy6Q",
-        "https://www.youtube.com/watch?v=QXeEoD0pB3E&list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3&index=1",
-    ],
-)
-def test_get_preview(app_client: TestClient, url: str):
-    response = app_client.get("/api/preview", params={"url": url})
+def test_get_preview(
+    app_client: TestClient,
+    mocker: MockerFixture,
+):
+    # TODO: Should probably create some mock factory for this
+    get_video_info_patch = mocker.patch("ytdl_api.downloaders.PytubeDownloader.get_video_info")
+    get_video_info_patch.return_value = VideoInfoResponse(
+        **EXAMPLE_VIDEO_PREVIEW,
+    )
+    response = app_client.get("/api/preview", params={"url": EXAMPLE_VIDEO_PREVIEW["url"]})
     assert response.status_code == 200
     json_response = response.json()
     assert all(
@@ -35,8 +40,26 @@ def test_get_preview_422(app_client: TestClient):
     assert json_response["detail"][0]["msg"] == "Bad youtube video link provided."
 
 
-def test_get_preview_private_video(app_client: TestClient):
+def test_get_preview_private_video(
+    app_client: TestClient,
+    mocker: MockerFixture,
+):
+    mocker.patch("ytdl_api.downloaders.PytubeDownloader.get_video_info", side_effect=VideoPrivate("mCk1ChMlqt0"))
     response = app_client.get("/api/preview", params={"url": "https://www.youtube.com/watch?v=mCk1ChMlqt0"})
     assert response.status_code == 403
     json_response = response.json()
     assert "is a private video" in json_response["detail"]
+
+
+def test_get_preview_login_required(
+    app_client: TestClient,
+    mocker: MockerFixture,
+):
+    mocker.patch(
+        "ytdl_api.downloaders.PytubeDownloader.get_video_info",
+        side_effect=LoginRequired("mCk1ChMlqt0", "login required"),
+    )
+    response = app_client.get("/api/preview", params={"url": "https://www.youtube.com/watch?v=mCk1ChMlqt0"})
+    assert response.status_code == 403
+    json_response = response.json()
+    assert "login required" in json_response["detail"]

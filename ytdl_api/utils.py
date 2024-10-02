@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import re
+import subprocess
 import uuid
 from datetime import UTC, datetime
 from functools import wraps
@@ -125,3 +126,21 @@ def repeat_at(
         return wrapper
 
     return decorator
+
+
+def __run_command(command: str | list[str], shell: bool = True) -> str:
+    """
+    Runs command and returns stdout.
+    """
+    return subprocess.run(command, shell=shell, check=True, capture_output=True, text=True).stdout.strip()
+
+
+def get_po_token_verifier_from_file(po_token_file_path: Path) -> tuple[str, str]:
+    """
+    Reads visitorData and poToken from given file path and returns them as tuple.
+    Code based on [solution](https://github.com/JuanBindez/pytubefix/issues/226#issuecomment-2355688758)
+    to [issue](https://github.com/JuanBindez/pytubefix/issues/226)
+    """
+    po_token = __run_command(f"cat {po_token_file_path} | jq -r '.poToken'")
+    visitor_data = __run_command(f"cat {po_token_file_path} | jq -r '.visitorData'")
+    return visitor_data, po_token

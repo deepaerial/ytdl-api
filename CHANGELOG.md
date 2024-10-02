@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.7.0] - 2024-08-17
+## [1.6.2] - 2024-09-23
+### Fixed
+- Changed version of pytube to pytube to fix issue with downloading videos.
+- Added support for handling bot detection by YouTube.
+
+## [1.6.1] - 2024-08-17
 ### Fixed
 - FilenotFoundError when trying to remove file from local storage if it is not exists. Added flag to skip on error.
 

@@ -2,11 +2,13 @@ import asyncio
 import tempfile
 from abc import ABC, abstractmethod
 from functools import partial
+from logging import Logger
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Callable, Literal, Optional, Tuple
 
 import ffmpeg
-from pytube import StreamQuery, YouTube
+from pytubefix import StreamQuery, YouTube
+from pytubefix.exceptions import BotDetection
 from yt_dlp import YoutubeDL
 
 from .callbacks import (
@@ -56,11 +58,36 @@ class IDownloader(ABC):
 
 class PytubeDownloader(IDownloader):
     """
-    Downloader based on pytube library https://github.com/pytube/pytube
+    Downloader based on pytube library https://github.com/pytube/pytube. In current version we are using pytube instead.
     """
 
+    def __init__(
+        self,
+        on_download_started_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_progress_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_converting_callback: Optional[OnDownloadStateChangedCallback] = None,
+        on_finish_callback: Optional[OnDownloadFinishedCallback] = None,
+        on_error_callback: Optional[OnErrorCallback] = None,
+        proxies: dict[str, str] | None = None,
+        po_token_verifier: Optional[Callable[[], Tuple[str, str]]] = None,
+        logger: Logger = None,
+    ):
+        super().__init__(
+            on_download_started_callback,
+            on_progress_callback,
+            on_converting_callback,
+            on_finish_callback,
+            on_error_callback,
+        )
+        self.proxies = proxies
+        self.po_token_verifier = po_token_verifier
+        self.logger = logger
+
+    def __get_youtube_client(self, url: YoutubeURL | str, **kwargs) -> YouTube:
+        return YouTube(url, proxies=self.proxies, **kwargs)
+
     def get_video_info(self, url: YoutubeURL | str) -> VideoInfoResponse:
-        video = YouTube(url)
+        video = self.__get_youtube_client(url)
         streams = video.streams.filter(is_dash=True).desc()
         audio_streams = [
             AudioStream(id=str(stream.itag), bitrate=stream.abr, mimetype=stream.mime_type)
@@ -119,22 +146,9 @@ class PytubeDownloader(IDownloader):
             .run(capture_stdout=True, capture_stderr=True)
         )
 
-    def download(
-        self,
-        download: Download,
-    ) -> bool:
-        on_progress_callback = partial(
-            self.on_progress_callback,
-            download,
-        )
-        kwargs = {
-            "on_progress_callback": lambda stream, chunk, bytes_remaining: asyncio.run(
-                on_progress_callback(stream=stream, chunk=chunk, bytes_remaining=bytes_remaining)
-            )
-        }
+    def __inner_download(self, video: YouTube, download: Download) -> tuple[bool, Exception | None]:
         try:
-            asyncio.run(self.on_download_callback_start(download))
-            streams = YouTube(download.url, **kwargs).streams.filter(is_dash=True).desc()
+            streams = video.streams.filter(is_dash=True).desc()
             downloaded_streams_file_paths: dict[str, Path] = {}
             with tempfile.TemporaryDirectory() as tmpdir:
                 directory_to_download_to = Path(tmpdir)
@@ -166,7 +180,44 @@ class PytubeDownloader(IDownloader):
                 )
                 # Finshing download process
                 asyncio.run(self.on_finish_callback(download, converted_file_path))
-                return True
+                return True, None
+        except BotDetection as e:
+            return False, e
+        except Exception as e:
+            if self.on_error_callback:
+                asyncio.run(self.on_error_callback(download, e))
+            return False, e
+
+    def download(
+        self,
+        download: Download,
+    ) -> bool:
+        on_progress_callback = partial(
+            self.on_progress_callback,
+            download,
+        )
+        kwargs = {
+            "on_progress_callback": lambda stream, chunk, bytes_remaining: asyncio.run(
+                on_progress_callback(stream=stream, chunk=chunk, bytes_remaining=bytes_remaining)
+            )
+        }
+        try:
+            asyncio.run(self.on_download_callback_start(download))
+            video = self.__get_youtube_client(download.url, **kwargs)
+            is_success, exception_ = self.__inner_download(video, download)
+            if not is_success and isinstance(exception_, BotDetection):
+                self.logger.error(
+                    f"Bot detection triggered, download with ID {download.media_id} failed. Retrying with po_token config..."
+                )
+                kwargs["po_token_verifier"] = self.po_token_verifier
+                video = self.__get_youtube_client(download.url, **kwargs)
+                is_success, second_attempt_exc = self.__inner_download(video, download)
+                if second_attempt_exc:
+                    raise second_attempt_exc
+                return is_success
+            elif not is_success and not isinstance(exception_, BotDetection):
+                raise exception_
+            return is_success
         except Exception as e:
             if self.on_error_callback:
                 asyncio.run(self.on_error_callback(download, e))

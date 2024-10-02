@@ -170,7 +170,7 @@ async def on_error_callback(
     logger: Logger,
 ):
     """
-    Callback that is called when exception occured while downloading or converting media file.
+    Callback called when exception occured while downloading or converting media file.
     """
     if isinstance(exception, ffmpeg.Error):
         logger.error(exception.stderr)
