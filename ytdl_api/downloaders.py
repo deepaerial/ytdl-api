@@ -209,7 +209,6 @@ class PytubeDownloader(IDownloader):
                 self.logger.error(
                     f"Bot detection triggered, download with ID {download.media_id} failed. Retrying with po_token config..."
                 )
-                kwargs["use_po_token"] = True
                 kwargs["po_token_verifier"] = self.po_token_verifier
                 video = self.__get_youtube_client(download.url, **kwargs)
                 is_success, second_attempt_exc = self.__inner_download(video, download)
