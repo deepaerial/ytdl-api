@@ -58,7 +58,7 @@ class IDownloader(ABC):
 
 class PytubeDownloader(IDownloader):
     """
-    Downloader based on pytube library https://github.com/pytube/pytube. In current version we are using pytubefix instead.
+    Downloader based on pytube library https://github.com/pytube/pytube. In current version we are using pytube instead.
     """
 
     def __init__(

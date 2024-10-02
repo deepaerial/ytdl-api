@@ -13,9 +13,9 @@ from .callbacks import (
     on_start_converting,
     on_ytdlp_progress_callback,
 )
-from .config import Settings
+from .config import PO_TOKEN_FILE_PATH, Settings
 from .constants import DownloaderType
-from .utils import LOGGER
+from .utils import LOGGER, get_po_token_verifier_from_file
 
 
 # Ignoring get_settings dependency in coverage because it will be
@@ -93,7 +93,7 @@ def get_pytube_downloader(
         on_converting_callback=on_converting_hook,
         on_finish_callback=on_finish_hook,
         on_error_callback=on_error_hook,
-        po_token_verifier=...,
+        po_token_verifier=partial(get_po_token_verifier_from_file, PO_TOKEN_FILE_PATH),
         logger=LOGGER,
     )
 

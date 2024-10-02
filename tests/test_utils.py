@@ -7,7 +7,10 @@ import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.logging import LogCaptureFixture
 
-from ytdl_api.utils import get_po_token_verifier, repeat_at
+from ytdl_api.utils import (
+    get_po_token_verifier_from_file,
+    repeat_at,
+)
 
 
 @pytest.fixture
@@ -58,7 +61,7 @@ def test_get_po_token_verifier():
     """
     valid_po_token_file = Path(__file__).parent / "fixtures" / "valid_po_token.json"
     parsed_valid_po_token_file: dict[str, str] = json.loads(valid_po_token_file.read_text("utf-8"))
-    visitor_data, po_token = get_po_token_verifier(valid_po_token_file)
+    visitor_data, po_token = get_po_token_verifier_from_file(valid_po_token_file)
     assert visitor_data == parsed_valid_po_token_file["visitorData"]
     assert po_token == parsed_valid_po_token_file["poToken"]
 
@@ -68,4 +71,4 @@ def test_get_po_token_verifier_invalid_file():
     Test Case for get_po_token_verifier with invalid file
     """
     with pytest.raises(Exception):
-        get_po_token_verifier(Path(__file__).parent / "fixtures" / "invalid_po_token.json")
+        get_po_token_verifier_from_file(Path(__file__).parent / "fixtures" / "invalid_po_token.json")

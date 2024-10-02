@@ -19,6 +19,8 @@ from .utils import LOGGER
 REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
 
+PO_TOKEN_FILE_PATH = Path(__file__).parent / "po_token_verifier.json"
+
 
 class DetaBaseDataSourceConfig(BaseConfig):
     """

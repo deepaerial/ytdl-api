@@ -128,14 +128,14 @@ def repeat_at(
     return decorator
 
 
-def __run_command(command: str) -> str:
+def __run_command(command: str | list[str], shell: bool = True) -> str:
     """
     Runs command and returns stdout.
     """
-    return subprocess.run(command, shell=True, check=True, capture_output=True).stdout.decode("utf-8").strip()
+    return subprocess.run(command, shell=shell, check=True, capture_output=True, text=True).stdout.strip()
 
 
-def get_po_token_verifier(po_token_file_path: Path) -> tuple[str, str]:
+def get_po_token_verifier_from_file(po_token_file_path: Path) -> tuple[str, str]:
     """
     Reads visitorData and poToken from given file path and returns them as tuple.
     Code based on [solution](https://github.com/JuanBindez/pytubefix/issues/226#issuecomment-2355688758)
