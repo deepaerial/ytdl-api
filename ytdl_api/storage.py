@@ -3,8 +3,6 @@ import shutil
 from pathlib import Path
 from typing import Iterator
 
-from deta import Deta
-
 from .schemas.models import Download
 
 
@@ -26,7 +24,7 @@ class IStorage(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def remove_download_batch(self, storage_file_names: list[str]):  # pragma: no cover
+    def remove_download_batch(self, storage_file_names: list[str], skip_on_error: bool = None):  # pragma: no cover
         raise NotImplementedError
 
 
@@ -55,38 +53,16 @@ class LocalFileStorage(IStorage):
         return _read_file_at_chunks(download_file)
 
     def remove_download(self, storage_file_name: str):
-        download_file = Path(storage_file_name)
+        download_file = self.dowloads_dir / Path(storage_file_name)
         if download_file.exists():
             download_file.unlink()
+        else:
+            raise FileNotFoundError(f"File {download_file.as_posix()} does not exist.")
 
-    def remove_download_batch(self, storage_file_names: list[str]):
+    def remove_download_batch(self, storage_file_names: list[str], skip_on_error: bool = False):
         for storage_file_name in storage_file_names:
-            self.remove_download(storage_file_name)
-
-
-class DetaDriveStorage(IStorage):
-    """
-    Storage for saving downloaded media files in Deta Drive.
-    """
-
-    def __init__(self, deta_project_key: str, drive_name: str) -> None:
-        deta = Deta(project_key=deta_project_key)
-        self.drive = deta.Drive(drive_name)
-        # Amount of chunks read at a time by
-        self.chunk_size = 1024  # in bytes
-
-    def save_download_from_file(self, download: Download, path: Path) -> str:
-        self.drive.put(download.storage_filename, path=path)
-        return download.storage_filename
-
-    def get_download(self, storage_file_name: str) -> Iterator[bytes] | None:
-        file = self.drive.get(storage_file_name)
-        if file is None:
-            return file
-        return file.iter_chunks(self.chunk_size)
-
-    def remove_download(self, storage_file_name: str):
-        self.drive.delete(storage_file_name)
-
-    def remove_download_batch(self, storage_file_names: list[str]):
-        self.drive.delete_many(storage_file_names)
+            try:
+                self.remove_download(storage_file_name)
+            except FileNotFoundError as e:
+                if not skip_on_error:
+                    raise e

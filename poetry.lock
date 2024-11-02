@@ -544,21 +544,6 @@ files = [
 testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
-name = "fancycompleter"
-version = "0.9.1"
-description = "colorful TAB completion for Python prompt"
-optional = false
-python-versions = "*"
-files = [
-    {file = "fancycompleter-0.9.1-py3-none-any.whl", hash = "sha256:dd076bca7d9d524cc7f25ec8f35ef95388ffef9ef46def4d3d25e9b044ad7080"},
-    {file = "fancycompleter-0.9.1.tar.gz", hash = "sha256:09e0feb8ae242abdfd7ef2ba55069a46f011814a80fe5476be48f51b00247272"},
-]
-
-[package.dependencies]
-pyreadline = {version = "*", markers = "platform_system == \"Windows\""}
-pyrepl = ">=0.8.2"
-
-[[package]]
 name = "fastapi"
 version = "0.109.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -833,26 +818,6 @@ files = [
 ]
 
 [[package]]
-name = "pdbpp"
-version = "0.10.3"
-description = "pdb++, a drop-in replacement for pdb"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pdbpp-0.10.3-py2.py3-none-any.whl", hash = "sha256:79580568e33eb3d6f6b462b1187f53e10cd8e4538f7d31495c9181e2cf9665d1"},
-    {file = "pdbpp-0.10.3.tar.gz", hash = "sha256:d9e43f4fda388eeb365f2887f4e7b66ac09dce9b6236b76f63616530e2f669f5"},
-]
-
-[package.dependencies]
-fancycompleter = ">=0.8"
-pygments = "*"
-wmctrl = "*"
-
-[package.extras]
-funcsigs = ["funcsigs"]
-testing = ["funcsigs", "pytest"]
-
-[[package]]
 name = "pep8"
 version = "1.7.1"
 description = "Python style guide checker"
@@ -1044,21 +1009,6 @@ dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
 [[package]]
-name = "pygments"
-version = "2.17.2"
-description = "Pygments is a syntax highlighting package written in Python."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pygments-2.17.2-py3-none-any.whl", hash = "sha256:b27c2826c47d0f3219f29554824c30c5e8945175d888647acd804ddd04af846c"},
-    {file = "pygments-2.17.2.tar.gz", hash = "sha256:da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367"},
-]
-
-[package.extras]
-plugins = ["importlib-metadata"]
-windows-terminal = ["colorama (>=0.4.6)"]
-
-[[package]]
 name = "pyhumps"
 version = "3.8.0"
 description = "🐫  Convert strings (and dictionary keys) between snake case, camel case and pascal case in Python. Inspired by Humps for Node"
@@ -1067,26 +1017,6 @@ python-versions = "*"
 files = [
     {file = "pyhumps-3.8.0-py3-none-any.whl", hash = "sha256:060e1954d9069f428232a1adda165db0b9d8dfdce1d265d36df7fbff540acfd6"},
     {file = "pyhumps-3.8.0.tar.gz", hash = "sha256:498026258f7ee1a8e447c2e28526c0bea9407f9a59c03260aee4bd6c04d681a3"},
-]
-
-[[package]]
-name = "pyreadline"
-version = "2.1"
-description = "A python implmementation of GNU readline."
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyreadline-2.1.zip", hash = "sha256:4530592fc2e85b25b1a9f79664433da09237c1a270e4d78ea5aa3a2c7229e2d1"},
-]
-
-[[package]]
-name = "pyrepl"
-version = "0.9.0"
-description = "A library for building flexible command line interfaces"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyrepl-0.9.0.tar.gz", hash = "sha256:292570f34b5502e871bbb966d639474f2b57fbfcd3373c2d6a2f3d56e681a775"},
 ]
 
 [[package]]
@@ -1337,13 +1267,13 @@ websockets = ">=11,<13"
 
 [[package]]
 name = "requests"
-version = "2.31.0"
+version = "2.32.3"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "requests-2.31.0-py3-none-any.whl", hash = "sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f"},
-    {file = "requests-2.31.0.tar.gz", hash = "sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1"},
+    {file = "requests-2.32.3-py3-none-any.whl", hash = "sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6"},
+    {file = "requests-2.32.3.tar.gz", hash = "sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760"},
 ]
 
 [package.dependencies]
@@ -1681,31 +1611,14 @@ files = [
 ]
 
 [[package]]
-name = "wmctrl"
-version = "0.5"
-description = "A tool to programmatically control windows inside X"
-optional = false
-python-versions = ">=2.7"
-files = [
-    {file = "wmctrl-0.5-py2.py3-none-any.whl", hash = "sha256:ae695c1863a314c899e7cf113f07c0da02a394b968c4772e1936219d9234ddd7"},
-    {file = "wmctrl-0.5.tar.gz", hash = "sha256:7839a36b6fe9e2d6fd22304e5dc372dbced2116ba41283ea938b2da57f53e962"},
-]
-
-[package.dependencies]
-attrs = "*"
-
-[package.extras]
-test = ["pytest"]
-
-[[package]]
 name = "yt-dlp"
-version = "2024.5.27"
+version = "2024.8.6"
 description = "A feature-rich command-line audio/video downloader"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "yt_dlp-2024.5.27-py3-none-any.whl", hash = "sha256:5dbedb7610ae9440cc44e744f528e078828142bbe09af950cf7e99ce69c866d9"},
-    {file = "yt_dlp-2024.5.27.tar.gz", hash = "sha256:3566c0de240d0cd3d1c2285ce655f72ca38dfc618d634d46818b00d89d5288be"},
+    {file = "yt_dlp-2024.8.6-py3-none-any.whl", hash = "sha256:ab507ff600bd9269ad4d654e309646976778f0e243eaa2f6c3c3214278bb2922"},
+    {file = "yt_dlp-2024.8.6.tar.gz", hash = "sha256:e8551f26bc8bf67b99c12373cc87ed2073436c3437e53290878d0f4b4bb1f663"},
 ]
 
 [package.dependencies]
@@ -1714,21 +1627,21 @@ brotlicffi = {version = "*", markers = "implementation_name != \"cpython\""}
 certifi = "*"
 mutagen = "*"
 pycryptodomex = "*"
-requests = ">=2.31.0,<3"
+requests = ">=2.32.2,<3"
 urllib3 = ">=1.26.17,<3"
 websockets = ">=12.0"
 
 [package.extras]
-build = ["build", "hatchling", "pip", "setuptools (>=66.1.0,<70)", "wheel"]
-curl-cffi = ["curl-cffi (==0.5.10)"]
-dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.4.4,<0.5.0)"]
-py2exe = ["py2exe (>=0.12)", "requests (==2.31.*)"]
-pyinstaller = ["pyinstaller (==5.13.2)", "pyinstaller (>=6.3)"]
+build = ["build", "hatchling", "pip", "setuptools (>=71.0.2)", "wheel"]
+curl-cffi = ["curl-cffi (==0.5.10)", "curl-cffi (>=0.5.10,<0.6.dev0 || ==0.7.*)"]
+dev = ["autopep8 (>=2.0,<3.0)", "pre-commit", "pytest (>=8.1,<9.0)", "ruff (>=0.5.0,<0.6.0)"]
+py2exe = ["py2exe (>=0.12)"]
+pyinstaller = ["pyinstaller (>=6.7.0)"]
 secretstorage = ["cffi", "secretstorage"]
-static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.4.4,<0.5.0)"]
+static-analysis = ["autopep8 (>=2.0,<3.0)", "ruff (>=0.5.0,<0.6.0)"]
 test = ["pytest (>=8.1,<9.0)"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d7d44883eb36d9677323e652c2d03f82f87235aba1ad1bea6bbe3bee103831a9"
+content-hash = "1ed36af89af331c14bb7db3ea9b0b591383a0d99d6e27969d82a767b50028be7"

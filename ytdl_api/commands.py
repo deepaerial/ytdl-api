@@ -17,7 +17,7 @@ def remove_expired_downloads(storage: IStorage, datasource: IDataSource, expired
     logger.info(f"Fetching expired downloads. Expiration date: {expired_dt.strftime('%Y-%m-%d %H:%M:%S')}")
     downloads = datasource.fetch_downloads_till_datetime(expired_dt)
     logger.info(f"Found {len(downloads)} expired downloads.")
-    storage.remove_download_batch([download.storage_filename for download in downloads])
+    storage.remove_download_batch([download.storage_filename for download in downloads], skip_on_error=True)
     logger.info("Removed expired downloads from storage.")
     datasource.delete_download_batch(downloads)
     logger.info("Soft deleted expired downloads from database.")
