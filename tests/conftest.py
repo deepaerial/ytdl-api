@@ -5,13 +5,13 @@ from tempfile import TemporaryDirectory
 from typing import Generator, Iterable
 
 import pytest
-from confz import EnvSource, DataSource
+from confz import DataSource
 from fastapi.testclient import TestClient
 
-from ytdl_api.config import REPO_PATH, Settings
+from ytdl_api.config import Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import IDataSource, InMemoryDB
-from ytdl_api.dependencies import get_settings, get_database
+from ytdl_api.dependencies import get_database, get_settings
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
@@ -64,7 +64,7 @@ def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterable
         data={
             "debug": True,
             "allow_origins": ["*"],
-            "downloader": "mock",
+            "downloader": "yt-dlp",
             "datasource": {"use_in_memory_db": True},
             "storage": {"path": fake_media_path},
             "disable_docs": True,
@@ -98,12 +98,6 @@ def mock_download_params() -> DownloadParams:
 
 
 @pytest.fixture()
-def clear_datasource(datasource: IDataSource):
-    yield
-    datasource.clear_downloads()
-
-
-@pytest.fixture()
 def mock_persisted_download(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
@@ -119,7 +113,7 @@ def mock_persisted_download(uid: str, datasource: IDataSource) -> Generator[Down
 
 @pytest.fixture()
 def mocked_downloaded_media(
-    uid: str, datasource: IDataSource, fake_media_file_path: Path, clear_datasource
+    uid: str, datasource: IDataSource, fake_media_file_path: Path
 ) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
@@ -135,9 +129,7 @@ def mocked_downloaded_media(
 
 
 @pytest.fixture()
-def mocked_downloaded_media_no_file(
-    uid: str, datasource: IDataSource, clear_datasource
-) -> Generator[Download, None, None]:
+def mocked_downloaded_media_no_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
     download = get_example_download_instance(
         client_id=uid,
         media_format=MediaFormat.MP4,

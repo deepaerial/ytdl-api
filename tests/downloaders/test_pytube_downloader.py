@@ -8,7 +8,7 @@ import pytest
 
 from ytdl_api.config import Settings
 from ytdl_api.constants import DownloadStatus
-from ytdl_api.datasource import DetaDB
+from ytdl_api.datasource import InMemoryDB
 from ytdl_api.dependencies import get_downloader
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download, DownloadStatusInfo
@@ -29,7 +29,7 @@ def test_video_download(
     settings: Settings,
     mock_persisted_download: Download,
     local_storage: LocalFileStorage,
-    datasource: DetaDB,
+    datasource: InMemoryDB,
     notification_queue: NotificationQueue,
 ):
     """
@@ -61,7 +61,7 @@ def test_video_download_ffmpeg_failed(
     settings: Settings,
     mock_persisted_download: Download,
     local_storage: LocalFileStorage,
-    datasource: DetaDB,
+    datasource: InMemoryDB,
     notification_queue: NotificationQueue,
 ):
     """

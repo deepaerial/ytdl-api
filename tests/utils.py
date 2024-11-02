@@ -47,6 +47,7 @@ def get_example_download_instance(
     progress: int = 0,
     when_submitted: datetime | None = None,
     when_started_download: datetime | None = None,
+    when_file_downloaded: datetime | None = None,
 ) -> Download:
     download_data = {
         **EXAMPLE_VIDEO_PREVIEW,
@@ -58,6 +59,7 @@ def get_example_download_instance(
         "file_path": file_path,
         "progress": progress,
         "when_started_download": when_started_download,
+        "when_file_downloaded": when_file_downloaded,
     }
     if when_submitted:
         download_data["when_submitted"] = when_submitted

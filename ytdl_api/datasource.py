@@ -142,6 +142,7 @@ class InMemoryDB(IDataSource):
         download: Download,
         when_deleted: datetime.datetime | None = None,
     ):
+        when_deleted = when_deleted or get_datetime_now()
         self.db.update(
             {"status": DownloadStatus.DELETED, "when_deleted": when_deleted},
             (Query()["media_id"] == download.media_id),
@@ -152,6 +153,7 @@ class InMemoryDB(IDataSource):
         download: Download,
         when_file_downloaded: datetime.datetime | None = None,
     ):
+        when_file_downloaded = when_file_downloaded or get_datetime_now()
         self.db.update(
             {"status": DownloadStatus.DOWNLOADED, "when_file_downloaded": when_file_downloaded},
             (Query()["media_id"] == download.media_id),
@@ -161,6 +163,7 @@ class InMemoryDB(IDataSource):
         self.db.truncate()
 
     def mark_as_failed(self, download: Download, when_failed: datetime.datetime | None = None):
+        when_failed = when_failed or get_datetime_now()
         self.db.update(
             {"status": DownloadStatus.FAILED, "when_failed": when_failed},
             (Query()["media_id"] == download.media_id),

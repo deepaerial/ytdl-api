@@ -6,6 +6,7 @@ from fastapi.requests import Request
 from pytube.exceptions import AgeRestrictedError, RegexMatchError, VideoPrivate
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
+from yt_dlp.utils import DownloadError
 
 
 def make_internal_error(
@@ -69,6 +70,21 @@ async def on_pytube_videoprivate_error(logger: Logger, request: Request, exc: Vi
     )
 
 
+async def on_ytdlp_videoprivate_error(logger: Logger, request: Request, exc: DownloadError):
+    logger.exception(exc)
+    if "Private video" not in exc.args[0]:
+        return make_internal_error(
+            "downloader-error",
+            exc.args[0],
+            HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    return make_internal_error(
+        "private-video",
+        exc.args[0],
+        HTTP_403_FORBIDDEN,
+    )
+
+
 ERROR_HANDLERS = (
     (RemoteDisconnected, on_remote_disconnected),
     (socket.timeout, on_socket_timeout),
@@ -76,5 +92,6 @@ ERROR_HANDLERS = (
     (AgeRestrictedError, on_pytube_agerestricted_error),
     (RegexMatchError, on_pytube_regexmatch_error),
     (VideoPrivate, on_pytube_videoprivate_error),
+    (DownloadError, on_ytdlp_videoprivate_error),
     (Exception, on_default_exception_handler),
 )
