@@ -61,14 +61,14 @@ def test_hard_remove_downloads(
     expiration_delta, downloads = example_expired_downloads
     client_id = downloads[0].client_id
 
-    assert len(datasource.fetch_downloads_by_client_id(client_id)) == len(downloads)
+    assert len(datasource.fetch_available_downloads(client_id)) == len(downloads)
 
     # Call the function
     remove_expired_downloads(fake_local_storage, datasource, expiration_delta, mocked_logger)
 
     mocked_logger.info.assert_called_with("Soft deleted expired downloads from database.")
 
-    assert len(datasource.fetch_downloads_by_client_id(client_id)) == 2
+    assert len(datasource.fetch_available_downloads(client_id)) == 2
     expired_download1 = downloads[0]
     assert datasource.get_download(expired_download1.client_id, expired_download1.key) is None
     expired_download2 = downloads[1]

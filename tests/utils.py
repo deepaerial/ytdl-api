@@ -61,5 +61,4 @@ def get_example_download_instance(
     }
     if when_submitted:
         download_data["when_submitted"] = when_submitted
-        download_data["epoch"] = int(when_submitted.timestamp())
     return parse_obj_as(Download, download_data)

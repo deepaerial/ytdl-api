@@ -5,13 +5,13 @@ from tempfile import TemporaryDirectory
 from typing import Generator, Iterable
 
 import pytest
-from confz import EnvSource
+from confz import EnvSource, DataSource
 from fastapi.testclient import TestClient
 
 from ytdl_api.config import REPO_PATH, Settings
 from ytdl_api.constants import DownloadStatus, MediaFormat
-from ytdl_api.datasource import DetaDB, IDataSource
-from ytdl_api.dependencies import get_settings
+from ytdl_api.datasource import IDataSource, InMemoryDB
+from ytdl_api.dependencies import get_settings, get_database
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
@@ -59,38 +59,31 @@ def fake_media_file_path(fake_media_path: Path) -> Path:
 
 
 @pytest.fixture()
-def deta_testbase() -> str:
-    return "ytdl_test"
-
-
-@pytest.fixture()
-def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch, deta_testbase: str) -> Iterable[Settings]:
-    monkeypatch.setenv("DEBUG", True)
-    monkeypatch.setenv("DOWNLOADER", "pytube")
-    monkeypatch.setenv("DATASOURCE__DETA_BASE", deta_testbase)
-    monkeypatch.setenv("STORAGE__PATH", fake_media_path.as_posix())
-    data_source = EnvSource(
-        allow_all=True,
-        deny=["title", "description", "version"],
-        file=(REPO_PATH / ".env.test").resolve(),
-        nested_separator="__",
+def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterable[Settings]:
+    data_source = DataSource(
+        data={
+            "debug": True,
+            "allow_origins": ["*"],
+            "downloader": "mock",
+            "datasource": {"use_in_memory_db": True},
+            "storage": {"path": fake_media_path},
+            "disable_docs": True,
+        }
     )
     with Settings.change_config_sources(data_source):
         yield Settings()  # type: ignore
 
 
 @pytest.fixture()
-def datasource(settings: Settings):
-    return DetaDB(
-        deta_project_key=settings.datasource.deta_key,
-        base_name=settings.datasource.deta_base,
-    )
+def datasource() -> InMemoryDB:
+    return InMemoryDB()
 
 
 @pytest.fixture
-def app_client(settings: Settings):
+def app_client(settings: Settings, datasource: InMemoryDB) -> TestClient:
     app = settings.init_app()
     app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_database] = lambda: datasource
     return TestClient(app)
 
 

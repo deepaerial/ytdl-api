@@ -4,7 +4,7 @@ from pydantic import AnyHttpUrl, Field
 
 from ..constants import DownloadStatus, MediaFormat
 from ..types import YoutubeURL
-from ..utils import get_datetime_now, get_epoch_now, get_unique_id
+from ..utils import get_datetime_now, get_unique_id
 from .base import BaseModel_
 
 
@@ -22,7 +22,6 @@ class AudioStream(BaseStream):
 
 
 class Download(BaseModel_):
-    epoch: int = Field(description="Epoch timestamp", default_factory=get_epoch_now)
     client_id: str = Field(..., description="Client ID")
     media_id: str = Field(description="Download id", default_factory=get_unique_id)
     title: str = Field(..., description="Video title")
@@ -67,7 +66,7 @@ class Download(BaseModel_):
         """
         Key used for PK in database.
         """
-        return f"{self.epoch}"
+        return self.media_id
 
     @property
     def storage_filename(self) -> str:

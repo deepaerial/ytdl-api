@@ -22,7 +22,8 @@ omit = [
 [tool.mypy]
 python_version = "3.11"
 plugins = [
-    "pydantic.mypy"
+    "pydantic.mypy",
+    "tinydb.mypy_plugin"
 ]
 allow_untyped_globals = true
 
@@ -88,6 +89,7 @@ pytube = "^15.0.0"
 yt-dlp = "2024.8.6"
 humanize = "^4.8.0"
 croniter = "^2.0.5"
+tinydb = "^4.8.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

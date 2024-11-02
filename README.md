@@ -5,7 +5,7 @@ REST-based API for downloading video or extracting audio from YouTube videos. Th
 ![OpenAPI documentation for YTDL API](./docs/openapi.png)
 
 ## Requirements
-App requires Python 3.11 and [poetry](https://python-poetry.org/) installed. Also project relies on [Deta](https://www.deta.sh/) for storing data about downloads. So you should have account there in order to run this project.
+App requires Python 3.11 and [poetry](https://python-poetry.org/) installed.
 
 ## Installation
 Run `poetry` command below to install project dependencies (including ones needed for development).
@@ -17,8 +17,6 @@ Before starting the application server you should create `.env` file which will 
 ```shell
 DEBUG=True
 ALLOW_ORIGINS="http://localhost,http://localhost:8080,http://localhost:8081,http://127.0.0.1,http://127.0.0.1:8080,http://127.0.0.1:8081"
-DATASOURCE__DETA_KEY=<your Deta key should inserted here>
-DATASOURCE__DETA_BASE=<your deta base name should be inserted here>
 MEDIA_PATH="/app/media"
 ```
 After you're done with configuration simply execute script below:
@@ -35,9 +33,6 @@ $ docker-compose up -d ytdl-api
 ## Running tests
 Before running tests for the first time create file `.env.test` inside project directory with following content. Replace placeholders with real values:
 ```
-DATASOURCE__DETA_KEY=<your Deta key should inserted here>
-STORAGE__DETA_KEY=<your Deta key should inserted here>
-STORAGE__DETA_DRIVE_NAME=ytdl_test_downloads
 ```
 Run `pytest` with command below. `--cov-report` flag will generate coverage report in HTML format.
 ```shell
@@ -55,8 +50,6 @@ $ fly secrets import
 # your secrets are passed below
 DEBUG=True
 ALLOW_ORIGINS="http://localhost,http://localhost:8080,http://localhost:8081,http://127.0.0.1,http://127.0.0.1:8080,http://127.0.0.1:8081"
-DATASOURCE__DETA_KEY=<your Deta key should inserted here>
-DATASOURCE__DETA_BASE=<your deta base name should be inserted here>
 EOL
 ```
 
@@ -85,9 +78,3 @@ This section describes potential issues that may occur when using API.
 
 ### 1. Issue: Video is downloaded and playing but audio is absent when opening video in QuickTime Player.
 **Solution:** Open video in another player (VLC Player for example). Maybe QuickTime Player doesn't support audio codec used in video.
-
-### 2. Issue: Test `test_deta_storage` fails with `OSError: [Errno 30] Read-only file system: '/app'`
-**Solution:** This error most likely occurs because in project you have both `.env` and `.env.test` files. For some weird reason ConfZ tries to read both files although in the test we change the source of env variables. This is most likely a bug in ConfZ library. Workaround for this issue is simply comment out content of`.env` file and run pytest separately for `tests/storage/test_deta_storage.py` file again:
-```shell
-$ pytest tests/storage/test_deta_storage.py
-```
