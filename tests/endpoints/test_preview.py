@@ -39,4 +39,4 @@ def test_get_preview_private_video(app_client: TestClient):
     response = app_client.get("/api/preview", params={"url": "https://www.youtube.com/watch?v=mCk1ChMlqt0"})
     assert response.status_code == 403
     json_response = response.json()
-    assert "is a private video" in json_response["detail"]
+    assert "private video" in json_response["detail"].lower()

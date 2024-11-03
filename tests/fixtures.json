@@ -1,0 +1,542 @@
+[
+    {
+        "url": "https://www.youtube.com/watch?v=NcBjx_eyvxc",
+        "title": "Madeira | Cinematic FPV",
+        "duration": 224,
+        "thumbnailUrl": "https://i.ytimg.com/vi_webp/NcBjx_eyvxc/maxresdefault.webp",
+        "audioStreams": [
+            {
+                "id": "599",
+                "mimetype": "m4a",
+                "bitrate": "31kbps"
+            },
+            {
+                "id": "600",
+                "mimetype": "webm",
+                "bitrate": "32kbps"
+            },
+            {
+                "id": "139",
+                "mimetype": "m4a",
+                "bitrate": "49kbps"
+            },
+            {
+                "id": "249",
+                "mimetype": "webm",
+                "bitrate": "48kbps"
+            },
+            {
+                "id": "250",
+                "mimetype": "webm",
+                "bitrate": "64kbps"
+            },
+            {
+                "id": "140",
+                "mimetype": "m4a",
+                "bitrate": "129kbps"
+            },
+            {
+                "id": "251",
+                "mimetype": "webm",
+                "bitrate": "127kbps"
+            }
+        ],
+        "videoStreams": [
+            {
+                "id": "597",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "598",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "394",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "160",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "278",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "395",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "133",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "242",
+                "mimetype": "webm",
+                "resolution": "240p"
+            },
+            {
+                "id": "396",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "134",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "243",
+                "mimetype": "webm",
+                "resolution": "360p"
+            },
+            {
+                "id": "397",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "135",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "244",
+                "mimetype": "webm",
+                "resolution": "480p"
+            },
+            {
+                "id": "398",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "136",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "247",
+                "mimetype": "webm",
+                "resolution": "720p"
+            },
+            {
+                "id": "399",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "137",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "248",
+                "mimetype": "webm",
+                "resolution": "1080p"
+            },
+            {
+                "id": "400",
+                "mimetype": "mp4",
+                "resolution": "1440p"
+            },
+            {
+                "id": "271",
+                "mimetype": "webm",
+                "resolution": "1440p"
+            },
+            {
+                "id": "401",
+                "mimetype": "mp4",
+                "resolution": "2160p"
+            },
+            {
+                "id": "313",
+                "mimetype": "webm",
+                "resolution": "2160p"
+            }
+        ],
+        "mediaFormats": [
+            "mp4",
+            "mp3",
+            "wav"
+        ]
+    },
+    {
+        "url": "https://www.youtube.com/watch?v=TNhaISOUy6Q",
+        "title": "10 React Hooks Explained // Plus Build your own from Scratch",
+        "duration": 794,
+        "thumbnailUrl": "https://i.ytimg.com/vi/TNhaISOUy6Q/maxresdefault.jpg",
+        "audioStreams": [
+            {
+                "id": "599",
+                "mimetype": "m4a",
+                "bitrate": "31kbps"
+            },
+            {
+                "id": "600",
+                "mimetype": "webm",
+                "bitrate": "35kbps"
+            },
+            {
+                "id": "139-drc",
+                "mimetype": "m4a",
+                "bitrate": "49kbps"
+            },
+            {
+                "id": "249-drc",
+                "mimetype": "webm",
+                "bitrate": "51kbps"
+            },
+            {
+                "id": "250-drc",
+                "mimetype": "webm",
+                "bitrate": "66kbps"
+            },
+            {
+                "id": "139",
+                "mimetype": "m4a",
+                "bitrate": "49kbps"
+            },
+            {
+                "id": "249",
+                "mimetype": "webm",
+                "bitrate": "50kbps"
+            },
+            {
+                "id": "250",
+                "mimetype": "webm",
+                "bitrate": "66kbps"
+            },
+            {
+                "id": "140-drc",
+                "mimetype": "m4a",
+                "bitrate": "129kbps"
+            },
+            {
+                "id": "251-drc",
+                "mimetype": "webm",
+                "bitrate": "121kbps"
+            },
+            {
+                "id": "140",
+                "mimetype": "m4a",
+                "bitrate": "129kbps"
+            },
+            {
+                "id": "251",
+                "mimetype": "webm",
+                "bitrate": "120kbps"
+            }
+        ],
+        "videoStreams": [
+            {
+                "id": "597",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "598",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "394",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "160",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "278",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "395",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "133",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "242",
+                "mimetype": "webm",
+                "resolution": "240p"
+            },
+            {
+                "id": "396",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "134",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "243",
+                "mimetype": "webm",
+                "resolution": "360p"
+            },
+            {
+                "id": "397",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "135",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "244",
+                "mimetype": "webm",
+                "resolution": "480p"
+            },
+            {
+                "id": "398",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "136",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "247",
+                "mimetype": "webm",
+                "resolution": "720p"
+            },
+            {
+                "id": "399",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "137",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "248",
+                "mimetype": "webm",
+                "resolution": "1080p"
+            },
+            {
+                "id": "400",
+                "mimetype": "mp4",
+                "resolution": "1440p"
+            },
+            {
+                "id": "271",
+                "mimetype": "webm",
+                "resolution": "1440p"
+            },
+            {
+                "id": "401",
+                "mimetype": "mp4",
+                "resolution": "2160p"
+            },
+            {
+                "id": "313",
+                "mimetype": "webm",
+                "resolution": "2160p"
+            }
+        ],
+        "mediaFormats": [
+            "mp4",
+            "mp3",
+            "wav"
+        ]
+    },
+    {
+        "url": "https://www.youtube.com/watch?v=QXeEoD0pB3E",
+        "title": "#0 Python for Beginners | Programming Tutorial",
+        "duration": 66,
+        "thumbnailUrl": "https://i.ytimg.com/vi_webp/QXeEoD0pB3E/maxresdefault.webp",
+        "audioStreams": [
+            {
+                "id": "599",
+                "mimetype": "m4a",
+                "bitrate": "31kbps"
+            },
+            {
+                "id": "600",
+                "mimetype": "webm",
+                "bitrate": "34kbps"
+            },
+            {
+                "id": "139-drc",
+                "mimetype": "m4a",
+                "bitrate": "49kbps"
+            },
+            {
+                "id": "249-drc",
+                "mimetype": "webm",
+                "bitrate": "50kbps"
+            },
+            {
+                "id": "250-drc",
+                "mimetype": "webm",
+                "bitrate": "60kbps"
+            },
+            {
+                "id": "139",
+                "mimetype": "m4a",
+                "bitrate": "49kbps"
+            },
+            {
+                "id": "249",
+                "mimetype": "webm",
+                "bitrate": "50kbps"
+            },
+            {
+                "id": "250",
+                "mimetype": "webm",
+                "bitrate": "60kbps"
+            },
+            {
+                "id": "140-drc",
+                "mimetype": "m4a",
+                "bitrate": "130kbps"
+            },
+            {
+                "id": "251-drc",
+                "mimetype": "webm",
+                "bitrate": "110kbps"
+            },
+            {
+                "id": "140",
+                "mimetype": "m4a",
+                "bitrate": "130kbps"
+            },
+            {
+                "id": "251",
+                "mimetype": "webm",
+                "bitrate": "110kbps"
+            }
+        ],
+        "videoStreams": [
+            {
+                "id": "597",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "598",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "394",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "160",
+                "mimetype": "mp4",
+                "resolution": "144p"
+            },
+            {
+                "id": "278",
+                "mimetype": "webm",
+                "resolution": "144p"
+            },
+            {
+                "id": "395",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "133",
+                "mimetype": "mp4",
+                "resolution": "240p"
+            },
+            {
+                "id": "242",
+                "mimetype": "webm",
+                "resolution": "240p"
+            },
+            {
+                "id": "396",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "134",
+                "mimetype": "mp4",
+                "resolution": "360p"
+            },
+            {
+                "id": "243",
+                "mimetype": "webm",
+                "resolution": "360p"
+            },
+            {
+                "id": "397",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "135",
+                "mimetype": "mp4",
+                "resolution": "480p"
+            },
+            {
+                "id": "244",
+                "mimetype": "webm",
+                "resolution": "480p"
+            },
+            {
+                "id": "398",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "136",
+                "mimetype": "mp4",
+                "resolution": "720p"
+            },
+            {
+                "id": "247",
+                "mimetype": "webm",
+                "resolution": "720p"
+            },
+            {
+                "id": "399",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "137",
+                "mimetype": "mp4",
+                "resolution": "1080p"
+            },
+            {
+                "id": "248",
+                "mimetype": "webm",
+                "resolution": "1080p"
+            }
+        ],
+        "mediaFormats": [
+            "mp4",
+            "mp3",
+            "wav"
+        ]
+    }
+]

@@ -12,28 +12,12 @@ from pydantic import validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
-from .datasource import DetaDB, IDataSource
+from .datasource import InMemoryDB
 from .storage import IStorage, LocalFileStorage
 from .utils import LOGGER
 
 REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
-
-
-class DetaBaseDataSourceConfig(BaseConfig):
-    """
-    Deta Base DB datasource config.
-    """
-
-    deta_key: str
-    deta_base: str
-
-    def get_datasource(self) -> IDataSource:
-        return DetaDB(self.deta_key, self.deta_base)
-
-    def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
-        attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
-        return hash((type(self),) + attrs)
 
 
 class LocalStorageConfig(BaseConfig):
@@ -53,6 +37,17 @@ class LocalStorageConfig(BaseConfig):
 
     def get_storage(self) -> IStorage:
         return LocalFileStorage(self.path)
+
+
+class InMemoryDBConfig(BaseConfig):
+    """
+    In-memory database config.
+    """
+
+    use_in_memory_db: bool = True
+
+    def get_datasource(self):
+        return InMemoryDB()
 
 
 class Settings(BaseConfig):
@@ -76,7 +71,7 @@ class Settings(BaseConfig):
     cookie_httponly: bool = True
 
     downloader: DownloaderType = DownloaderType.PYTUBE
-    datasource: DetaBaseDataSourceConfig
+    datasource: InMemoryDBConfig
     storage: LocalStorageConfig
 
     expiration_period_in_seconds: int = 60 * 60 * 24  # 1 day in seconds
@@ -91,6 +86,8 @@ class Settings(BaseConfig):
 
     @property
     def downloader_version(self) -> str:
+        if self.downloader == DownloaderType.DUMMY:
+            return "0.0.dummy"
         return version(self.downloader.value)
 
     @validator("remove_expired_downloads_task_cron", pre=True)
