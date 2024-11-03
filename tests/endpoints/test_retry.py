@@ -5,11 +5,7 @@ from ytdl_api.schemas.models import Download
 
 
 def test_retry_failed_download(
-    uid: str,
-    app_client: TestClient,
-    mocked_failed_media_file: Download,
-    mocker: MockerFixture,
-    clear_datasource,
+    uid: str, app_client: TestClient, mocked_failed_media_file: Download, mocker: MockerFixture
 ):
     """
     Test if failed download can be retried.
@@ -24,12 +20,7 @@ def test_retry_failed_download(
     assert response.status_code == 200
 
 
-def test_retry_downloading_download(
-    uid: str,
-    app_client: TestClient,
-    mocked_downloading_media_file: Download,
-    clear_datasource,
-):
+def test_retry_downloading_download(uid: str, app_client: TestClient, mocked_downloading_media_file: Download):
     """
     Test if downloading media cannot be retried.
     """
@@ -42,12 +33,7 @@ def test_retry_downloading_download(
     assert response.json()["detail"] == "Download cannot be retried"
 
 
-def test_retry_finished_download(
-    uid: str,
-    app_client: TestClient,
-    mocked_downloaded_media_no_file: Download,
-    clear_datasource,
-):
+def test_retry_finished_download(uid: str, app_client: TestClient, mocked_downloaded_media_no_file: Download):
     """
     Test if finished media cannot be retried.
     """
@@ -61,11 +47,7 @@ def test_retry_finished_download(
 
 
 def test_retry_started_download(
-    uid: str,
-    app_client: TestClient,
-    mock_persisted_download: Download,
-    mocker: MockerFixture,
-    clear_datasource,
+    uid: str, app_client: TestClient, mock_persisted_download: Download, mocker: MockerFixture
 ):
     """
     Test if started media can be retried.

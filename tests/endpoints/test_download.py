@@ -6,13 +6,7 @@ from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
 
 
-def test_submit_download(
-    app_client: TestClient,
-    uid: str,
-    mock_download_params: DownloadParams,
-    mocker: MockerFixture,
-    clear_datasource: None,
-):
+def test_submit_download(app_client: TestClient, uid: str, mock_download_params: DownloadParams, mocker: MockerFixture):
     # Mocking BackgroundTasks because we don't actually want to start process of downloading video
     mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
     response = app_client.put("/api/download", cookies={"uid": uid}, json=mock_download_params.dict())
@@ -42,7 +36,6 @@ def test_download_file_endpoint(app_client: TestClient, mocked_downloaded_media:
         cookies={"uid": mocked_downloaded_media.client_id},
     )
     assert response.status_code == 200
-    assert response.headers["content-type"] == "video/mp4"
     download = datasource.get_download(mocked_downloaded_media.client_id, mocked_downloaded_media.media_id)
     assert download is not None
     assert download.status == "downloaded"

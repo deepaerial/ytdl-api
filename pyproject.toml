@@ -22,7 +22,8 @@ omit = [
 [tool.mypy]
 python_version = "3.11"
 plugins = [
-    "pydantic.mypy"
+    "pydantic.mypy",
+    "tinydb.mypy_plugin"
 ]
 allow_untyped_globals = true
 
@@ -70,7 +71,7 @@ profile = "black"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.6.1"
+version = "1.8.0"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -81,15 +82,15 @@ fastapi = "^0.109.1"
 uvicorn = "^0.18.2"
 sse-starlette = "^0.6.1"
 aiofiles = "^0.6.0"
-deta = "1.2.0"
 ffmpeg-python = "^0.2.0"
 confz = "2.0.1"
 pyhumps = "^3.7.2"
 pytube = "^15.0.0"
-yt-dlp = "2024.8.6"
+yt-dlp = "2024.10.22"
 humanize = "^4.8.0"
 croniter = "^2.0.5"
 supabase = "^2.5.1"
+tinydb = "^4.8.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

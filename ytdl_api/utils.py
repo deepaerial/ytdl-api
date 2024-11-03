@@ -24,10 +24,6 @@ def get_datetime_now() -> datetime:
     return datetime.now(UTC)
 
 
-def get_epoch_now() -> int:
-    return int(get_datetime_now().timestamp())
-
-
 def extract_percentage_progress(progress_string: str) -> int:
     """
     Extracts percentage progress from string.
