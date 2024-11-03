@@ -65,11 +65,7 @@ jobs:
       #----------------------------------------------
       #    run test suite and output coverage file
       #----------------------------------------------
-      - name: Run Pytest 
-        env:
-            DATASOURCE__DETA_KEY: ${{secrets.DATASOURCE__DETA_KEY}}
-            STORAGE__DETA_KEY: ${{secrets.TEST_STORAGE__DETA_KEY}}
-            STORAGE__DETA_DRIVE_NAME: ${{secrets.TEST_STORAGE__DETA_DRIVE_NAME}}
+      - name: Run Pytest
         run: poetry run pytest --cov=${{ github.workspace }} --cov-report=xml
       #----------------------------------------------
       #             upload coverage stats

@@ -1,4 +1,3 @@
-import socket
 from http.client import RemoteDisconnected
 from logging import Logger
 
@@ -33,16 +32,6 @@ async def on_remote_disconnected(logger: Logger, request: Request, exc: RemoteDi
     return make_internal_error("external-service-network-error")
 
 
-async def on_socket_timeout(logger: Logger, request: Request, exc: socket.timeout):
-    logger.exception(exc)
-    return make_internal_error("external-service-timeout-error")
-
-
-async def on_runtimeerror(logger: Logger, request: Request, exc: RuntimeError):
-    logger.exception(exc)
-    return make_internal_error()
-
-
 async def on_pytube_agerestricted_error(logger: Logger, request: Request, exc: AgeRestrictedError):
     logger.exception(exc)
     return make_internal_error(
@@ -61,34 +50,41 @@ async def on_pytube_regexmatch_error(logger: Logger, request: Request, exc: Rege
     )
 
 
-async def on_videoprivate_error(logger: Logger, request: Request, exc: DownloadError):
+async def on_pytube_videoprivate_error(logger: Logger, request: Request, exc: VideoPrivate):
     logger.exception(exc)
-    if isinstance(exc, DownloadError) and "Private video" in exc.args[0]:
+    return make_internal_error(
+        "private-video",
+        "Video is private. Unable to download",
+        HTTP_403_FORBIDDEN,
+    )
+
+
+async def yt_dlp_exception_handler(logger: Logger, request: Request, exc: Exception):
+    logger.exception(exc)
+    if "Private video" in exc.args[0]:
         return make_internal_error(
             "private-video",
-            exc.args[0],
+            "Video is private. Unable to download",
             HTTP_403_FORBIDDEN,
         )
-    elif isinstance(exc, VideoPrivate):
+    elif "Sign in to confirm you’re not a bot" in exc.args[0]:
         return make_internal_error(
-            "private-video",
-            exc.error_string,
+            "bot-verification-error",
+            "Bot verification detected. Please try again later or contact administrator",
             HTTP_403_FORBIDDEN,
         )
     return make_internal_error(
         "downloader-error",
-        exc.args[0],
+        "Downloader encountered error. Please try again later or contact administrator",
         HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 
 ERROR_HANDLERS = (
     (RemoteDisconnected, on_remote_disconnected),
-    (socket.timeout, on_socket_timeout),
-    (RuntimeError, on_runtimeerror),
     (AgeRestrictedError, on_pytube_agerestricted_error),
     (RegexMatchError, on_pytube_regexmatch_error),
-    (VideoPrivate, on_videoprivate_error),
-    (DownloadError, on_videoprivate_error),
+    (VideoPrivate, on_pytube_videoprivate_error),
+    (DownloadError, yt_dlp_exception_handler),
     (Exception, on_default_exception_handler),
 )

@@ -1,7 +1,6 @@
 import asyncio
 import inspect
 from datetime import datetime
-from pathlib import Path
 
 import ffmpeg
 import pytest
@@ -16,22 +15,12 @@ from ytdl_api.storage import LocalFileStorage
 
 
 @pytest.fixture()
-def local_storage(fake_media_path: Path) -> LocalFileStorage:
-    return LocalFileStorage(fake_media_path)
-
-
-@pytest.fixture
-def notification_queue() -> NotificationQueue:
-    return NotificationQueue()
-
-
-@pytest.fixture()
 def downloader(
     datasource: InMemoryDB,
     notification_queue: NotificationQueue,
-    local_storage: LocalFileStorage,
+    fake_local_storage: LocalFileStorage,
 ) -> PytubeDownloader:
-    return get_pytube_downloader(datasource, notification_queue, local_storage)
+    return get_pytube_downloader(datasource, notification_queue, fake_local_storage)
 
 
 @pytest.mark.skip(
