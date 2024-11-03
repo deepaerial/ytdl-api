@@ -1,5 +1,4 @@
 import os
-import random
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Generator, Iterable
@@ -9,16 +8,17 @@ from confz import DataSource
 from fastapi.testclient import TestClient
 
 from ytdl_api.config import Settings
-from ytdl_api.constants import DownloadStatus, MediaFormat
 from ytdl_api.datasource import IDataSource, InMemoryDB
-from ytdl_api.dependencies import get_database, get_settings
+from ytdl_api.dependencies import get_database, get_downloader, get_settings
 from ytdl_api.queue import NotificationQueue
 from ytdl_api.schemas.models import Download
 from ytdl_api.schemas.requests import DownloadParams
 from ytdl_api.storage import LocalFileStorage
 from ytdl_api.utils import get_unique_id
 
-from .utils import EXAMPLE_VIDEO_PREVIEW, get_example_download_instance
+from .utils import FakeDownloader, FakerForDownloads
+
+FIXTURES_JSON_FILE_PATH = (Path(__file__).parent / "fixtures.json").resolve()
 
 
 @pytest.fixture()
@@ -49,22 +49,12 @@ def fake_local_storage(fake_media_path: Path) -> LocalFileStorage:
 
 
 @pytest.fixture()
-def fake_media_file_path(fake_media_path: Path) -> Path:
-    filename = get_unique_id()
-    fake_media_file_path = fake_media_path / filename
-    with fake_media_file_path.open("wb") as f:
-        file_size_in_bytes = 1024
-        f.write(os.urandom(file_size_in_bytes))
-    return fake_media_file_path
-
-
-@pytest.fixture()
-def settings(fake_media_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterable[Settings]:
+def settings(fake_media_path: Path) -> Iterable[Settings]:
     data_source = DataSource(
         data={
             "debug": True,
             "allow_origins": ["*"],
-            "downloader": "yt-dlp",
+            "downloader": "dummy",
             "datasource": {"use_in_memory_db": True},
             "storage": {"path": fake_media_path},
             "disable_docs": True,
@@ -79,95 +69,73 @@ def datasource() -> InMemoryDB:
     return InMemoryDB()
 
 
+@pytest.fixture()
+def faker_for_downloads(fake_media_path: Path) -> FakerForDownloads:
+    return FakerForDownloads(fake_media_path).load_from_fixtures_file(FIXTURES_JSON_FILE_PATH)
+
+
 @pytest.fixture
-def app_client(settings: Settings, datasource: InMemoryDB) -> TestClient:
+def app_client(settings: Settings, datasource: InMemoryDB, faker_for_downloads: FakerForDownloads) -> TestClient:
     app = settings.init_app()
     app.dependency_overrides[get_settings] = lambda: settings
     app.dependency_overrides[get_database] = lambda: datasource
+    app.dependency_overrides[get_downloader] = lambda: FakeDownloader(faker_for_downloads=faker_for_downloads)
     return TestClient(app)
 
 
 @pytest.fixture()
-def mock_download_params() -> DownloadParams:
-    return DownloadParams(
-        url=EXAMPLE_VIDEO_PREVIEW["url"],  # type: ignore
-        video_stream_id=random.choice(EXAMPLE_VIDEO_PREVIEW["videoStreams"])["id"],  # type: ignore
-        audio_stream_id=random.choice(EXAMPLE_VIDEO_PREVIEW["audioStreams"])["id"],  # type: ignore
-        media_format=MediaFormat.MP4,
-    )
+def mock_download_params(faker_for_downloads: FakerForDownloads) -> DownloadParams:
+    return faker_for_downloads.random_download_params()
 
 
 @pytest.fixture()
-def mock_persisted_download(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
-    download = get_example_download_instance(
-        client_id=uid,
-        media_format=MediaFormat.MP4,
-        status=DownloadStatus.STARTED,
-        when_started_download=None,
-    )
-    download.audio_stream_id = random.choice(EXAMPLE_VIDEO_PREVIEW["audioStreams"])["id"]  # type: ignore
-    download.video_stream_id = random.choice(EXAMPLE_VIDEO_PREVIEW["videoStreams"])["id"]  # type: ignore
+def mock_persisted_download(
+    uid: str, faker_for_downloads: FakerForDownloads, datasource: IDataSource
+) -> Generator[Download, None, None]:
+    download = faker_for_downloads.random_started_download(client_id=uid)
     datasource.put_download(download)
     yield download
 
 
 @pytest.fixture()
 def mocked_downloaded_media(
-    uid: str, datasource: IDataSource, fake_media_file_path: Path
+    uid: str,
+    faker_for_downloads: FakerForDownloads,
+    datasource: IDataSource,
 ) -> Generator[Download, None, None]:
-    download = get_example_download_instance(
-        client_id=uid,
-        media_format=MediaFormat.MP4,
-        duration=1000,
-        filesize=1024,
-        status=DownloadStatus.FINISHED,
-        file_path=fake_media_file_path.as_posix(),
-        progress=100,
-    )
+    download = faker_for_downloads.random_finished_download(client_id=uid)
     datasource.put_download(download)
     yield download
 
 
 @pytest.fixture()
-def mocked_downloaded_media_no_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
-    download = get_example_download_instance(
-        client_id=uid,
-        media_format=MediaFormat.MP4,
-        duration=1000,
-        filesize=1024,
-        status=DownloadStatus.FINISHED,
-        file_path=None,
-        progress=100,
-    )
+def mocked_downloaded_media_no_file(
+    uid: str,
+    faker_for_downloads: FakerForDownloads,
+    datasource: IDataSource,
+) -> Generator[Download, None, None]:
+    download = faker_for_downloads.random_finished_download(client_id=uid, make_file=False)
     datasource.put_download(download)
     yield download
 
 
 @pytest.fixture()
-def mocked_failed_media_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
-    download = get_example_download_instance(
-        client_id=uid,
-        media_format=MediaFormat.MP4,
-        duration=1000,
-        filesize=1024,
-        status=DownloadStatus.FAILED,
-        file_path=None,
-        progress=100,
-    )
+def mocked_failed_media_file(
+    uid: str,
+    faker_for_downloads: FakerForDownloads,
+    datasource: IDataSource,
+) -> Generator[Download, None, None]:
+    download = faker_for_downloads.random_failed_download(client_id=uid)
     datasource.put_download(download)
     yield download
 
 
 @pytest.fixture
-def mocked_downloading_media_file(uid: str, datasource: IDataSource) -> Generator[Download, None, None]:
-    download = get_example_download_instance(
-        client_id=uid,
-        media_format=MediaFormat.MP4,
-        duration=1000,
-        filesize=1024,
-        status=DownloadStatus.DOWNLOADING,
-        file_path=None,
-        progress=100,
-    )
+def mocked_downloading_media_file(
+    uid: str,
+    faker_for_downloads: FakerForDownloads,
+    datasource: IDataSource,
+) -> Generator[Download, None, None]:
+    download = faker_for_downloads.random_downloading_download(client_id=uid)
     datasource.put_download(download)
     yield download

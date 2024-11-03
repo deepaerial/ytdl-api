@@ -10,7 +10,7 @@ from ytdl_api.datasource import IDataSource
 from ytdl_api.schemas.models import Download
 from ytdl_api.utils import get_datetime_now
 
-from .utils import get_example_download_instance
+from .utils import FakerForDownloads
 
 
 @pytest.fixture
@@ -22,34 +22,28 @@ def mocked_logger():
 
 
 @pytest.fixture
-def example_expired_downloads(fake_media_path: Path, datasource: IDataSource):
+def example_expired_downloads(fake_media_path: Path, faker_for_downloads: FakerForDownloads, datasource: IDataSource):
     dt_now = get_datetime_now()
     expiration_delta = timedelta(days=7)
     expired_downloads = [
-        get_example_download_instance(
+        faker_for_downloads.random_downloaded_media(
             client_id="test",
-            media_format="mp4",
-            status="downloaded",
             when_submitted=dt_now - expiration_delta - timedelta(days=1),
         ),
-        get_example_download_instance(
-            client_id="test", media_format="mp4", status="downloaded", when_submitted=dt_now - expiration_delta
-        ),
-        get_example_download_instance(
+        faker_for_downloads.random_downloaded_media(
             client_id="test",
-            media_format="mp4",
-            status="downloaded",
+            when_submitted=dt_now - expiration_delta,
+        ),
+        faker_for_downloads.random_downloaded_media(
+            client_id="test",
             when_submitted=dt_now - timedelta(days=1),
         ),
-        get_example_download_instance(
+        faker_for_downloads.random_downloaded_media(
             client_id="test",
-            media_format="mp4",
-            status="downloaded",
             when_submitted=dt_now,
         ),
     ]
     for download in expired_downloads:
-        Path(fake_media_path / download.storage_filename).touch()
         datasource.put_download(download)
     yield expiration_delta, expired_downloads
     datasource.clear_downloads()

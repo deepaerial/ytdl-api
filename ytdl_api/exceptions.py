@@ -61,27 +61,24 @@ async def on_pytube_regexmatch_error(logger: Logger, request: Request, exc: Rege
     )
 
 
-async def on_pytube_videoprivate_error(logger: Logger, request: Request, exc: VideoPrivate):
+async def on_videoprivate_error(logger: Logger, request: Request, exc: DownloadError):
     logger.exception(exc)
-    return make_internal_error(
-        "private-video",
-        exc.error_string,
-        HTTP_403_FORBIDDEN,
-    )
-
-
-async def on_ytdlp_videoprivate_error(logger: Logger, request: Request, exc: DownloadError):
-    logger.exception(exc)
-    if "Private video" not in exc.args[0]:
+    if isinstance(exc, DownloadError) and "Private video" in exc.args[0]:
         return make_internal_error(
-            "downloader-error",
+            "private-video",
             exc.args[0],
-            HTTP_500_INTERNAL_SERVER_ERROR,
+            HTTP_403_FORBIDDEN,
+        )
+    elif isinstance(exc, VideoPrivate):
+        return make_internal_error(
+            "private-video",
+            exc.error_string,
+            HTTP_403_FORBIDDEN,
         )
     return make_internal_error(
-        "private-video",
+        "downloader-error",
         exc.args[0],
-        HTTP_403_FORBIDDEN,
+        HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 
@@ -91,7 +88,7 @@ ERROR_HANDLERS = (
     (RuntimeError, on_runtimeerror),
     (AgeRestrictedError, on_pytube_agerestricted_error),
     (RegexMatchError, on_pytube_regexmatch_error),
-    (VideoPrivate, on_pytube_videoprivate_error),
-    (DownloadError, on_ytdlp_videoprivate_error),
+    (VideoPrivate, on_videoprivate_error),
+    (DownloadError, on_videoprivate_error),
     (Exception, on_default_exception_handler),
 )

@@ -86,6 +86,8 @@ class Settings(BaseConfig):
 
     @property
     def downloader_version(self) -> str:
+        if self.downloader == DownloaderType.DUMMY:
+            return "0.0.dummy"
         return version(self.downloader.value)
 
     @validator("remove_expired_downloads_task_cron", pre=True)
