@@ -19,20 +19,6 @@ omit = [
     "asgi.py"
 ]
 
-[tool.mypy]
-python_version = "3.11"
-plugins = [
-    "pydantic.mypy",
-    "tinydb.mypy_plugin"
-]
-allow_untyped_globals = true
-
-[tool.pydantic-mypy]
-init_forbid_extra = true
-init_typed = true
-warn_required_dynamic_aliases = true
-warn_untyped_fields = false
-
 [tool.ruff]
 # Same as Black.
 line-length = 120
@@ -71,7 +57,7 @@ profile = "black"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.8.0"
+version = "1.8.1"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -95,13 +81,9 @@ tinydb = "^4.8.2"
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 requests = "^2.23.0"
-pytest-pep8 = "^1.0.6"
 pytest-cov = "^2.11.1"
 coverage = {extras = ["toml"], version = "^5.5"}
-pre-commit = "^2.18.1"
-mypy = "1.0.0"
 types-setuptools = "^62.6.1"
-pytest-mypy = "^0.9.1"
 pyclean = "^2.2.0"
 pytest-mock = "^3.10.0"
 httpx = "0.24.0"
