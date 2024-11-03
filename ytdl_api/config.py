@@ -12,7 +12,7 @@ from pydantic import validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
-from .datasource import InMemoryDB, SupabaseDB, IDataSource
+from .datasource import IDataSource, InMemoryDB, SupabaseDB
 from .storage import IStorage, LocalFileStorage
 from .utils import LOGGER
 

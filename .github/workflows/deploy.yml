@@ -1,14 +1,14 @@
 name: Deploy
 
 
-on:
-  push:
-    branches:
-      - master
-    paths:
-      - ytdl_api/**
-      - pyproject.toml
-      - poetry.lock
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - ytdl_api/**
+#       - pyproject.toml
+#       - poetry.lock
 
 jobs:
   deploy:
