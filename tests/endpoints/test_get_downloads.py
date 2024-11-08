@@ -6,7 +6,8 @@ from ytdl_api.schemas.models import Download
 
 
 def test_get_downloads(uid: str, app_client: TestClient, mock_persisted_download: Download):
-    response = app_client.get("/api/downloads", cookies={"uid": uid})
+    app_client.cookies = {"uid": uid}
+    response = app_client.get("/api/downloads")
     assert response.status_code == 200
     json_response = response.json()
     assert "downloads" in json_response
