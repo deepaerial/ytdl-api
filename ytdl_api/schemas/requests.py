@@ -1,30 +1,27 @@
 import re
 
-from pydantic import Field, root_validator, validator
+from pydantic import Field, field_validator, model_validator
 
-from ..constants import YOUTUBE_URI_REGEX, MediaFormat
-from ..types import YoutubeURL
+from ..constants import MediaFormat
+from ..types import YOUTUBE_REGEX, YoutubeURL
 from .base import BaseModel_
 
 
 class DownloadParams(BaseModel_):
     url: YoutubeURL = Field(
         ...,
-        title="URL",
         description="URL to video",
-        example="https://www.youtube.com/watch?v=B8WgNGN0IVA",
+        examples=["https://www.youtube.com/watch?v=B8WgNGN0IVA"],
     )
-    video_stream_id: str | None = Field(None, description="Video stream ID", example="133")
-    audio_stream_id: str | None = Field(None, description="Audio stream ID", example="118")
+    video_stream_id: str | None = Field(None, description="Video stream ID", examples=["133"])
+    audio_stream_id: str | None = Field(None, description="Audio stream ID", examples=["118"])
     media_format: MediaFormat = Field(
         ...,
         description="Video or audio (when extracting) format of file",
     )
 
-    class Config(BaseModel_.Config):
-        validate_all = True
-
-    @root_validator
+    @model_validator(mode="before")
+    @classmethod
     def validate_stream_ids(cls, values):
         video_stream_id, audio_stream_id = (
             values.get("video_stream_id"),
@@ -34,9 +31,10 @@ class DownloadParams(BaseModel_):
             raise ValueError("Video or/and audio stream id should be specified for download.")
         return values
 
-    @validator("url")
+    @field_validator("url")
+    @classmethod
     def is_url_allowed(cls, url):
-        url_patterns = (YOUTUBE_URI_REGEX,)
+        url_patterns = (YOUTUBE_REGEX,)
         if not any(re.compile(p).match(url) for p in url_patterns):
             raise ValueError("Domain is not allowed")
         return url

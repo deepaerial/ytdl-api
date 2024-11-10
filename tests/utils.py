@@ -4,7 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from random import choice
 
-from pydantic import parse_obj_as
 from pytube.exceptions import VideoPrivate
 from yt_dlp.utils import DownloadError
 
@@ -81,7 +80,7 @@ class FakerForDownloads:
         if select_streams:
             download_data["video_stream_id"] = choice(video_data["videoStreams"])["id"]
             download_data["audio_stream_id"] = choice(video_data["audioStreams"])["id"]
-        download = parse_obj_as(Download, download_data)
+        download = Download(**download_data)
         return download
 
     def random_started_download(self, client_id: str, when_submitted: datetime | None = None) -> Download:

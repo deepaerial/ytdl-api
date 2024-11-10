@@ -10,11 +10,11 @@ def test_retry_failed_download(
     """
     Test if failed download can be retried.
     """
+    app_client.cookies = {"uid": uid}
     # Mocking BackgroundTasks because we don't actually want to start process of downloading video
     mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
     response = app_client.put(
         "/api/retry",
-        cookies={"uid": uid},
         params={"mediaId": mocked_failed_media_file.media_id},
     )
     assert response.status_code == 200
@@ -24,9 +24,9 @@ def test_retry_downloading_download(uid: str, app_client: TestClient, mocked_dow
     """
     Test if downloading media cannot be retried.
     """
+    app_client.cookies = {"uid": uid}
     response = app_client.put(
         "/api/retry",
-        cookies={"uid": uid},
         params={"mediaId": mocked_downloading_media_file.media_id},
     )
     assert response.status_code == 400
@@ -37,9 +37,9 @@ def test_retry_finished_download(uid: str, app_client: TestClient, mocked_downlo
     """
     Test if finished media cannot be retried.
     """
+    app_client.cookies = {"uid": uid}
     response = app_client.put(
         "/api/retry",
-        cookies={"uid": uid},
         params={"mediaId": mocked_downloaded_media_no_file.media_id},
     )
     assert response.status_code == 400
@@ -52,11 +52,11 @@ def test_retry_started_download(
     """
     Test if started media can be retried.
     """
+    app_client.cookies = {"uid": uid}
     # Mocking BackgroundTasks because we don't actually want to start process of downloading video
     mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
     response = app_client.put(
         "/api/retry",
-        cookies={"uid": uid},
         params={"mediaId": mock_persisted_download.media_id},
     )
     assert response.status_code == 200

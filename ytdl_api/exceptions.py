@@ -1,11 +1,20 @@
 from http.client import RemoteDisconnected
 from logging import Logger
 
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from pytube.exceptions import AgeRestrictedError, RegexMatchError, VideoPrivate
 from starlette.responses import JSONResponse
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import (
+    HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN,
+    HTTP_422_UNPROCESSABLE_ENTITY,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+)
 from yt_dlp.utils import DownloadError
+
+from .types import YOUTUBE_REGEX
 
 
 def make_internal_error(
@@ -80,7 +89,23 @@ async def yt_dlp_exception_handler(logger: Logger, request: Request, exc: Except
     )
 
 
+async def validation_exception_handler(logger: Logger, request: Request, exc: RequestValidationError):
+    # Custom exception handling for youtube video link validation just because you
+    # cannot specify custom error messages in Pydantic type.
+    remapped_errors = []
+    for error in exc.errors():
+        error_type = error["type"]
+        ctx_pattern = error["ctx"].get("pattern")
+        if error_type == "string_pattern_mismatch" and ctx_pattern == YOUTUBE_REGEX:
+            remapped_errors.append({**error, "msg": "Bad youtube video link provided."})
+    return JSONResponse(
+        status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": remapped_errors, "body": exc.body}),
+    )
+
+
 ERROR_HANDLERS = (
+    (RequestValidationError, validation_exception_handler),
     (RemoteDisconnected, on_remote_disconnected),
     (AgeRestrictedError, on_pytube_agerestricted_error),
     (RegexMatchError, on_pytube_regexmatch_error),

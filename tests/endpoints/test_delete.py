@@ -5,18 +5,19 @@ from ytdl_api.schemas.models import Download
 
 
 def test_delete_non_existing_download(app_client: TestClient):
-    response = app_client.delete("/api/delete", params={"mediaId": -1}, cookies={"uid": "-1"})
+    app_client.cookies = {"uid": "-1"}
+    response = app_client.delete("/api/delete", params={"mediaId": -1})
     assert response.status_code == 404
     assert response.json()["detail"] == "Download not found"
 
 
 def test_delete_existing_unfinished_download(app_client: TestClient, mock_persisted_download: Download):
+    app_client.cookies = {"uid": mock_persisted_download.client_id}
     response = app_client.delete(
         "/api/delete",
         params={
             "mediaId": mock_persisted_download.media_id,
         },
-        cookies={"uid": mock_persisted_download.client_id},
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "Media file is not downloaded yet"
@@ -25,10 +26,10 @@ def test_delete_existing_unfinished_download(app_client: TestClient, mock_persis
 def test_delete_existing_downloaded_file(
     app_client: TestClient, mocked_downloaded_media: Download, datasource: IDataSource
 ):
+    app_client.cookies = {"uid": mocked_downloaded_media.client_id}
     response = app_client.delete(
         "/api/delete",
         params={"mediaId": mocked_downloaded_media.media_id},
-        cookies={"uid": mocked_downloaded_media.client_id},
     )
     assert response.status_code == 200
     json_response = response.json()
@@ -46,10 +47,10 @@ def test_delete_failed_to_download_media(
     """
     Test if app allows to remove media download that resulted in error during download.
     """
+    app_client.cookies = {"uid": mocked_failed_media_file.client_id}
     response = app_client.delete(
         "/api/delete",
         params={"mediaId": mocked_failed_media_file.media_id},
-        cookies={"uid": mocked_failed_media_file.client_id},
     )
     assert response.status_code == 200
     json_response = response.json()

@@ -37,7 +37,7 @@ def test_get_video_info(url: YoutubeURL):
     assert isinstance(video_info, VideoInfoResponse)
     assert video_info.url == url
     assert video_info.duration is not None
-    assert video_info.thumbnail_url.startswith("https://i.ytimg.com/")
+    assert str(video_info.thumbnail_url).startswith("https://i.ytimg.com/")
     assert video_info.title is not None
     assert isinstance(video_info.audio_streams, list)
     assert isinstance(video_info.video_streams, list)

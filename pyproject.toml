@@ -57,7 +57,7 @@ profile = "black"
 
 [tool.poetry]
 name = "ytdl-api"
-version = "1.8.1"
+version = "1.8.2"
 description = "API for web-based youtube-dl client"
 authors = ["Nazar Oleksiuk <nazarii.oleksiuk@gmail.com>"]
 license = "MIT"
@@ -78,15 +78,13 @@ croniter = "^2.0.5"
 tinydb = "^4.8.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "*"
-requests = "^2.23.0"
-pytest-cov = "^2.11.1"
-coverage = {extras = ["toml"], version = "^5.5"}
-types-setuptools = "^62.6.1"
+pytest = "^8.3.3"
+pytest-cov = "^6.0.0"
+coverage = {extras = ["toml"], version = "^7.6.4"}
 pyclean = "^2.2.0"
 pytest-mock = "^3.10.0"
 httpx = "^0.23.3"
-ruff = "^0.3.4"
+ruff = "^0.7.3"
 pytest-asyncio = "^0.23.7"
 
 [build-system]
