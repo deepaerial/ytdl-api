@@ -1,51 +1,30 @@
-import re
 import urllib.parse
-from typing import TypedDict
+from typing import Annotated, TypedDict
 
-from pydantic import AnyHttpUrl
+from pydantic import AfterValidator, StringConstraints, WithJsonSchema
 
-YOUTUBE_REGEX = re.compile(
+YOUTUBE_REGEX = (
     r"^((https?)?:(\/\/))?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$"
 )
 
+_YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v={}"
 
-class YoutubeURL(AnyHttpUrl, str):
-    """
-    Custom type for Youtube video video URL.
-    """
 
-    @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
+def _get_clear_video_url(url_str: str) -> str:
+    url = urllib.parse.urlparse(url_str)
+    query_params = urllib.parse.parse_qs(url.query)
+    if "list" in query_params.keys():
+        video_id = query_params["v"][0]
+        return _YOUTUBE_BASE_URL.format(video_id)
+    return url_str
 
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        # __modify_schema__ should mutate the dict it receives in place,
-        # the returned value will be ignored
-        field_schema.update(
-            # simplified regex here for brevity, see the wikipedia link above
-            pattern=YOUTUBE_REGEX.pattern,
-        )
 
-    @classmethod
-    def validate(cls, v):
-        match = YOUTUBE_REGEX.fullmatch(v)
-        if not match:
-            raise ValueError("Bad youtube video link provided.")
-        full_url = match.group(0)
-        scheme = match.group(2)
-        return cls(url=full_url, scheme=scheme)
-
-    def get_clear_video_url(self) -> "YoutubeURL":
-        url = urllib.parse.urlparse(str(self))
-        query_params = urllib.parse.parse_qs(url.query)
-        if "list" in query_params.keys():
-            video_id = query_params["v"][0]
-            return YoutubeURL(url=f"https://www.youtube.com/watch?v={video_id}", scheme="https")
-        return self
+YoutubeURL = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, pattern=YOUTUBE_REGEX),
+    AfterValidator(_get_clear_video_url),
+    WithJsonSchema({"type": "string", "pattern": YOUTUBE_REGEX}, mode="serialization"),
+]
 
 
 class DownloadDataInfo(TypedDict):

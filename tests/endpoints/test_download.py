@@ -10,7 +10,7 @@ def test_submit_download(app_client: TestClient, uid: str, mock_download_params:
     app_client.cookies = {"uid": uid}
     # Mocking BackgroundTasks because we don't actually want to start process of downloading video
     mocker.patch("ytdl_api.endpoints.BackgroundTasks.add_task")
-    response = app_client.put("/api/download", json=mock_download_params.dict())
+    response = app_client.put("/api/download", json=mock_download_params.model_dump())
     assert response.status_code == 201
     json_response = response.json()
     assert "downloads" in json_response

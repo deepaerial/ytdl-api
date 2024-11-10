@@ -1,4 +1,3 @@
-import re
 from enum import Enum
 
 
@@ -37,8 +36,3 @@ class MediaFormat(str, Enum):
 
     def __str__(self) -> str:  # pragma: no cover
         return self.value
-
-
-YOUTUBE_URI_REGEX = re.compile(
-    r"^((?:https?:)?\/\/)?((?:www|m)\.)?" r"((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$"
-)
