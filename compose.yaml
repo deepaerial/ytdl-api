@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  ytdl-api:
+  app:
     container_name: "ytdl-api"
     build:
       context: .
@@ -12,20 +12,20 @@ services:
     volumes:
       - "./ytdl_api/:/app/ytdl_api"
       - "./media/:/app/media"
-    restart: always
+    restart: unless-stopped
     stdin_open: true
     tty: true
     networks:
       - default
   tests:
     container_name: "ytdl-api-pytest"
-    build: 
+    command: 
+        --cov --cov-report=xml:coverage_report/cov.xml
+    build:
       context: .
       target: test
-    env_file:
-      - .env
     volumes:
-      - "./ytdl_api/:/app/ytdl_api"
+      - "./coverage_report:/app/coverage_report"
     networks:
       - default
     deploy:

@@ -39,7 +39,7 @@ WORKDIR /app/
 COPY --from=project-base /app/.venv /app/.venv
 COPY ./tests /app/tests
 RUN poetry install
-CMD ["poetry", "run", "pytest", "/app/", "--cov", "--cov-report", "html"]
+ENTRYPOINT [ "poetry", "run", "pytest"]
 ############ Prod ###################
 FROM project-base as prod
 RUN poetry install --without dev
