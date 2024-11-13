@@ -118,8 +118,8 @@ class InMemoryDB(IDataSource):
         return self.db.search((Query()["client_id"] == client_id) & (Query()["status"] != DownloadStatus.DELETED))
 
     def fetch_downloads_till_datetime(self, till_when: datetime.datetime) -> list[Download]:
-        donwloads = self.db.search(Query()["when_submitted"] <= till_when)
-        return TypeAdapter(list[Download]).validate_python(donwloads)
+        downloads = self.db.search(Query()["when_submitted"] <= till_when)
+        return TypeAdapter(list[Download]).validate_python(downloads)
 
     def put_download(self, download: Download):
         self.db.insert(download.model_dump())

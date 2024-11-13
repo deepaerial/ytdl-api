@@ -10,8 +10,14 @@ services:
     env_file:
       - .env
     volumes:
-      - "./ytdl_api/:/app/ytdl_api"
       - "./media/:/app/media"
+    develop:
+      watch:
+        - action: "rebuild"
+          path: poetry.lock
+        - action: "sync"
+          path: "./ytdl_api"
+          target: "/app/ytdl_api"
     restart: unless-stopped
     stdin_open: true
     tty: true

@@ -94,7 +94,7 @@ async def submit_download(
     download = create_download_from_download_params(uid, download_params, downloader)
     datasource.put_download(download)
     background_tasks.add_task(downloader.download, download)
-    return {"downloads": datasource.fetch_available_downloads(uid)}
+    return responses.SubmitDownloadResponse(media_id=download.media_id, when_submitted=download.when_submitted)
 
 
 @router.get(
@@ -243,7 +243,7 @@ async def retry_download(
     downloader: IDownloader = Depends(dependencies.get_downloader),
 ):
     """
-    Endpoint for retrying donwload of failed media file.
+    Endpoint for retrying failed media download.
     """
     download = datasource.get_download(uid, media_id)
     if download is None:
