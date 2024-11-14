@@ -76,7 +76,7 @@ async def preview(
 
 @router.put(
     "/download",
-    response_model=responses.DownloadsResponse,
+    response_model=responses.SubmitDownloadResponse,
     status_code=status.HTTP_201_CREATED,
     responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": responses.ErrorResponse}},
 )

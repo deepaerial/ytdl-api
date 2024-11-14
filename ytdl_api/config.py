@@ -137,6 +137,9 @@ class Settings(BaseConfig):
         __pydantic_self__.__setup_exception_handlers(app)
         LOGGER.setLevel(__pydantic_self__.logging_level)
         LOGGER.debug(f"API version: {__pydantic_self__.version}")
+        LOGGER.debug(
+            f"Cron expression for removing expired downloads: {__pydantic_self__.remove_expired_downloads_task_cron}"
+        )
         return app
 
     def __setup_endpoints(__pydantic_self__, app: FastAPI):
@@ -172,6 +175,3 @@ class Settings(BaseConfig):
     def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
         attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
-    # TODO[pydantic]: The following keys were removed: `allow_mutation`.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
-    model_config = ConfigDict(allow_mutation=True, case_sensitive=False)
