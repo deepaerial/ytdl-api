@@ -10,17 +10,55 @@ services:
     env_file:
       - .env
     volumes:
-      - "./ytdl_api/:/app/ytdl_api"
       - "./media/:/app/media"
+    develop:
+      watch:
+        - action: "rebuild"
+          path: poetry.lock
+        - action: "sync"
+          path: "./ytdl_api"
+          target: "/app/ytdl_api"
     restart: unless-stopped
     stdin_open: true
     tty: true
     networks:
       - default
+  dev-db:
+    container_name: "ytdl-api-dev-db"
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin 
+      POSTGRES_PASSWORD: admin
+    networks:
+      - default
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+  dev-db-ui:
+    image: "dpage/pgadmin4"
+    container_name: "pgadmin"
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - default
+    ports:
+      - 5500:80
+    depends_on:
+      - dev-db
   tests:
     container_name: "ytdl-api-pytest"
     command: 
-        --cov --cov-report=xml:coverage_report/cov.xml
+        - --cov 
+        - --cov-report=xml:coverage_report/cov.xml
     build:
       context: .
       target: test
@@ -36,3 +74,6 @@ services:
         reservations:
           cpus: '0.25'
           memory: 20M
+volumes:
+  postgres-data:
+  pgadmin-data:

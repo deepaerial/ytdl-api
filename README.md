@@ -29,6 +29,10 @@ This will launch `uvicorn` server with app on http://localhost:8080. You will al
 ```shell
 $ docker compose up -d app
 ```
+For local development using docker use `watch`:
+```shell
+$ docker compose watch app
+```
 
 ## Running tests
 Before running tests for the first time create file `.env.test` inside project directory with following content. Replace placeholders with real values:

@@ -20,16 +20,16 @@ class DownloadParams(BaseModel_):
         description="Video or audio (when extracting) format of file",
     )
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     @classmethod
-    def validate_stream_ids(cls, values):
+    def validate_stream_ids(cls, obj: "DownloadParams"):
         video_stream_id, audio_stream_id = (
-            values.get("video_stream_id"),
-            values.get("audio_stream_id"),
+            obj.video_stream_id,
+            obj.audio_stream_id,
         )
         if not any((video_stream_id, audio_stream_id)):
             raise ValueError("Video or/and audio stream id should be specified for download.")
-        return values
+        return obj
 
     @field_validator("url")
     @classmethod

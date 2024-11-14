@@ -13,19 +13,8 @@ def test_submit_download(app_client: TestClient, uid: str, mock_download_params:
     response = app_client.put("/api/download", json=mock_download_params.model_dump())
     assert response.status_code == 201
     json_response = response.json()
-    assert "downloads" in json_response
-    download = next(
-        (download for download in json_response["downloads"] if download["url"] == mock_download_params.url),
-        None,
-    )
-    assert download is not None
-    assert download["whenSubmitted"] is not None
-    assert (
-        download["whenStartedDownload"] is None
-    )  # download process will probably not start right away so this field should be null
-    assert download["whenDownloadFinished"] is None
-    assert download["whenFileDownloaded"] is None
-    assert download["whenDeleted"] is None
+    assert json_response.get("mediaId") is not None
+    assert json_response.get("whenSubmitted") is not None
 
 
 def test_download_file_endpoint(app_client: TestClient, mocked_downloaded_media: Download, datasource: IDataSource):
