@@ -51,6 +51,14 @@ class DownloadResponse(BaseModel_):
     )
 
 
+class SubmitDownloadResponse(BaseModel_):
+    media_id: str = Field(..., description="Download id")
+    when_submitted: datetime.datetime = Field(
+        ...,
+        description="Date & time in UTC when download was submitted to API.",
+    )
+
+
 class DownloadsResponse(BaseModel_):
     downloads: list[DownloadResponse] = Field(
         ...,

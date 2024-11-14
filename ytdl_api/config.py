@@ -8,7 +8,7 @@ from confz import BaseConfig, EnvSource
 from croniter import croniter
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import validator
+from pydantic import field_validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
@@ -40,7 +40,8 @@ class LocalStorageConfig(BaseConfig):
 
     path: Path
 
-    @validator("path")
+    @field_validator("path")
+    @classmethod
     def validate_path(cls, value):
         media_path = Path(value)
         if not media_path.exists():  # pragma: no cover
@@ -103,13 +104,15 @@ class Settings(BaseConfig):
             return "0.0.dummy"
         return version(self.downloader.value)
 
-    @validator("remove_expired_downloads_task_cron", pre=True)
+    @field_validator("remove_expired_downloads_task_cron", mode="before")
+    @classmethod
     def validate_remove_expired_downloads_task_cron(cls, value):
         if croniter.is_valid(value):
             return value
         raise ValueError("Invalid cron expression value.")
 
-    @validator("allow_origins", pre=True)
+    @field_validator("allow_origins", mode="before")
+    @classmethod
     def validate_allow_origins(cls, value):
         if isinstance(value, str):
             return value.split(",")
@@ -147,6 +150,9 @@ class Settings(BaseConfig):
         __pydantic_self__.__setup_exception_handlers(app)
         LOGGER.setLevel(__pydantic_self__.logging_level)
         LOGGER.debug(f"API version: {__pydantic_self__.version}")
+        LOGGER.debug(
+            f"Cron expression for removing expired downloads: {__pydantic_self__.remove_expired_downloads_task_cron}"
+        )
         return app
 
     def __setup_endpoints(__pydantic_self__, app: FastAPI):
@@ -182,7 +188,3 @@ class Settings(BaseConfig):
     def __hash__(self):  # make hashable BaseModel subclass  # pragma: no cover
         attrs = tuple(attr if not isinstance(attr, list) else ",".join(attr) for attr in self.__dict__.values())
         return hash((type(self),) + attrs)
-
-    class Config:
-        allow_mutation = True
-        case_sensitive = False

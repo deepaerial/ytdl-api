@@ -9,16 +9,16 @@ from .base import BaseModel_
 
 
 class BaseStream(BaseModel_):
-    id: str = Field(..., description="Stream ID", example="123")
-    mimetype: str = Field(..., description="Stream mime-type", example="audio/webm")
+    id: str = Field(..., description="Stream ID", examples=["123"])
+    mimetype: str = Field(..., description="Stream mime-type", examples=["audio/webm"])
 
 
 class VideoStream(BaseStream):
-    resolution: str = Field(..., description="Video resolution", example="1080p")
+    resolution: str = Field(..., description="Video resolution", examples=["1080p"])
 
 
 class AudioStream(BaseStream):
-    bitrate: str = Field(..., description="Audio average bitrate", example="160kbps")
+    bitrate: str = Field(..., description="Audio average bitrate", examples=["160kbps"])
 
 
 class Download(BaseModel_):
@@ -35,8 +35,8 @@ class Download(BaseModel_):
         description="Video or audio (when extracting) format of file",
     )
     duration: int = Field(..., description="Video duration (in milliseconds)")
-    filesize: int = Field(None, description="Video/audio filesize (in bytes)")
-    filesize_hr: str = Field(None, description="Video/audio filesize (human-readable)")
+    filesize: int | None = Field(None, description="Video/audio filesize (in bytes)")
+    filesize_hr: str | None = Field(None, description="Video/audio filesize (human-readable)")
     thumbnail_url: AnyHttpUrl | str = Field(..., description="Video thumbnail")
     status: DownloadStatus = Field(DownloadStatus.STARTED, description="Download status")
     file_path: str | None = Field(None, description="Path to file")
@@ -89,9 +89,9 @@ class DownloadStatusInfo(BaseModel_):
     filesize_hr: str | None = Field(None, description="Video/audio file size in human-readable format")
     client_id: str = Field(..., description="Id of client")
     media_id: str = Field(..., description="Id of downloaded media")
-    status: DownloadStatus = Field(..., description="Download status", example=DownloadStatus.DOWNLOADING)
+    status: DownloadStatus = Field(..., description="Download status", examples=[DownloadStatus.DOWNLOADING])
     progress: int | None = Field(
         None,
         description="Download progress of a file in case status is 'downloading'",
-        example=10,
+        examples=[10],
     )

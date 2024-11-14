@@ -1,7 +1,7 @@
 import datetime
 from abc import ABC, abstractmethod
 
-from pydantic import parse_obj_as
+from pydantic import TypeAdapter
 from supabase import create_client
 from tinydb import Query, TinyDB, where
 from tinydb.storages import MemoryStorage
@@ -119,24 +119,24 @@ class InMemoryDB(IDataSource):
         return self.db.search((Query()["client_id"] == client_id) & (Query()["status"] != DownloadStatus.DELETED))
 
     def fetch_downloads_till_datetime(self, till_when: datetime.datetime) -> list[Download]:
-        donwloads = self.db.search(Query()["when_submitted"] <= till_when)
-        return parse_obj_as(list[Download], donwloads)
+        downloads = self.db.search(Query()["when_submitted"] <= till_when)
+        return TypeAdapter(list[Download]).validate_python(downloads)
 
     def put_download(self, download: Download):
-        self.db.insert(download.dict())
+        self.db.insert(download.model_dump())
 
     def get_download(self, client_id: str, media_id: str) -> Download | None:
         q = Query()
         download = self.db.get(
             (q["client_id"] == client_id) & (q["media_id"] == media_id) & (q["status"] != DownloadStatus.DELETED)
         )
-        return parse_obj_as(Download, download) if download else None
+        return Download(**download) if download else None
 
     def update_download(self, download: Download):
-        self.db.update(download.dict(), Query()["media_id"] == download.media_id)
+        self.db.update(download.model_dump(), Query()["media_id"] == download.media_id)
 
     def update_download_progress(self, progress_obj: DownloadStatusInfo):
-        self.db.update(progress_obj.dict(), (Query()["media_id"] == progress_obj.key))
+        self.db.update(progress_obj.model_dump(), (Query()["media_id"] == progress_obj.key))
 
     def delete_download(
         self,

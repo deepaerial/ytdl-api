@@ -27,7 +27,11 @@ This will launch `uvicorn` server with app on http://localhost:8080. You will al
 
 ## Running app using docker-compose
 ```shell
-$ docker-compose up -d ytdl-api
+$ docker compose up -d app
+```
+For local development using docker use `watch`:
+```shell
+$ docker compose watch app
 ```
 
 ## Running tests
