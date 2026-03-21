@@ -12,12 +12,25 @@ from pydantic import field_validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
-from .datasource import InMemoryDB
+from .datasource import IDataSource, InMemoryDB, SupabaseDB
 from .storage import IStorage, LocalFileStorage
 from .utils import LOGGER
 
 REPO_PATH = (Path(__file__).parent / "..").resolve()
 ENV_PATH = (REPO_PATH / ".env").resolve()
+
+
+class SupabaseConfig(BaseConfig):
+    """
+    Supabase datasource config.
+    """
+
+    SUPABASE_PROJECT_URL: str
+    SUPABASE_PROJECT_API_KEY: str
+    SUPABASE_DATABASE_TABLE: str = "downloads"
+
+    def get_datasource(self) -> IDataSource:
+        return SupabaseDB(self.supabase_url, self.supabase_key, self.supabase_table)
 
 
 class LocalStorageConfig(BaseConfig):

@@ -35,7 +35,7 @@ async def on_download_start_callback(
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
-            key=download.key,
+            key=download.deta_db_key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,
@@ -56,7 +56,7 @@ async def on_pytube_progress_callback(
     Callback which will be used in Pytube's progress update callback
     """
     download_proress = DownloadStatusInfo(
-        key=download.key,
+        key=download.deta_db_key,
         title=download.title,
         client_id=download.client_id,
         media_id=download.media_id,
@@ -76,7 +76,7 @@ async def on_ytdlp_progress_callback(progress: DownloadDataInfo, **kwargs):
     queue: NotificationQueue = kwargs["queue"]
     progress = extract_percentage_progress(progress.get("_percent_str"))
     download_proress = DownloadStatusInfo(
-        key=download.key,
+        key=download.deta_db_key,
         title=download.title,
         client_id=download.client_id,
         media_id=download.media_id,
@@ -102,7 +102,7 @@ async def on_start_converting(
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
-            key=download.key,
+            key=download.deta_db_key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,
@@ -151,7 +151,7 @@ async def on_finish_callback(
     await queue.put(
         download.client_id,
         DownloadStatusInfo(
-            key=download.key,
+            key=download.deta_db_key,
             title=download.title,
             filesize_hr=file_size_hr,
             client_id=download.client_id,
@@ -179,7 +179,7 @@ async def on_error_callback(
     await queue.put(
         download.client_id,
         download_progress=DownloadStatusInfo(
-            key=download.key,
+            key=download.deta_db_key,
             title=download.title,
             client_id=download.client_id,
             media_id=download.media_id,

@@ -62,9 +62,9 @@ class Download(BaseModel_):
     )
 
     @property
-    def key(self) -> str:
+    def deta_db_key(self) -> str:
         """
-        Key used for PK in database.
+        Key used for PK in Deta database.
         """
         return self.media_id
 
