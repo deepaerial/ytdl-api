@@ -8,7 +8,7 @@ from confz import BaseConfig, EnvSource
 from croniter import croniter
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import ConfigDict, field_validator
+from pydantic import field_validator
 from starlette.middleware import Middleware
 
 from .constants import DownloaderType
