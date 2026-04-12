@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.11.0] - 2026-04-12
 ### Changed
 - Refactored InMemoryDB singleton to use `@lru_cache` in dependencies for cleaner DI.
+### Fixes
+- InMemoryDB recreated on each new API request. Reimplemented as singleton to keep data from wiping.
 ### Added
 - Added OpenCode skills and AGENTS.md to project.
 
