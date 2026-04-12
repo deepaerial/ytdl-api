@@ -19,15 +19,15 @@ async def test_repeat_at(capsys: CaptureFixture[str]):
     Simple Test Case for repeat_at
     """
 
-    @repeat_at(cron="* * * * *", max_repetitions=3)
+    @repeat_at(cron="* * * * *", max_repetitions=3, immediate=True)
     async def print_hello():
         print("Hello")
 
     print_hello()
-    await asyncio.sleep(1)
+    await asyncio.sleep(0.5)
     out, err = capsys.readouterr()
     assert err == ""
-    assert out == ""
+    assert out == "Hello\n"
 
 
 @pytest.mark.asyncio

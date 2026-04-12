@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-04-12
+### Changed
+- Refactored InMemoryDB singleton to use `@lru_cache` in dependencies for cleaner DI.
+### Added
+- Added OpenCode skills and AGENTS.md to project.
+
 ## [1.10.0] - 2026-03-21
 ### Changed
 - Updated yt-dlp to version 2026.3.21.
