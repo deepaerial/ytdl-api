@@ -71,6 +71,7 @@ def repeat_at(
     logger: logging.Logger = None,
     raise_exceptions: bool = False,
     max_repetitions: int = None,
+    immediate: bool = False,
 ):
     """
     Original source code copied from
@@ -87,6 +88,9 @@ def repeat_at(
         Whether to raise exceptions or log them
     max_repetitions: int (default None)
         Maximum number of times to repeat the function. If None, repeat indefinitely.
+    immediate: bool (default False)
+        If True, execute function immediately on start, then repeat per cron schedule.
+        If False, wait for first cron time before executing.
 
     """
 
@@ -103,12 +107,18 @@ def repeat_at(
                 nonlocal repititions
                 while max_repetitions is None or repititions < max_repetitions:
                     try:
+                        if immediate:
+                            if is_coroutine:
+                                await func(*args, **kwargs)
+                            else:
+                                await run_in_threadpool(func, *args, **kwargs)
                         sleepTime = get_sleep_time(cron)
                         await asyncio.sleep(sleepTime)
-                        if is_coroutine:
-                            await func(*args, **kwargs)
-                        else:
-                            await run_in_threadpool(func, *args, **kwargs)
+                        if not immediate:
+                            if is_coroutine:
+                                await func(*args, **kwargs)
+                            else:
+                                await run_in_threadpool(func, *args, **kwargs)
                     except Exception as e:
                         if logger is not None:
                             logger.exception(e)

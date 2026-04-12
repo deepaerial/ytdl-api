@@ -30,6 +30,7 @@ def get_notification_queue() -> queue.NotificationQueue:
     return queue.NotificationQueue()
 
 
+@lru_cache
 def get_database(settings: Settings = Depends(get_settings)) -> datasource.IDataSource:
     return settings.datasource.get_datasource()
 
