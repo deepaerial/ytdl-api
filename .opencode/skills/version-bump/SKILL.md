@@ -35,4 +35,19 @@ Prepend new entry at the top (below header) in this format:
 - {Description}
 ```
 
+Example:
+
+```markdown## [1.11.1] - 2026-06-04
+### Changed
+- Docker containerization: switched to python:3.11-slim base (~50% size reduction),
+  added non-root `app` user, added healthcheck endpoint and HTTP health probes.
+- Upgraded Poetry from 1.7.1 to 2.4.1 and updated build-system config for Poetry 2.x compatibility.
+- Expanded .dockerignore to reduce build context.
+### Added
+- `GET /api/health` endpoint for container orchestration liveness probes.
+- Healthcheck configuration in compose.yaml and fly.toml.
+### Removed
+- Deta support
+```
+
 Write changes directly to CHANGELOG.md without preview.
