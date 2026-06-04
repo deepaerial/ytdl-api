@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.1] - 2026-06-04
+### Changed
+- Docker containerization: switched to python:3.11-slim base (~50% size reduction),
+  added non-root `app` user, added healthcheck endpoint and HTTP health probes.
+- Upgraded Poetry from 1.7.1 to 2.4.1 and updated build-system config for Poetry 2.x compatibility.
+- Expanded .dockerignore to reduce build context.
+### Added
+- `GET /api/health` endpoint for container orchestration liveness probes.
+- Healthcheck configuration in compose.yaml and fly.toml.
+
 ## [1.11.0] - 2026-04-12
 ### Changed
 - Refactored InMemoryDB singleton to use `@lru_cache` in dependencies for cleaner DI.

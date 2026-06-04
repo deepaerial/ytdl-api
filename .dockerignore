@@ -9,3 +9,17 @@ dist/
 .env
 Dockerfile
 .dockerignore
+media/
+.git/
+.gitignore
+*.md
+coverage_report/
+scripts/
+.github/
+docs/
+init-db/
+.opencode/
+compose.yaml
+fly.toml
+CHANGELOG.md
+poetry.toml

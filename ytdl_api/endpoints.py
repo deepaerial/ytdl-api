@@ -257,3 +257,9 @@ async def retry_download(
     datasource.update_download(download)
     background_tasks.add_task(downloader.download, download)
     return status.HTTP_200_OK
+
+
+@router.get("/health", status_code=status.HTTP_200_OK, include_in_schema=False)
+async def health():
+    """Liveness probe for container orchestration health checks."""
+    return {"status": "ok"}
