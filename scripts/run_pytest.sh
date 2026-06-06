@@ -1,2 +1,2 @@
 #!/bin/bash
-poetry run pytest . --cov --cov-report html
+uv run pytest . --cov --cov-report html

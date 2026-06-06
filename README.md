@@ -5,12 +5,12 @@ REST-based API for downloading video or extracting audio from YouTube videos. Th
 ![OpenAPI documentation for YTDL API](./docs/openapi.png)
 
 ## Requirements
-App requires Python 3.11 and [poetry](https://python-poetry.org/) installed.
+App requires Python 3.11 and [uv](https://docs.astral.sh/uv/) installed.
 
 ## Installation
-Run `poetry` command below to install project dependencies (including ones needed for development).
+Run `uv` command below to install project dependencies (including ones needed for development).
 ```shell
-$ poetry install
+$ uv sync
 ```
 ## Launch API locally
 Before starting the application server you should create `.env` file which will contain all necessary settings. Example configuration for Docker container:

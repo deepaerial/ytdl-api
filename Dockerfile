@@ -7,15 +7,13 @@ ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=2.4.1
+    PIP_DEFAULT_TIMEOUT=100
+
+COPY --from=ghcr.io/astral-sh/uv:0.8.0-debian-slim /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/* && \
-    pip install --upgrade pip && \
-    pip install --no-cache-dir "poetry==$POETRY_VERSION" && \
-    poetry config virtualenvs.in-project true && \
     addgroup --system --gid 1001 app && \
     adduser --system --uid 1001 --ingroup app --home /app --shell /bin/sh --disabled-password app && \
     mkdir -p /app/media && \
@@ -24,29 +22,29 @@ RUN apt-get update && \
 FROM base as project-base
 WORKDIR /app
 # Copy project files
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml uv.lock /app/
 # Project initialization: installing project's Python dependencies
-RUN poetry install --no-root --without dev
+RUN uv sync --frozen --no-dev --no-install-project
 COPY ./ytdl_api /app/ytdl_api
 # Opening port
 ########### Dev ###############
 FROM project-base as dev
 COPY --from=project-base /app/.venv /app/.venv
 # Installing dev dependencies
-RUN poetry install
+RUN uv sync --frozen
 # Running uvicorn server
-CMD ["poetry", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "debug", "--reload"]
+CMD ["uv", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "debug", "--reload"]
 
 ############ Test ###################
 FROM dev as test
 WORKDIR /app/
 COPY --from=project-base /app/.venv /app/.venv
 COPY ./tests /app/tests
-RUN poetry install
+RUN uv sync --frozen
 USER app
-ENTRYPOINT [ "poetry", "run", "pytest"]
+ENTRYPOINT ["uv", "run", "pytest"]
 ############ Prod ###################
 FROM project-base as prod
-RUN poetry install --without dev
+RUN uv sync --frozen --no-dev
 USER app
-CMD ["poetry", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "info"]
+CMD ["uv", "run", "uvicorn", "ytdl_api.asgi:app", "--host", "0.0.0.0", "--port", "80", "--log-level", "info"]

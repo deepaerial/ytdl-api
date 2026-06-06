@@ -8,7 +8,7 @@ on:
     paths:
       - ytdl_api/**
       - tests/**
-      - poetry.lock
+      - uv.lock
       - .github/workflows/**
   workflow_dispatch:
 jobs:
@@ -34,39 +34,22 @@ jobs:
         with:
           python-version: '3.11'
       #----------------------------------------------
-      #  -----  install & configure poetry  -----
+      #  -----  install uv  -----
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.2.0
         with:
-          version: 1.3.2
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+          enable-cache: true
       #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      #----------------------------------------------
-      # install dependencies if cache does not exist
+      #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-      #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install library
-        run: poetry install --no-interaction
+        run: uv sync --frozen
       #----------------------------------------------
       #    run test suite and output coverage file
       #----------------------------------------------
       - name: Run Pytest
-        run: poetry run pytest --cov=${{ github.workspace }} --cov-report=xml
+        run: uv run pytest --cov=${{ github.workspace }} --cov-report=xml
       #----------------------------------------------
       #             upload coverage stats
       # (requires CODECOV_TOKEN in repository secrets)
