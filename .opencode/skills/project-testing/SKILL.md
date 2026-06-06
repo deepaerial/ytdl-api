@@ -18,12 +18,12 @@ Ask the user:
 
 If coverage requested:
 ```bash
-poetry run pytest . --cov=ytdl_api --cov-report=term-missing
+uv run pytest . --cov=ytdl_api --cov-report=term-missing
 ```
 
 If no coverage:
 ```bash
-poetry run pytest .
+uv run pytest .
 ```
 
 Always run in the repository root directory.

@@ -1,11 +1,11 @@
 ---
 name: version-bump
-description: Handles Python release workflow using Poetry - bumps version and updates CHANGELOG.md
+description: Handles Python release workflow using uv - bumps version and updates CHANGELOG.md
 ---
 
 # Version Bump Skill
 
-Bump version using `poetry version` and add entries to CHANGELOG.md.
+Bump version using `uv version --bump` and add entries to CHANGELOG.md.
 
 ## Workflow
 
@@ -14,7 +14,7 @@ Bump version using `poetry version` and add entries to CHANGELOG.md.
 Ask the user for bump type (major, minor, or patch), then run:
 
 ```bash
-poetry version {bump_type}
+uv version --bump {bump_type}
 ```
 
 Update `pyproject.toml` version field based on the output.

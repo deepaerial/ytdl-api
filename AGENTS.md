@@ -6,7 +6,7 @@ REST-based API for downloading video or extracting audio from YouTube videos.
 
 ## Dependency Management
 
-All dependency management is done via [Poetry](https://python-poetry.org/). Use `poetry add` to add dependencies and `poetry lock --no-update` to update the lock file.
+All dependency management is done via [uv](https://docs.astral.sh/uv/). Use `uv add` to add dependencies and `uv lock` to update the lock file.
 
 ## Commands
 
@@ -32,4 +32,4 @@ For testing and linting, use the available skills:
 
 - Requires `.env.test` file in project root (can be empty)
 - Tests use in-memory database (no external DB required)
-- Run `poetry install` before running tests for the first time
+- Run `uv sync` before running tests for the first time
